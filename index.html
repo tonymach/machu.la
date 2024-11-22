@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>machu.la - Parked Domain</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Default "Boring" Styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background: #f8f9fa;
+            min-height: 100vh;
+            transition: all 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.8s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Boring Mode Styles */
+        .boring-mode {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .boring-header {
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .boring-domain {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .boring-content {
+            padding: 30px;
+        }
+
+        .boring-ad {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px 0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boring-ad::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255,255,255,0.1) 50%,
+                transparent 100%
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .boring-ad:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .boring-footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* Transition Overlay */
+        .transition-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            z-index: 1000;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 20px;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .transition-overlay.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .transition-text {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 20px;
+            background: #111;
+            border: 1px solid #0f0;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: #0f0;
+            transition: width 2s ease-in-out;
+        }
+
+        /* Party Mode Animation Keyframes */
+        @keyframes rainbow {
+            0% { color: red; }
+            20% { color: yellow; }
+            40% { color: lime; }
+            60% { color: cyan; }
+            80% { color: magenta; }
+            100% { color: red; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Initial Party Mode (Hidden) */
+        .party-mode {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        /* Party Mode Active Styles */
+        body.party-active {
+            background: repeating-linear-gradient(45deg, #FF69B4 0px, #FF69B4 20px, #FFD700 20px, #FFD700 40px);
+        }
+
+        .container.party-active {
+            max-width: 1200px;
+            border: 8px solid #FFD700;
+            box-shadow: 0 0 40px rgba(0,0,0,0.3);
+        }
+
+        .party-mode.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .party-header {
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(to right, #22D3EE, #60A5FA);
+            border-bottom: 8px solid #FFD700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .party-domain {
+            font-size: 4rem;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive;
+            text-shadow: 2px 2px 0 #ff0000, 4px 4px 0 #00ff00, 6px 6px 0 #0000ff;
+            animation: bounce 2s infinite;
+            position: relative;
+        }
+
+        .marquee-container {
+            background: black;
+            color: #4ADE80;
+            padding: 0.5rem;
+            overflow: hidden;
+            border-bottom: 2px solid #FFD700;
+            font-family: monospace;
+            position: relative;
+        }
+
+        .marquee-text {
+            white-space: nowrap;
+            display: inline-block;
+            animation: scroll 30s linear infinite;
+            font-size: 1.1rem;
+        }
+
+        .party-content {
+            padding: 2rem;
+            background: black;
+            color: #4ADE80;
+        }
+
+        .ad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .party-ad {
+            padding: 2rem;
+            border: 4px dashed #4ADE80;
+            border-radius: 0.5rem;
+            animation: pulse 3s infinite;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .party-ad:hover {
+            transform: scale(1.02) rotate(-1deg);
+        }
+
+        .party-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .party-nav-link {
+            padding: 0.5rem 1rem;
+            background: black;
+            color: #4ADE80;
+            border: 1px solid #4ADE80;
+            font-family: monospace;
+            text-decoration: none;
+            transform: rotate(-2deg);
+            transition: all 0.3s ease;
+        }
+
+        .party-nav-link:hover {
+            transform: rotate(2deg);
+            background: #4ADE80;
+            color: black;
+        }
+
+        .high-scores {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #4ADE80;
+            padding: 1rem;
+            margin: 2rem 0;
+        }
+
+        .high-scores-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            animation: rainbow 5s linear infinite;
+            font-family: monospace;
+        }
+
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-bottom: 1px dotted #4ADE80;
+            font-family: monospace;
+        }
+
+        .certifications {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .cert-badge {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #4ADE80;
+            padding: 1rem;
+            text-align: center;
+            font-family: monospace;
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+
+        .cert-badge:hover {
+            background: #4ADE80;
+            color: black;
+            transform: scale(1.05);
+        }
+
+        .party-footer {
+            text-align: center;
+            padding: 2rem;
+            background: black;
+            border-top: 8px solid #4ADE80;
+            color: #4ADE80;
+            font-family: monospace;
+        }
+
+        /* Emergency Exit Button */
+        .emergency-exit {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: monospace;
+            z-index: 1000;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .emergency-exit:hover {
+            background: #ff6666;
+            transform: scale(1.1);
+        }
+
+        .emergency-exit.active {
+            display: block;
+        }
+
+        /* Secret Counter (Debug) */
+        .click-count {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <body>
+        <!-- Transition Overlay -->
+        <div class="transition-overlay">
+            <div class="transition-text">INITIALIZING PARTY PROTOCOLS...</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="transition-text">ENGAGING HYPNOTOAD SUBROUTINES...</div>
+        </div>
+    
+        <div class="container">
+            <!-- Boring Mode -->
+            <div class="boring-mode">
+                <div class="boring-header">
+                    <div class="boring-domain">machu.la</div>
+                    <div style="color: #666;">This domain is parked.</div>
+                </div>
+                
+                <div class="boring-content">
+                    <div class="boring-ad" data-trigger="party">
+                        <div style="color: #1a0dab; margin-bottom: 5px;">Premium Domains Available</div>
+                        <div style="color: #006621; font-size: 12px;">sponsored listing</div>
+                        <div style="color: #545454; font-size: 13px; margin-top: 5px;">
+                            Find your perfect domain name today. Instant purchase available.
+                        </div>
+                    </div>
+    
+                    <div class="boring-ad" data-trigger="party">
+                        <div style="color: #1a0dab; margin-bottom: 5px;">Professional Web Hosting</div>
+                        <div style="color: #006621; font-size: 12px;">advertisement</div>
+                        <div style="color: #545454; font-size: 13px; margin-top: 5px;">
+                            Reliable hosting solutions. 24/7 support. Free SSL certificate.
+                        </div>
+                    </div>
+    
+                    <div class="boring-ad" data-trigger="party">
+                        <div style="color: #1a0dab; margin-bottom: 5px;">Domain Inquiries</div>
+                        <div style="color: #006621; font-size: 12px;">sponsored listing</div>
+                        <div style="color: #545454; font-size: 13px; margin-top: 5px;">
+                            Interested in this domain? Contact our brokers today.
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="boring-footer">
+                    <div>© 2024 Domain Parking Service</div>
+                    <div style="margin-top: 10px; font-size: 11px; color: #999;">
+                        Visitors today: 1,337
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Party Mode -->
+            <div class="party-mode">
+                <div class="party-header">
+                    <div class="party-domain">machu.la</div>
+                    <div style="color: white; font-size: 1.5rem; font-family: 'Comic Sans MS', cursive;">
+                        ⭐️ WELCOME TO THE REAL INTERNET! ⭐️
+                    </div>
+                    <div style="color: white; margin-top: 10px; font-family: monospace;">
+                        Neural Processing: PREEM | Stardate: {new Date().getFullYear() + 376}.{Math.floor(Math.random() * 9)}
+                    </div>
+                </div>
+    
+                <div class="marquee-container">
+                    <div class="marquee-text">
+                        ⚡ This domain uses 40% recycled electrons ⭐ Now with 100% more CSS! 🌟 No memes were harmed in the making of this page 
+                        ⚡ Running on Web 4.0 Beta ⭐ Powered by 1.21 Gigawatts ⚡ All your base are belong to us 🌟 Insert coin to continue... 
+                        ⭐ Have you tried turning it off and on again? ⚡ Please do not feed the trolls ⭐ Enhanced by Thalamic Relay
+                    </div>
+                </div>
+    
+                <div class="party-content">
+                    <div style="text-align: center; padding: 1rem; border: 1px solid #4ADE80; animation: pulse 2s infinite;">
+                        [!] WARNING: Basal Ganglia Neural Network Activity Detected! Arasaka Security Engaged! [!]
+                    </div>
+    
+                    <div class="ad-grid">
+                        <div class="party-ad" style="background: linear-gradient(to right, #EC4899, #FCD34D);">
+                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">
+                                🤖 BITE MY SHINY CHROME DOMAINS! 🤖
+                            </div>
+                            <div style="font-size: 0.8rem; margin-bottom: 1rem;">
+                                ~*~ powered by Mom's Neurotransmitter Hosting Division (Night City Branch) ~*~
+                            </div>
+                            <div>
+                                Premium domains for your prefrontal cortex! Now accepting eurodollars and Tricky Dick Fun Bills!
+                            </div>
+                        </div>
+    
+                        <div class="party-ad" style="background: linear-gradient(to right, #4ADE80, #60A5FA);">
+                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">
+                                💫 HYPNOTOAD'S WARP-SPEED HOSTING!!! 💫
+                            </div>
+                            <div style="font-size: 0.8rem; margin-bottom: 1rem;">
+                                ~*~ ALL GLORY TO THE HYPNOTOAD ~*~
+                            </div>
+                            <div>
+                                Faster than MaxTac response time! Now with Vulcan encryption!!!
+                            </div>
+                        </div>
+    
+                        <div class="party-ad" style="background: linear-gradient(to right, #A855F7, #EC4899);">
+                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">
+                                🌟 PREMIUM EMAIL SERVICES! 🌟
+                            </div>
+                            <div style="font-size: 0.8rem; margin-bottom: 1rem;">
+                                ~*~ Certified by the Temporal Mechanics Union ~*~
+                            </div>
+                            <div>
+                                Dopamine-enhanced spam filtering! Now with Kiroshi Optics integration!
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="party-nav">
+                        <a href="#" class="party-nav-link">SYNAPSE</a>
+                        <a href="#" class="party-nav-link">CORTEX</a>
+                        <a href="#" class="party-nav-link">DENDRITE</a>
+                        <a href="#" class="party-nav-link">AXON</a>
+                    </div>
+
+                    <div class="high-scores">
+                        <div class="high-scores-title">TOP NEURAL VISITORS</div>
+                        <div class="score-entry">
+                            <span>HAL9000</span>
+                            <span>9999999</span>
+                        </div>
+                        <div class="score-entry">
+                            <span>GLADOS</span>
+                            <span>8675309</span>
+                        </div>
+                        <div class="score-entry">
+                            <span>BENDER</span>
+                            <span>8008135</span>
+                        </div>
+                        <div class="score-entry" data-easter-egg="Nice try, human!">
+                            <span>???</span>
+                            <span>80085</span>
+                        </div>
+                    </div>
+    
+                    <div class="certifications">
+                        <div class="cert-badge" data-easter-egg="Now with 40% more cowbell!">
+                            🏆 Y2K38 Ready!
+                        </div>
+                        <div class="cert-badge" data-easter-egg="The cake is a lie...">
+                            🔬 Aperture Science Certified
+                        </div>
+                        <div class="cert-badge" data-easter-egg="Would you like to play a game?">
+                            🎮 WOPR Approved
+                        </div>
+                        <div class="cert-badge" data-easter-egg="I'll be back... after caching">
+                            🤖 Skynet Compatible
+                        </div>
+                    </div>
+    
+                    <div style="text-align: center; padding: 2rem;">
+                        <span style="color: #4ADE80; font-weight: bold; font-family: monospace; font-size: 1.2rem;">
+                            "I'm 40% neurotransmitters, choom! And the needs of the many neurons outweigh the needs of the few." 
+                            - Bender, Honorary Neurologist
+                        </span>
+                    </div>
+    
+                    <div style="background: #000; border: 2px solid #FFD700; padding: 1rem; margin: 2rem 0; text-align: center;">
+                        <div style="color: #FFD700; margin-bottom: 1rem; font-family: monospace;">SYSTEM REQUIREMENTS</div>
+                        <div style="color: #4ADE80; font-family: monospace;">
+                            ✓ Best viewed in Netscape Navigator 4.0<br>
+                            ✓ Minimum 640K RAM<br>
+                            ✓ Supports Intel 486 or better<br>
+                            ✓ Sound Blaster compatible<br>
+                            <span class="blink">✓ Turbo button recommended</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="party-footer">
+                    <div style="font-weight: bold; font-size: 1.2rem;">
+                        ⚡️ POWERED BY THALAMIC RELAY & MILITECH TECH! ⚡️
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <img src="/api/placeholder/88/31" alt="Made with GeoCities" title="The dancing baby lives!" class="counter-img" />
+                        <img src="/api/placeholder/88/31" alt="ICQ Us!" title="Uh oh!" class="counter-img" />
+                        <img src="/api/placeholder/88/31" alt="Webring Member" title="What goes around comes around" class="counter-img" />
+                    </div>
+                    <div style="margin-top: 1rem; animation: pulse 2s infinite;">
+                        ♥️ GOOD NEWS EVERYONE! NO TRIBBLES OR CYBERPSYCHOS DETECTED! ♥️
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        Error 451: Temporal lobe overflow... pretty nova, choom!
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <button class="emergency-exit" title="Boss Key">↩️ RESTORE SANITY</button>
+        <div class="click-count">0</div>
+    
+        <script>
+            // Fun loading messages for the transition
+            const loadingMessages = [
+                "INITIALIZING PARTY PROTOCOLS...",
+                "ENGAGING HYPNOTOAD SUBROUTINES...",
+                "RECYCLING ELECTRONS...",
+                "ACTIVATING NEURAL NETWORKS...",
+                "CHARGING FLUX CAPACITORS...",
+                "INCREASING RIDICULOUSNESS...",
+                "ACCELERATING TO LUDICROUS SPEED...",
+                "CONSULTING NEUROMANCER...",
+                "BYPASSING GIBSON FIREWALL...",
+                "LOADING CYBER ENCHANTMENTS...",
+                "UPGRADING TO WEB 4.0...",
+                "SYNCHRONIZING THALAMIC RELAYS...",
+                "ENGAGING MAXIMUM OVERRIDE...",
+                "RELEASING THE KRAKEN..."
+            ];
+    
+            let currentMessageIndex = 0;
+            const transitionOverlay = document.querySelector('.transition-overlay');
+            const loadingBar = document.querySelector('.loading-progress');
+            const transitionText = document.querySelector('.transition-text');
+            const container = document.querySelector('.container');
+            const body = document.body;
+            const boringMode = document.querySelector('.boring-mode');
+            const partyMode = document.querySelector('.party-mode');
+            const exitButton = document.querySelector('.emergency-exit');
+    
+            // Initialize party triggers
+            document.querySelectorAll('[data-trigger="party"]').forEach(trigger => {
+                trigger.addEventListener('click', initiatePartyMode);
+            });
+    
+            function updateLoadingMessage() {
+                transitionText.textContent = loadingMessages[currentMessageIndex];
+                currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+            }
+    
+            function initiatePartyMode(e) {
+                e.preventDefault();
+                transitionOverlay.classList.add('active');
+                
+                // Start the loading sequence
+                let progress = 0;
+                const messageInterval = setInterval(updateLoadingMessage, 200);
+                
+                const loadingInterval = setInterval(() => {
+                    progress += 2;
+                    loadingBar.style.width = `${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(loadingInterval);
+                        clearInterval(messageInterval);
+                        setTimeout(activatePartyMode, 500);
+                    }
+                }, 50);
+            }
+    
+            function activatePartyMode() {
+                transitionOverlay.classList.remove('active');
+                body.classList.add('party-active');
+                container.classList.add('party-active');
+                boringMode.style.display = 'none';
+                partyMode.classList.add('active');
+                exitButton.classList.add('active');
+                
+                // Add some extra flair
+                document.querySelectorAll('.party-ad').forEach(ad => {
+                    ad.style.animation = 'pulse 2s infinite';
+                });
+            }
+    
+            // Emergency exit functionality
+            exitButton.addEventListener('click', () => {
+                body.classList.remove('party-active');
+                container.classList.remove('party-active');
+                boringMode.style.display = 'block';
+                partyMode.classList.remove('active');
+                exitButton.classList.remove('active');
+            });
+    
+            // Boss key - press 'Escape' to instantly return to boring mode
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    exitButton.click();
+                }
+            });
+    
+            // Easter egg hovering effects
+            document.querySelectorAll('[data-easter-egg]').forEach(element => {
+                const originalText = element.innerHTML;
+                element.addEventListener('mouseenter', () => {
+                    element.innerHTML = element.getAttribute('data-easter-egg');
+                });
+                element.addEventListener('mouseleave', () => {
+                    element.innerHTML = originalText;
+                });
+            });
+        </script>
+    </body>
+    </html>
