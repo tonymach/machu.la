@@ -815,6 +815,7 @@
         <button class="emergency-exit" title="Boss Key">↩️ RESTORE SANITY</button>
         <div class="click-count">0</div>
     
+
         <script>
             // Fun loading messages for the transition
             const loadingMessages = [
@@ -864,7 +865,7 @@
                     this.placeholder = "Typing... really? Okay then...";
                 }
             });
-
+        
             const realitySelect = document.querySelector('#reality-check select');
             realitySelect.addEventListener('change', function() {
                 document.getElementById('intent-field').classList.add('reveal');
@@ -874,430 +875,29 @@
                     document.querySelector('.boring-submit').textContent = "Submit (but why though?)";
                 }
             });
-
+        
             document.querySelector('#intent-field select').addEventListener('change', function() {
                 document.getElementById('budget-field').classList.add('reveal');
                 document.querySelector('.form-title').textContent = "*heavy sigh*";
             });
-
+        
             document.querySelector('#budget-field select').addEventListener('change', function() {
                 document.getElementById('captcha-field').classList.add('reveal');
             });
-
+        
             document.querySelector('#captcha-field').addEventListener('click', function() {
                 document.getElementById('final-question').classList.add('reveal');
                 this.innerHTML = '<div style="color: #666;">Really? You clicked it? Wow...</div>';
             });
-
-
-// Update form annoyances
-const swallowQuestion = document.querySelector('#final-question input');
-swallowQuestion.removeAttribute('readonly');
-
-const annoyingResponses = [
-    "African or European swallow?",
-    "Wrong... but keep trying I guess",
-    "*watches you type with disappointment*",
-    "Not even close...",
-    "Are you still trying?",
-    "That's... not what I meant",
-    "Have you considered not doing this?",
-    "*awkward silence*",
-    "Really? That's your answer?",
-    "I expected nothing and I'm still disappointed",
-    "My neural networks hurt reading this",
-    "Loading better response... ERROR",
-    "Have you tried turning yourself off and on again?",
-    "This answer violates several laws of physics",
-    "Your keyboard must be broken",
-    "*contemplates career choices*"
-];
-
-// Make the input field slightly dodge the cursor
-swallowQuestion.addEventListener('mouseover', function() {
-    const small = 3; // pixels to move
-    this.style.transform = `translate(${Math.random() * small - small/2}px, ${Math.random() * small - small/2}px)`;
-});
-
-// Annoying typing behavior
-swallowQuestion.addEventListener('input', function() {
-    const originalText = this.value;
-    
-    // First, add random typos
-    setTimeout(() => {
-        const typos = ['teh', 'thE', 'halp', 'plz', 'omg', 'wat', '???'];
-        this.value = originalText + ' ' + typos[Math.floor(Math.random() * typos.length)];
-    }, 100);
-
-    // Then replace with snarky response
-    setTimeout(() => {
-        const randomResponse = annoyingResponses[Math.floor(Math.random() * annoyingResponses.length)];
-        this.value = randomResponse;
-    }, 500);
-});
-
-// Form interaction counter with increasingly exasperated messages
-let interactionCount = 0;
-const exasperatedMessages = [
-    "Still here, huh?",
-    "You must really like forms",
-    "Don't you have anything better to do?",
-    "*quietly judges your life choices*",
-    "This is getting awkward",
-    "Maybe try MySpace instead?",
-    "Have you considered knitting?",
-    "Your persistence is... concerning",
-    "ERROR: PATIENCE.EXE NOT FOUND",
-    "Are we having fun yet?",
-    "Plot twist: This isn't even a real form",
-    "Your warranty is now void",
-    "Loading better life choices...",
-    "Have you tried yoga?",
-    "This counts as cardio, right?",
-    "Achievement Unlocked: Digital Masochism",
-    "Loading existence.exe...",
-    "404: Purpose Not Found",
-    "Still processing... like your life choices"
-];
-
-document.querySelector('.boring-contact-form').addEventListener('click', function() {
-    interactionCount++;
-    const counterDiv = document.querySelector('.form-title');
-    
-    if (interactionCount > 3) {
-        const message = exasperatedMessages[Math.min(interactionCount - 4, exasperatedMessages.length - 1)];
-        counterDiv.innerHTML = `<span style="font-size: ${Math.min(100 + interactionCount, 120)}%">${message}</span>`;
         
-        // Start making the form slightly transparent after too many interactions
-        this.style.opacity = Math.max(1 - (interactionCount - 10) * 0.01, 0.7);
-        
-        // Add random glitch effect
-        if (interactionCount > 10 && Math.random() > 0.7) {
-            this.style.transform = `skew(${Math.random() * 2 - 1}deg)`;
-            setTimeout(() => this.style.transform = 'skew(0deg)', 200);
-        }
-    }
-});
-
-// Make the submit button run away
-document.querySelector('.boring-submit').addEventListener('mouseover', function() {
-    const container = document.querySelector('.boring-contact-form');
-    const maxX = container.clientWidth - this.clientWidth;
-    const maxY = container.clientHeight - this.clientHeight;
-    
-    if (interactionCount > 5) {
-        this.style.position = 'absolute';
-        this.style.left = Math.random() * maxX + 'px';
-        this.style.top = Math.random() * maxY + 'px';
-        this.textContent = "Can't catch me!";
-    }
-});
-
-// Add random form glitches
-setInterval(() => {
-    if (interactionCount > 8 && Math.random() > 0.8) {
-        const form = document.querySelector('.boring-contact-form');
-        form.style.filter = 'hue-rotate(90deg)';
-        setTimeout(() => form.style.filter = 'none', 100);
-    }
-}, 2000);
-
-// Make placeholders increasingly passive-aggressive
-const inputs = document.querySelectorAll('.boring-input');
-inputs.forEach(input => {
-    input.addEventListener('focus', function() {
-        const passiveAggressivePlaceholders = [
-            "Still typing...",
-            "*sigh* Go ahead...",
-            "Your persistence is remarkable",
-            "This field judges you silently",
-            "Type something... or don't",
-            "Words go here (allegedly)",
-            "Is this really necessary?",
-            "Loading patience.exe...",
-            "Error: Caring module not found"
-        ];
-        this.placeholder = passiveAggressivePlaceholders[Math.floor(Math.random() * passiveAggressivePlaceholders.length)];
-    });
-});
-            // Add a passive-aggressive counter
-            let clickCount = 0;
-            document.querySelector('.boring-contact-form').addEventListener('click', function() {
-                clickCount++;
-                if (clickCount > 5) {
-                    document.querySelector('.form-title').textContent = 
-                        `*sigh* Click ${clickCount} and counting... having fun?`;
-                }
-            });
-        
-            // Initialize party triggers
-// Premium Domains click handler with extra chaos
-document.querySelector('[data-trigger="domain"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    const adContent = this.querySelector('div:last-child');
-    
-    // Generate increasingly absurd domains
-    let domainsHTML = `
-        <div style="text-align: left; padding: 10px; margin-top: 10px;">
-            <div style="font-weight: bold; margin-bottom: 10px;" class="loading-domains">Scanning quantum realm for domains...</div>
-    `;
-    
-    const domains = [];
-    for(let i = 0; i < 5; i++) {
-        domains.push({
-            name: generateDomainName(),
-            price: generatePrice(),
-            status: getRandomStatus()
-        });
-    }
-    
-    domains.forEach((domain, index) => {
-        domainsHTML += `
-            <div class="domain-entry" style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #f8f9fa; transition: all 0.3s ease;"
-                 onmouseover="this.style.transform = 'translate(${Math.random() * 5}px, ${Math.random() * 5}px)'">
-                <span class="domain-name" style="flex-grow: 1;">${domain.name}</span>
-                <span class="domain-price" style="color: #666; min-width: 120px; text-align: right;">
-                    ${domain.price}
-                </span>
-                <span class="domain-status" style="font-size: 0.8em; color: #999; margin-left: 10px;">
-                    ${domain.status}
-                </span>
-            </div>
-        `;
-    });
-    
-    domainsHTML += `
-        <button class="soul-button" style="width: 100%; margin-top: 10px; padding: 10px; background: #1a0dab; color: white; border: none; cursor: pointer;">
-            EXCHANGE SOUL FOR DOMAIN (NO REFUNDS)
-        </button>
-        <div style="font-size: 8px; text-align: center; margin-top: 5px; font-family: monospace;">
-            * Soul value may vary. Void where prohibited. Not valid in this dimension.
-            <br>** Previous incarnations may affect trade-in value
-            <br>*** Quantum uncertainty principle applies to all transactions
-        </div>
-    `;
-    
-    adContent.innerHTML = domainsHTML;
-
-    // Make the domains do weird things
-    let mutationInterval = setInterval(() => {
-        document.querySelectorAll('.domain-entry').forEach(entry => {
-            if(Math.random() > 0.8) {
-                const price = entry.querySelector('.domain-price');
-                price.textContent = generatePrice();
-                price.style.transform = 'scale(1.1)';
-                setTimeout(() => price.style.transform = 'scale(1)', 200);
-            }
-            if(Math.random() > 0.9) {
-                entry.querySelector('.domain-status').textContent = getRandomStatus();
-            }
-        });
-    }, 2000);
-
-    // Add click handler for the soul button that gets increasingly desperate
-    const soulButton = adContent.querySelector('.soul-button');
-    let clickCount = 0;
-    soulButton.addEventListener('mouseover', function(e) {
-        clickCount++;
-        if(clickCount > 2) {
-            this.style.transform = `translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px)`;
-            this.textContent = getRandomButtonText();
-        }
-    });
-    soulButton.addEventListener('click', initiatePartyMode);
-});
-
-// Helper functions for domain section
-function generateDomainName() {
-    const prefixes = ['quantum', 'cyber', 'meta', 'hyper', 'neural', 'crypto', 'web3', 'ai', 'blockchain', 'synth', 
-                     'omega', 'ultra', 'mega', 'giga', 'nano', 'techno', 'digital', 'cyber'];
-    const suffixes = ['verse', 'chain', 'mind', 'flux', 'sync', 'net', 'grid', 'space', 'node', 'core', 
-                     'matrix', 'sphere', 'nexus', 'portal', 'cortex', 'pulse', 'wave'];
-    const tlds = ['.io', '.ai', '.eth', '.web4', '.meta', '.quantum', '.reality', '.void', '.∞', '.error'];
-    
-    return prefixes[Math.floor(Math.random() * prefixes.length)] + 
-           suffixes[Math.floor(Math.random() * suffixes.length)] +
-           tlds[Math.floor(Math.random() * tlds.length)];
-}
-
-function generatePrice() {
-    const currencies = ['BTC', 'Souls', 'Dogecoin', 'Human Years', 'Memes', 'Brain Cells', 'Dreams', 
-                       'Memories', 'Thoughts', 'Reality Shards', 'Time Crystals', 'Quantum Bits'];
-    const amount = Math.floor(Math.random() * 9999) + 1000;
-    return `${amount.toLocaleString()} ${currencies[Math.floor(Math.random() * currencies.length)]}`;
-}
-
-function getRandomStatus() {
-    const statuses = [
-        "Possibly available",
-        "Schrödinger's domain",
-        "Exists in parallel universe",
-        "Loading...",
-        "Status unclear",
-        "Ask again later",
-        "Quantum state undefined",
-        "Reality check pending",
-        "DNS machine broke",
-        "404 in time-space"
-    ];
-    return statuses[Math.floor(Math.random() * statuses.length)];
-}
-
-function getRandomButtonText() {
-    const texts = [
-        "PLEASE CLICK ME",
-        "I PROMISE IT'S WORTH IT",
-        "DEFINITELY NOT A TRAP",
-        "SOULS WANTED",
-        "CLICK FOR INFINITE POWER",
-        "ABSOLUTELY SAFE*",
-        "FREE DOMAIN (TERMS APPLY)",
-        "CLICK TO TRANSCEND",
-        "EMBRACE ETERNITY",
-        "BECOME ONE WITH THE WEB"
-    ];
-    return texts[Math.floor(Math.random() * texts.length)];
-}
-
-// Web Hosting click handler with extra chaos
-document.querySelector('[data-trigger="hosting"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    const adContent = this.querySelector('div:last-child');
-    
-    const plansHTML = `
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
-            <div class="hosting-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center;">
-                <div style="font-weight: bold;">BASIC REALITY</div>
-                <div class="price-display" style="font-size: 24px; margin: 10px 0;">$9.99/æon*</div>
-                <ul style="text-align: left; font-size: 12px;" class="feature-list">
-                    <li>1x Quantum Core</li>
-                    <li>2 Parallel Universes</li>
-                    <li>Basic Duck Support</li>
-                    <li>Limited Existential Crisis</li>
-                    <li>Weekly Reality Backups**</li>
-                </ul>
-                <button class="plan-button" data-plan="basic">SELECT DIMENSION</button>
-                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
-                    * Time dilation may affect pricing
-                    ** Reality not guaranteed
-                </div>
-            </div>
-            <div class="hosting-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center; background: #f8f9fa;">
-                <div style="font-weight: bold;">HYPNOTOAD SPECIAL</div>
-                <div class="price-display" style="font-size: 24px; margin: 10px 0;">ALL GLORY</div>
-                <ul style="text-align: left; font-size: 12px;">
-                    <li>∞ Processing Power</li>
-                    <li>ALL THE CLOUDS</li>
-                    <li>24/7 Toad Support</li>
-                    <li>Reality Bending Included</li>
-                    <li>Free Mind Control</li>
-                </ul>
-                <button class="plan-button" data-plan="hypno">ALL GLORY TO THE HYPNOTOAD</button>
-                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
-                    ALL HAIL HYPNOTOAD
-                </div>
-            </div>
-            <div class="hosting-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center;">
-                <div style="font-weight: bold;">ENTERPRISE</div>
-                <div class="price-display" style="font-size: 24px; margin: 10px 0;">$∞/void***</div>
-                <ul style="text-align: left; font-size: 12px;" class="feature-list">
-                    <li>Time Travel Backups</li>
-                    <li>Quantum Hamsters</li>
-                    <li>Existential Support</li>
-                    <li>Void Insurance</li>
-                    <li>Reality as a Service</li>
-                </ul>
-                <button class="plan-button" data-plan="enterprise">TRANSCEND REALITY</button>
-                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
-                    *** Void where prohibited (everywhere is void)
-                </div>
-            </div>
-        </div>
-    `;
-    
-    adContent.innerHTML = plansHTML;
-
-    // Make prices randomly fluctuate
-    setInterval(() => {
-        document.querySelectorAll('.price-display').forEach(price => {
-            if(Math.random() > 0.7 && !price.textContent.includes('GLORY')) {
-                price.textContent = `$${Math.floor(Math.random() * 999)}.99/æon*`;
-                price.style.color = '#ff4444';
-                setTimeout(() => price.style.color = '', 200);
-            }
-        });
-    }, 1500);
-
-    // Randomly add/remove features
-    setInterval(() => {
-        document.querySelectorAll('.feature-list').forEach(list => {
-            if(Math.random() > 0.8) {
-                const features = [
-                    "Schrödinger's Backup",
-                    "Quantum Coffee Maker",
-                    "Recursive Dreams",
-                    "Time Loop Protection",
-                    "Void Insurance",
-                    "Reality Debugging",
-                    "Entropy Reduction",
-                    "Paradox Support"
-                ];
-                const li = document.createElement('li');
-                li.textContent = features[Math.floor(Math.random() * features.length)];
-                li.style.color = '#00ff00';
-                list.appendChild(li);
-                setTimeout(() => list.removeChild(li), 3000);
-            }
-        });
-    }, 2000);
-
-    // Add click handlers for the plan buttons
-    adContent.querySelectorAll('.plan-button').forEach(button => {
-        button.addEventListener('mouseover', function() {
-            if(this.dataset.plan !== 'hypno') {
-                this.style.transform = `rotate(${Math.random() * 5 - 2.5}deg)`;
-            }
-        });
-        button.addEventListener('click', function() {
-            if(this.dataset.plan === 'hypno') {
-                initiatePartyMode(e);
-            } else {
-                this.textContent = getRandomErrorMessage();
-                this.style.backgroundColor = "#ff4444";
-                // Make the other buttons judge you
-                document.querySelectorAll('.plan-button').forEach(otherButton => {
-                    if(otherButton !== this) {
-                        otherButton.textContent = "wow... really?";
-                    }
-                });
-            }
-        });
-    });
-});
-
-function getRandomErrorMessage() {
-    const messages = [
-        "ERROR: NOT WORTHY",
-        "INSUFFICIENT CHAOS",
-        "REALITY.EXE FAILED",
-        "TRY AGAIN NEVER",
-        "VOID REJECTION",
-        "QUANTUM DENIAL",
-        "ACCESS UNLIKELY",
-        "EXISTENCE ERROR",
-        "*disappointed sigh*",
-        "TASK FAILED SUCCESSFULLY"
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
-}
-
+            // Various helper functions
             function updateLoadingMessage() {
                 transitionText.textContent = loadingMessages[currentMessageIndex];
                 currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
             }
         
             function initiatePartyMode(e) {
-                e.preventDefault();
+                if (e) e.preventDefault();
                 transitionOverlay.classList.add('active');
                 
                 // Start the loading sequence
@@ -1335,215 +935,580 @@ function getRandomErrorMessage() {
                 }
             }
         
-            // Emergency exit functionality
-            exitButton.addEventListener('click', () => {
-                body.classList.remove('party-active');
-                container.classList.remove('party-active');
-                boringMode.style.display = 'block';
-                partyMode.classList.remove('active');
-                exitButton.classList.remove('active');
-            });
+            function generateDomainName() {
+                const prefixes = ['quantum', 'cyber', 'meta', 'hyper', 'neural', 'crypto', 'web3', 'ai', 'blockchain', 'synth', 
+                                 'omega', 'ultra', 'mega', 'giga', 'nano', 'techno', 'digital', 'cyber'];
+                const suffixes = ['verse', 'chain', 'mind', 'flux', 'sync', 'net', 'grid', 'space', 'node', 'core', 
+                                 'matrix', 'sphere', 'nexus', 'portal', 'cortex', 'pulse', 'wave'];
+                const tlds = ['.io', '.ai', '.eth', '.web4', '.meta', '.quantum', '.reality', '.void', '.∞', '.error'];
+                
+                return prefixes[Math.floor(Math.random() * prefixes.length)] + 
+                       suffixes[Math.floor(Math.random() * suffixes.length)] +
+                       tlds[Math.floor(Math.random() * tlds.length)];
+            }
         
-            // Boss key - press 'Escape' to instantly return to boring mode
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    exitButton.click();
+            function generatePrice() {
+                const currencies = ['BTC', 'Souls', 'Dogecoin', 'Human Years', 'Memes', 'Brain Cells', 'Dreams', 
+                                   'Memories', 'Thoughts', 'Reality Shards', 'Time Crystals', 'Quantum Bits'];
+                const amount = Math.floor(Math.random() * 9999) + 1000;
+                return `${amount.toLocaleString()} ${currencies[Math.floor(Math.random() * currencies.length)]}`;
+            }
+        
+            function getRandomStatus() {
+                const statuses = [
+                    "Possibly available",
+                    "Schrödinger's domain",
+                    "Exists in parallel universe",
+                    "Loading...",
+                    "Status unclear",
+                    "Ask again later",
+                    "Quantum state undefined",
+                    "Reality check pending",
+                    "DNS machine broke",
+                    "404 in time-space"
+                ];
+                return statuses[Math.floor(Math.random() * statuses.length)];
+            }
+        
+            function getRandomButtonText() {
+                const texts = [
+                    "PLEASE CLICK ME",
+                    "I PROMISE IT'S WORTH IT",
+                    "DEFINITELY NOT A TRAP",
+                    "SOULS WANTED",
+                    "CLICK FOR INFINITE POWER",
+                    "ABSOLUTELY SAFE*",
+                    "FREE DOMAIN (TERMS APPLY)",
+                    "CLICK TO TRANSCEND",
+                    "EMBRACE ETERNITY",
+                    "BECOME ONE WITH THE WEB"
+                ];
+                return texts[Math.floor(Math.random() * texts.length)];
+            }
+        
+            function getRandomErrorMessage() {
+                const messages = [
+                    "ERROR: NOT WORTHY",
+                    "INSUFFICIENT CHAOS",
+                    "REALITY.EXE FAILED",
+                    "TRY AGAIN NEVER",
+                    "VOID REJECTION",
+                    "QUANTUM DENIAL",
+                    "ACCESS UNLIKELY",
+                    "EXISTENCE ERROR",
+                    "*disappointed sigh*",
+                    "TASK FAILED SUCCESSFULLY"
+                ];
+                return messages[Math.floor(Math.random() * messages.length)];
+            }
+        
+            // Premium Domains click handler
+            document.querySelector('[data-trigger="domain"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                const adContent = this.querySelector('div:last-child');
+                
+                // Generate increasingly absurd domains
+                let domainsHTML = `
+                    <div style="text-align: left; padding: 10px; margin-top: 10px;">
+                        <div style="font-weight: bold; margin-bottom: 10px;" class="loading-domains">
+                            SCANNING QUANTUM REALM FOR D0M41NS...
+                        </div>
+                `;
+                
+                const domains = [];
+                for(let i = 0; i < 5; i++) {
+                    domains.push({
+                        name: generateDomainName(),
+                        price: generatePrice(),
+                        status: getRandomStatus()
+                    });
                 }
-            });
-        
-            // Easter egg hovering effects
-            document.querySelectorAll('[data-easter-egg]').forEach(element => {
-                const originalText = element.innerHTML;
-                element.addEventListener('mouseenter', () => {
-                    element.innerHTML = element.getAttribute('data-easter-egg');
+                
+                domains.forEach((domain, index) => {
+                    domainsHTML += `
+                        <div class="domain-entry" style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #f8f9fa; transition: all 0.3s ease;"
+                            onmouseover="this.style.transform = 'translate(${Math.random() * 5}px, ${Math.random() * 5}px)'">
+                            <span class="domain-name" style="flex-grow: 1;">${domain.name}</span>
+                            <span class="domain-price" style="color: #666; min-width: 120px; text-align: right;">
+                                ${domain.price}
+                            </span>
+                            <span class="domain-status" style="font-size: 0.8em; color: #999; margin-left: 10px;">
+                                ${domain.status}
+                            </span>
+                        </div>
+                    `;
                 });
-                element.addEventListener('mouseleave', () => {
-                    element.innerHTML = originalText;
+                
+                domainsHTML += `
+                    <button class="soul-button" style="width: 100%; margin-top: 10px; padding: 10px; background: #1a0dab; color: white; border: none; cursor: pointer; position: relative; overflow: hidden;">
+                        EXCHANGE SOUL FOR DOMAIN (NO REFUNDS)
+                    </button>
+                    <div style="font-size: 8px; text-align: center; margin-top: 5px; font-family: monospace;">
+                        * Soul value may vary. Void where prohibited. Not valid in this dimension.
+                        <br>** Previous incarnations may affect trade-in value
+                        <br>*** Quantum uncertainty principle applies to all transactions
+                    </div>
+                `;
+                
+                adContent.innerHTML = domainsHTML;
+
+                let globalClickCount = 0;
+                const soulButton = adContent.querySelector('.soul-button');
+                let buttonState = 0; // Track button state for extra chaos
+
+                // Extra trolly button effects
+                soulButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    globalClickCount++;
+
+                    switch(buttonState) {
+                        case 0:
+                            this.style.width = '90%';
+                            this.style.fontSize = '0.9em';
+                            this.innerHTML = 'N1C3 TRY H4X0R... <span style="font-size: 0.8em">（╯°□°）╯︵ ┻━┻</span>';
+                            this.style.background = '#ff4444';
+                            buttonState++;
+                            break;
+                        case 1:
+                            this.style.width = '80%';
+                            this.style.fontSize = '0.8em';
+                            this.innerHTML = 'PERSISTENCE DETECTED... <span style="font-size: 0.8em">ಠ_ಠ</span>';
+                            this.style.background = '#ff6666';
+                            this.style.transform = 'rotate(2deg)';
+                            buttonState++;
+                            break;
+                        case 2:
+                            this.innerHTML = 'FINE... YOU ASKED FOR IT! <span style="font-size: 0.8em">༼ つ ◕_◕ ༽つ</span>';
+                            setTimeout(() => initiatePartyMode(e), 500);
+                            break;
+                    }
+
+                    // Add glitch effect on click
+                    this.style.filter = 'hue-rotate(90deg) contrast(150%)';
+                    setTimeout(() => this.style.filter = '', 100);
                 });
+
+                let dodgeCount = 0;
+                let lastMouseX = 0;
+                let lastMouseY = 0;
+
+                // Make button dodge the cursor in increasingly erratic ways
+                soulButton.addEventListener('mousemove', function(e) {
+                    if (buttonState < 2 && dodgeCount > 2) {
+                        const buttonRect = this.getBoundingClientRect();
+                        const mouseX = e.clientX;
+                        const mouseY = e.clientY;
+
+                        // Calculate mouse movement direction
+                        const deltaX = mouseX - lastMouseX;
+                        const deltaY = mouseY - lastMouseY;
+
+                        // Move button away from mouse with increasing intensity
+                        const intensity = Math.min(dodgeCount * 2, 20);
+                        const moveX = deltaX * intensity;
+                        const moveY = deltaY * intensity;
+
+                        const container = adContent;
+                        const containerRect = container.getBoundingClientRect();
+                        
+                        let newX = buttonRect.left - containerRect.left - moveX;
+                        let newY = buttonRect.top - containerRect.top - moveY;
+
+                        // Keep button within container bounds
+                        newX = Math.max(0, Math.min(newX, containerRect.width - buttonRect.width));
+                        newY = Math.max(0, Math.min(newY, containerRect.height - buttonRect.height));
+
+                        this.style.position = 'absolute';
+                        this.style.left = `${newX}px`;
+                        this.style.top = `${newY}px`;
+                        this.style.transform = `rotate(${Math.sin(dodgeCount) * 10}deg)`;
+
+                        lastMouseX = mouseX;
+                        lastMouseY = mouseY;
+                    }
+                });
+
+                soulButton.addEventListener('mouseover', function() {
+                    dodgeCount++;
+                    if (dodgeCount > 1 && buttonState < 2) {
+                        this.textContent = getRandomButtonText();
+                        // Add glitch effect
+                        this.style.animation = 'glitch 0.3s infinite';
+                        setTimeout(() => this.style.animation = '', 300);
+                    }
+                });
+
+                // Add random glitch effects to domains
+                setInterval(() => {
+                    document.querySelectorAll('.domain-entry').forEach(entry => {
+                        if(Math.random() > 0.8) {
+                            const price = entry.querySelector('.domain-price');
+                            price.textContent = generatePrice();
+                            price.style.transform = 'scale(1.1)';
+                            setTimeout(() => price.style.transform = 'scale(1)', 200);
+                            
+                            // Add matrix-style character changes
+                            const domain = entry.querySelector('.domain-name');
+                            const originalText = domain.textContent;
+                            const glitchText = originalText.split('').map(char => 
+                                Math.random() > 0.7 ? String.fromCharCode(Math.random() * 26 + 97) : char
+                            ).join('');
+                            domain.textContent = glitchText;
+                            setTimeout(() => domain.textContent = originalText, 100);
+                        }
+                        if(Math.random() > 0.9) {
+                            entry.querySelector('.domain-status').textContent = getRandomStatus();
+                        }
+                    });
+                }, 2000);
             });
-        
-            // Stardate functionality
-            function updateStardate() {
-                const year = new Date().getFullYear() + 376;
-                const decimal = Math.floor(Math.random() * 9);
-                document.getElementById('stardate').textContent = `${year}.${decimal}`;
+
+            // Add some extra chaotic button texts
+            function getRandomButtonText() {
+                const texts = [
+                    "C̷̨̛̛̦͈̠̜͇͖͙̘̖̘̲̉̀L̸̖̱̼̮͒́̈͑̈́͆͌̏͗͝Ḯ̷̧̨̭͈̪̟͍̬̣͓͛̽͗̊̋͜C̷̻͖̠͚̉̅̊͌̍̀K̷̡̩͓̱̘̳̮͖̖͒̀͋̉̎̎̌̃̀͊͑͜ ̶̛͚̝̙͍̱͆̋̽̀̒̈́̇̊͘͝M̸̢̦͕͎̙̯̪̩̱͋̏̈̕͜Ḙ̶̒̋̾͒̐̂̌̈̈́̚",
+                    "∀˥˥ ⅁˥Oɹʎ ┴O ┴HƎ HʎԀNO┴O∀p",
+                    "🆂🅾🆄🅻 🆃🆁🅰🅽🆂🅵🅴🆁 🅸🅽🅸🆃🅸🅰🆃🅴🅳",
+                    "【﻿ｃｌｉｃｋ　ｆｏｒ　ａｓｃｅｎｓｉｏｎ】",
+                    "𝕮𝖑𝖎𝖈𝖐 𝖙𝖔 𝖘𝖚𝖒𝖒𝖔𝖓 𝖙𝖍𝖊 𝖆𝖓𝖈𝖎𝖊𝖓𝖙 𝖔𝖓𝖊𝖘",
+                    "⚠️ D̷̛̯͊͒͋̈̒͝Ạ̶̛̼̹̲̝̦͐̈́̓̆͝N̸͕͉̞̺̐̓̄̅̈́͜Ġ̷͔̦̹̼̃̀̿̈́͐͜Ȅ̵͚̦̯͚̅̌̀͐̕R̴͉̖̩̲̲͛̔̀̏̕ͅ ⚠️",
+                    "ERROR: BUTTON.EXE HAS STOPPED WORKING",
+                    "¯\\_(ツ)_/¯ CLICK IF YOU DARE ¯\\_(ツ)_/¯",
+                    "LOADING SOUL EXTRACTION PROTOCOLS...",
+                    "QUANTUM ENTANGLEMENT INITIATED..."
+                ];
+                return texts[Math.floor(Math.random() * texts.length)];
             }
-            
-            // Update stardate if element exists
-            if (document.getElementById('stardate')) {
-                updateStardate();
-                setInterval(updateStardate, 5000);
-            }
 
-            // Function to generate ridiculous domain names
-function generateDomainName() {
-    const prefixes = ['quantum', 'cyber', 'meta', 'hyper', 'neural', 'crypto', 'web3', 'ai', 'blockchain', 'synth'];
-    const suffixes = ['verse', 'chain', 'mind', 'flux', 'sync', 'net', 'grid', 'space', 'node', 'core'];
-    const tlds = ['.io', '.ai', '.eth', '.web4', '.meta', '.quantum', '.reality'];
-    
-    return prefixes[Math.floor(Math.random() * prefixes.length)] + 
-           suffixes[Math.floor(Math.random() * suffixes.length)] +
-           tlds[Math.floor(Math.random() * tlds.length)];
-}
 
-// Function to generate ridiculous prices
-function generatePrice() {
-    const currencies = ['BTC', 'Souls', 'Dogecoin', 'Human Years', 'Memes', 'Brain Cells'];
-    const amount = Math.floor(Math.random() * 9999) + 1000;
-    return `${amount.toLocaleString()} ${currencies[Math.floor(Math.random() * currencies.length)]}`;
-}
-
-// Update Premium Domains ad click handler
-document.querySelector('[data-trigger="party"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    const adContent = this.querySelector('div:last-child');
-    
-    // Generate 5 random premium domains
-    let domainsHTML = `
-        <div style="text-align: left; padding: 10px; margin-top: 10px;">
-        <div style="font-weight: bold; margin-bottom: 10px;">Premium Selections:</div>
-    `;
-    
-    for(let i = 0; i < 5; i++) {
-        domainsHTML += `
-            <div style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #f8f9fa;">
-                <span>${generateDomainName()}</span>
-                <span style="color: #666;">${generatePrice()}</span>
-            </div>
-        `;
-    }
-    
-    domainsHTML += `
-        <button class="soul-button" style="width: 100%; margin-top: 10px; padding: 10px; background: #1a0dab; color: white; border: none; cursor: pointer;">
-            EXCHANGE SOUL FOR DOMAIN
-        </button>
-        <div style="font-size: 8px; text-align: center; margin-top: 5px;">
-            *No refunds, exchanges, or metaphysical returns
-        </div>
-    `;
-    
-    adContent.innerHTML = domainsHTML;
-
-// Add click handler for the soul button that gets increasingly desperate
-const soulButton = adContent.querySelector('.soul-button');
-let clickCount = 0;
-let dodgeCount = 0;
-
-soulButton.addEventListener('mouseover', function() {
-    dodgeCount++;
-    if(dodgeCount > 1) {
-        // Make the button run away
-        const container = document.querySelector('.boring-content');
-        const buttonRect = this.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        
-        // Calculate maximum distance it can move while staying in view
-        const maxX = containerRect.width - buttonRect.width;
-        const maxY = containerRect.height - buttonRect.height;
-        
-        // Random position within container bounds
-        const newX = Math.random() * maxX;
-        const newY = Math.random() * maxY;
-        
-        this.style.position = 'absolute';
-        this.style.left = `${newX}px`;
-        this.style.top = `${newY}px`;
-        this.style.transition = 'all 0.1s ease';
-        
-        // Change text to something more desperate
-        this.textContent = getRandomButtonText();
-        
-        // Add some rotation for extra chaos
-        this.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
-    }
-});
-
-// Make it even harder to click
-soulButton.addEventListener('mouseout', function() {
-    if(dodgeCount > 2) {
-        setTimeout(() => {
-            const container = document.querySelector('.boring-content');
-            const buttonRect = this.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            
-            const maxX = containerRect.width - buttonRect.width;
-            const maxY = containerRect.height - buttonRect.height;
-            
-            this.style.left = `${Math.random() * maxX}px`;
-            this.style.top = `${Math.random() * maxY}px`;
-        }, 200);
-    }
-});
-
-soulButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    clickCount++;
-    if(clickCount < 3) {
-        // Make it harder to click each time
-        this.style.width = `${this.offsetWidth * 0.8}px`;
-        this.style.fontSize = `${parseFloat(getComputedStyle(this).fontSize) * 0.8}px`;
-        this.textContent = "Nice try...";
-    } else {
-        initiatePartyMode(e);
-    }
-});
-});
-
-// Update Web Hosting ad
-document.querySelector('[data-trigger="party"]:nth-child(2)').addEventListener('click', function(e) {
+            // Web Hosting click handler
+// Replace the hosting click handler with this chaos-enhanced version
+document.querySelector('[data-trigger="hosting"]').addEventListener('click', function(e) {
     e.preventDefault();
     const adContent = this.querySelector('div:last-child');
     
     const plansHTML = `
+        <div style="text-align: center; margin-bottom: 15px; font-family: monospace; color: #1a0dab;">
+            <div class="quantum-scanner" style="font-size: 1.2em; margin-bottom: 5px;">SCANNING AVAILABLE REALITIES...</div>
+            <div style="font-size: 0.8em;" class="quantum-status">QUANTUM STABILITY: 98.3%</div>
+        </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
-            <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
-                <div style="font-weight: bold;">BASIC REALITY</div>
-                <div style="font-size: 24px; margin: 10px 0;">$9.99/æon</div>
-                <ul style="text-align: left; font-size: 12px;">
+            <div class="hosting-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center; transition: all 0.3s ease;">
+                <div style="font-weight: bold;" class="plan-title">BASIC REALITY</div>
+                <div class="price-display" style="font-size: 24px; margin: 10px 0; transition: all 0.3s ease;">$9.99/æon*</div>
+                <ul style="text-align: left; font-size: 12px;" class="feature-list">
                     <li>1x Quantum Core</li>
                     <li>2 Parallel Universes</li>
                     <li>Basic Duck Support</li>
+                    <li>Limited Existential Crisis</li>
+                    <li>Weekly Reality Backups**</li>
                 </ul>
                 <button class="plan-button" data-plan="basic">SELECT DIMENSION</button>
+                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
+                    * Time dilation may affect pricing
+                    ** Reality not guaranteed
+                </div>
             </div>
-            <div style="border: 1px solid #ddd; padding: 10px; text-align: center; background: #f8f9fa;">
+            <div class="hosting-plan hypno-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center; background: #f8f9fa; position: relative; overflow: hidden;">
+                <div class="hypno-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+                     background: radial-gradient(circle, rgba(255,255,255,0) 30%, rgba(0,255,0,0.1) 70%);
+                     pointer-events: none; opacity: 0; transition: opacity 0.3s ease;"></div>
                 <div style="font-weight: bold;">HYPNOTOAD SPECIAL</div>
-                <div style="font-size: 24px; margin: 10px 0;">ALL GLORY</div>
+                <div class="price-display" style="font-size: 24px; margin: 10px 0;">ALL GLORY</div>
                 <ul style="text-align: left; font-size: 12px;">
                     <li>∞ Processing Power</li>
                     <li>ALL THE CLOUDS</li>
                     <li>24/7 Toad Support</li>
+                    <li>Reality Bending Included</li>
+                    <li>Free Mind Control</li>
                 </ul>
-                <button class="plan-button" data-plan="hypno">ALL GLORY TO THE HYPNOTOAD</button>
+                <button class="plan-button hypno-button" data-plan="hypno">ALL GLORY TO THE HYPNOTOAD</button>
+                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
+                    ALL HAIL HYPNOTOAD
+                </div>
             </div>
-            <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+            <div class="hosting-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center;">
                 <div style="font-weight: bold;">ENTERPRISE</div>
-                <div style="font-size: 24px; margin: 10px 0;">$∞/void</div>
-                <ul style="text-align: left; font-size: 12px;">
+                <div class="price-display" style="font-size: 24px; margin: 10px 0;">$∞/void***</div>
+                <ul style="text-align: left; font-size: 12px;" class="feature-list">
                     <li>Time Travel Backups</li>
                     <li>Quantum Hamsters</li>
                     <li>Existential Support</li>
+                    <li>Void Insurance</li>
+                    <li>Reality as a Service</li>
                 </ul>
                 <button class="plan-button" data-plan="enterprise">TRANSCEND REALITY</button>
+                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
+                    *** Void where prohibited (everywhere is void)
+                </div>
             </div>
         </div>
     `;
     
     adContent.innerHTML = plansHTML;
 
+    // Quantum scanner effect
+    const quantumScanner = adContent.querySelector('.quantum-scanner');
+    const quantumStatus = adContent.querySelector('.quantum-status');
+    setInterval(() => {
+        const messages = [
+            "SCANNING AVAILABLE REALITIES...",
+            "CALCULATING ENTROPY LEVELS...",
+            "SEARCHING PARALLEL DIMENSIONS...",
+            "MEASURING QUANTUM COHERENCE...",
+            "ALIGNING TACHYON BEAMS...",
+            "CONSULTING THE VOID...",
+            "RETICULATING SPLINES...",
+            "SYNCHRONIZING TIMELINES...",
+        ];
+        quantumScanner.textContent = messages[Math.floor(Math.random() * messages.length)];
+        
+        // Random quantum stability
+        const stability = (85 + Math.random() * 15).toFixed(1);
+        quantumStatus.textContent = `QUANTUM STABILITY: ${stability}%`;
+        quantumStatus.style.color = stability < 90 ? '#ff4444' : '#1a0dab';
+    }, 2000);
+
+    // Hypno plan effects
+    const hypnoPlan = adContent.querySelector('.hypno-plan');
+    const hypnoOverlay = adContent.querySelector('.hypno-overlay');
+    const hypnoButton = adContent.querySelector('.hypno-button');
+    
+    hypnoPlan.addEventListener('mouseover', function() {
+        hypnoOverlay.style.opacity = '1';
+        this.style.transform = 'scale(1.02)';
+        
+        // Create hypnotic background effect
+        this.style.background = 'conic-gradient(from 0deg, #4ADE80, #60A5FA, #4ADE80)';
+        this.style.animation = 'spin 2s linear infinite';
+        
+        // Add glowing effect to the hypno button
+        hypnoButton.style.textShadow = '0 0 10px rgba(0,255,0,0.5)';
+        
+        // Add CSS animation for spinning
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                from { background-rotation: 0deg; }
+                to { background-rotation: 360deg; }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+
+    hypnoPlan.addEventListener('mouseout', function() {
+        hypnoOverlay.style.opacity = '0';
+        this.style.transform = 'scale(1)';
+        this.style.background = '#f8f9fa';
+        this.style.animation = 'none';
+        hypnoButton.style.textShadow = 'none';
+    });
+
+    // Make prices do crazy things
+    const priceDisplays = adContent.querySelectorAll('.price-display');
+    setInterval(() => {
+        priceDisplays.forEach(price => {
+            if(!price.textContent.includes('GLORY')) {
+                const currencies = ['BTC', 'DOGE', 'SOULS', '🌟', '💫', '🌈', '🚀'];
+                const amounts = ['∞', '9999', '404', '42', '13.37', '0xDEADBEEF'];
+                const symbols = ['$', '€', '£', '¥', '₿', '◈', '✧'];
+                const timeUnits = ['æon', 'epoch', 'eon', 'cycle', 'quantum', 'void'];
+                
+                const newPrice = `${symbols[Math.floor(Math.random() * symbols.length)]}${
+                    amounts[Math.floor(Math.random() * amounts.length)]} ${
+                    currencies[Math.floor(Math.random() * currencies.length)]}/${
+                    timeUnits[Math.floor(Math.random() * timeUnits.length)]}`;
+                
+                price.textContent = newPrice;
+                price.style.transform = 'scale(1.1)';
+                price.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+                setTimeout(() => {
+                    price.style.transform = 'scale(1)';
+                    price.style.color = '';
+                }, 200);
+            }
+        });
+    }, 1500);
+
+    // Feature list chaos
+    const featureLists = adContent.querySelectorAll('.feature-list');
+    setInterval(() => {
+        featureLists.forEach(list => {
+            if(Math.random() > 0.8) {
+                const features = [
+                    "Schrödinger's Backup™",
+                    "Quantum Coffee Maker v2.0",
+                    "Recursive Dreams API",
+                    "Time Loop Protection++",
+                    "Void Insurance (VOID WHERE VOID)",
+                    "Reality Debugging Suite",
+                    "Entropy Reduction Service",
+                    "Paradox Support 24/7",
+                    "Quantum Entangled Storage",
+                    "Neural Network Massages",
+                    "Blockchain of Consciousness",
+                    "Web 5.0 Beta Access",
+                    "Metaverse VIP Lounge",
+                    "AI Therapy Sessions",
+                    "Digital Zen Garden",
+                    "Cyber Meditation Pod"
+                ];
+                
+                const li = document.createElement('li');
+                li.textContent = features[Math.floor(Math.random() * features.length)];
+                li.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+                li.style.textShadow = '0 0 5px rgba(255,255,255,0.5)';
+                list.appendChild(li);
+                
+                // Make it glitch before removing
+                setTimeout(() => {
+                    li.style.transform = 'glitch 0.2s infinite';
+                    li.style.opacity = '0.5';
+                }, 2500);
+                setTimeout(() => list.removeChild(li), 3000);
+            }
+        });
+    }, 2000);
+
     // Add click handlers for the plan buttons
     adContent.querySelectorAll('.plan-button').forEach(button => {
-        button.addEventListener('click', function() {
-            if(this.dataset.plan === 'hypno') {
-                initiatePartyMode(e);
+        let failureAttempts = 0;
+        
+        button.addEventListener('mouseover', function() {
+            if(this.dataset.plan !== 'hypno') {
+                this.style.transform = `rotate(${Math.random() * 5 - 2.5}deg)`;
+                
+                // Add glitch effect
+                if(failureAttempts > 2) {
+                    this.style.animation = 'glitch 0.3s infinite';
+                    setTimeout(() => this.style.animation = '', 300);
+                }
             } else {
-                this.textContent = "ERROR: NOT WORTHY";
+                // Hypno button gets special effects
+                this.style.animation = 'rainbow 1s linear infinite';
+                this.style.transform = 'scale(1.1)';
+            }
+        });
+
+        button.addEventListener('mouseout', function() {
+            this.style.transform = 'none';
+            if(this.dataset.plan === 'hypno') {
+                this.style.animation = 'none';
+                this.style.transform = 'scale(1)';
+            }
+        });
+
+        button.addEventListener('click', function(e) {
+            if(this.dataset.plan === 'hypno') {
+                // Special hypno effects before party mode
+                this.style.animation = 'spin 0.5s linear infinite';
+                this.textContent = 'INITIALIZING HYPNOSIS.EXE';
+                setTimeout(() => {
+                    initiatePartyMode(e);
+                }, 1000);
+            } else {
+                failureAttempts++;
+                this.textContent = getRandomErrorMessage();
                 this.style.backgroundColor = "#ff4444";
+                
+                // Make the whole plan shake
+                const plan = this.closest('.hosting-plan');
+                plan.style.animation = 'shake 0.5s';
+                setTimeout(() => plan.style.animation = '', 500);
+                
+                // Make other buttons judge you
+                adContent.querySelectorAll('.plan-button').forEach(otherButton => {
+                    if(otherButton !== this) {
+                        otherButton.textContent = getRandomJudgement();
+                    }
+                });
             }
         });
     });
 });
 
-        </script>
+// Add some extra judgmental messages
+function getRandomJudgement() {
+    const messages = [
+        "ಠ_ಠ",
+        "(╯°□°）╯︵ ┻━┻",
+        "bruh...",
+        "really???",
+        "（￣へ￣）",
+        "*facepalm*",
+        "noob alert!",
+        "¯\\_(ツ)_/¯",
+        "404: wisdom not found",
+        "Sir... pls...",
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+}
+
+// Add some extra keyframe animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    @keyframes glitch {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+    }
+    @keyframes rainbow {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
+
+    
+    // Emergency exit functionality
+    exitButton.addEventListener('click', () => {
+        body.classList.remove('party-active');
+        container.classList.remove('party-active');
+        boringMode.style.display = 'block';
+        partyMode.classList.remove('active');
+        exitButton.classList.remove('active');
+    });
+
+    // Boss key - press 'Escape' to instantly return to boring mode
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            exitButton.click();
+        }
+    });
+
+    // Easter egg hovering effects
+    document.querySelectorAll('[data-easter-egg]').forEach(element => {
+        const originalText = element.innerHTML;
+        element.addEventListener('mouseenter', () => {
+            element.innerHTML = element.getAttribute('data-easter-egg');
+        });
+        element.addEventListener('mouseleave', () => {
+            element.innerHTML = originalText;
+        });
+    });
+
+    // Stardate functionality
+    function updateStardate() {
+        const year = new Date().getFullYear() + 376;
+        const decimal = Math.floor(Math.random() * 9);
+        document.getElementById('stardate').textContent = `${year}.${decimal}`;
+    }
+    
+    // Update stardate if element exists
+    if (document.getElementById('stardate')) {
+        updateStardate();
+        setInterval(updateStardate, 5000);
+    }
+</script>
+
     </body>
     </html>
