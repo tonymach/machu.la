@@ -394,11 +394,144 @@
             font-size: 10px;
             color: #666;
         }
+        /* Mobile Optimizations */
+@media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+    }
+
+    .container {
+        width: 98%;
+        margin: 0 auto;
+    }
+
+    .party-domain {
+        font-size: min(10vw, 3rem); /* Responsive font size */
+    }
+
+    .marquee-text {
+        font-size: 0.9rem;
+    }
+
+    .ad-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: 1rem;
+    }
+
+    .party-nav {
+        gap: 0.5rem;
+    }
+
+    .party-nav-link {
+        padding: 0.8rem 1.2rem; /* Larger touch target */
+        font-size: 1rem;
+    }
+
+    .certifications {
+        grid-template-columns: 1fr; /* Single column */
+    }
+
+    .cert-badge {
+        padding: 1.2rem; /* Larger touch target */
+    }
+
+    .emergency-exit {
+        top: 5px;
+        right: 5px;
+        padding: 12px 20px; /* Larger touch target */
+        font-size: 1rem;
+    }
+
+    .party-content {
+        padding: 1rem;
+    }
+
+    .high-scores {
+        font-size: 0.9rem;
+    }
+
+    /* Better spacing for mobile */
+    .party-ad {
+        padding: 1.5rem;
+    }
+
+    /* Adjust transition overlay for mobile */
+    .transition-overlay {
+        padding: 10px;
+    }
+
+    .loading-bar {
+        width: 80%;
+        max-width: 200px;
+    }
+
+    /* Adjust boring mode for mobile */
+    .boring-domain {
+        font-size: 20px;
+    }
+
+    .boring-ad {
+        padding: 15px;
+    }
+}
+
+/* Additional touch optimizations */
+@media (hover: none) {
+    .party-nav-link:active,
+    .cert-badge:active,
+    .party-ad:active {
+        transform: scale(0.98);
+    }
+
+    .emergency-exit:active {
+        transform: scale(0.95);
+    }
+}
+
+.boring-contact-form {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 20px 0;
+    background: white;
+}
+
+.boring-input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.boring-submit {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.hidden {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.reveal {
+    display: block;
+    opacity: 1;
+}
+
     </style>
 </head>
 <body>
 
-    <body>
         <!-- Transition Overlay -->
         <div class="transition-overlay">
             <div class="transition-text">INITIALIZING PARTY PROTOCOLS...</div>
@@ -417,7 +550,7 @@
                 </div>
                 
                 <div class="boring-content">
-                    <div class="boring-ad" data-trigger="party">
+                    <div class="boring-ad" data-trigger="domain">
                         <div style="color: #1a0dab; margin-bottom: 5px;">Premium Domains Available</div>
                         <div style="color: #006621; font-size: 12px;">sponsored listing</div>
                         <div style="color: #545454; font-size: 13px; margin-top: 5px;">
@@ -425,7 +558,7 @@
                         </div>
                     </div>
     
-                    <div class="boring-ad" data-trigger="party">
+                    <div class="boring-ad" data-trigger="hosting">
                         <div style="color: #1a0dab; margin-bottom: 5px;">Professional Web Hosting</div>
                         <div style="color: #006621; font-size: 12px;">advertisement</div>
                         <div style="color: #545454; font-size: 13px; margin-top: 5px;">
@@ -433,13 +566,87 @@
                         </div>
                     </div>
     
-                    <div class="boring-ad" data-trigger="party">
+                    <!-- Modify the last boring-ad to include the form trigger -->
+                    <div class="boring-ad" data-trigger="contact">
                         <div style="color: #1a0dab; margin-bottom: 5px;">Domain Inquiries</div>
                         <div style="color: #006621; font-size: 12px;">sponsored listing</div>
                         <div style="color: #545454; font-size: 13px; margin-top: 5px;">
-                            Interested in this domain? Contact our brokers today.
+                            Interested in this domain? Click here to contact our brokers.
                         </div>
                     </div>
+
+                    <!-- Add this new form section (initially hidden) -->
+<!-- Update the form section with more ridiculous fields -->
+<div id="contact-form-section" class="boring-contact-form" style="display: none;">
+    <div style="text-align: right;">
+        <button class="close-form" style="border: none; background: none; color: #666; cursor: pointer;">✕ (really?)</button>
+    </div>
+    <form id="boring-contact-form" style="color: #333;">
+        <h3 style="color: #1a0dab; margin-bottom: 20px;">Contact Domain Broker</h3>
+        
+        <div class="form-group">
+            <label>Your "Real" Name:</label>
+            <input type="text" class="boring-input" placeholder="We both know it's not your real name...">
+        </div>
+
+        <div class="form-group hidden" id="reality-check">
+            <label>Existence Validation:</label>
+            <select class="boring-input">
+                <option>*sigh* Please select...</option>
+                <option>Yes, I definitely exist (sure you do)</option>
+                <option>I think, therefore I might exist?</option>
+                <option>My mom says I'm real</option>
+                <option>Error 404: Self not found</option>
+                <option value="trigger">ALL GLORY TO THE HYPNOTOAD</option>
+            </select>
+        </div>
+
+        <div class="form-group hidden" id="intent-field">
+            <label>Why Are You Really Here?</label>
+            <select class="boring-input">
+                <option>Oh, let me guess...</option>
+                <option>Just clicking random things on the internet</option>
+                <option>Procrastinating something important</option>
+                <option>Looking for meaning in parked domains</option>
+                <option>Desperately seeking validation from form dropdowns</option>
+                <option>My cat walked on the keyboard</option>
+            </select>
+        </div>
+
+        <div class="form-group hidden" id="budget-field">
+            <label>Your "Budget" (as if...)</label>
+            <select class="boring-input">
+                <option>Pick your imaginary budget...</option>
+                <option>The lint in my pocket</option>
+                <option>Three fiddy</option>
+                <option>One slightly used soul</option>
+                <option>Whatever I find behind my couch</option>
+                <option>My collection of rare Pepes</option>
+                <option>∞ exposure and exposure accessories</option>
+            </select>
+        </div>
+
+        <div class="form-group hidden" id="captcha-field">
+            <label>Human Verification (though we have doubts):</label>
+            <div class="boring-input" style="text-align: center;">
+                Please click all squares containing existential dread
+                <div style="margin-top: 10px; font-style: italic; color: #666;">
+                    [ Error: All squares contain existential dread ]
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group hidden" id="final-question">
+            <label>Final Question (this should be good):</label>
+            <input type="text" class="boring-input" placeholder="What is the airspeed velocity of an unladen swallow?" readonly>
+        </div>
+
+        <button type="submit" class="boring-submit">Submit (if you must)</button>
+        <div style="text-align: center; margin-top: 10px; font-size: 11px; color: #999;">
+            * All responses will be carefully ignored
+        </div>
+    </form>
+</div>
                 </div>
     
                 <div class="boring-footer">
@@ -457,9 +664,21 @@
                     <div style="color: white; font-size: 1.5rem; font-family: 'Comic Sans MS', cursive;">
                         ⭐️ WELCOME TO THE REAL INTERNET! ⭐️
                     </div>
-                    <div style="color: white; margin-top: 10px; font-family: monospace;">
-                        Neural Processing: PREEM | Stardate: {new Date().getFullYear() + 376}.{Math.floor(Math.random() * 9)}
+                    <div style="color: white; font-family: monospace;">
+                        Neural Processing: PREEM | Stardate: <span id="stardate"></span>
                     </div>
+                    
+                    <script>
+                        function updateStardate() {
+                            const year = new Date().getFullYear() + 376;
+                            const decimal = Math.floor(Math.random() * 9);
+                            document.getElementById('stardate').textContent = `${year}.${decimal}`;
+                        }
+                        
+                        // Update immediately and then every few seconds for fun
+                        updateStardate();
+                        setInterval(updateStardate, 5000);  // Updates every 5 seconds
+                    </script>
                 </div>
     
                 <div class="marquee-container">
@@ -614,8 +833,8 @@
                 "ENGAGING MAXIMUM OVERRIDE...",
                 "RELEASING THE KRAKEN..."
             ];
-    
-            let currentMessageIndex = 0;
+        
+            // Initialize DOM elements
             const transitionOverlay = document.querySelector('.transition-overlay');
             const loadingBar = document.querySelector('.loading-progress');
             const transitionText = document.querySelector('.transition-text');
@@ -624,17 +843,290 @@
             const boringMode = document.querySelector('.boring-mode');
             const partyMode = document.querySelector('.party-mode');
             const exitButton = document.querySelector('.emergency-exit');
-    
-            // Initialize party triggers
-            document.querySelectorAll('[data-trigger="party"]').forEach(trigger => {
-                trigger.addEventListener('click', initiatePartyMode);
+            let currentMessageIndex = 0;
+        
+            // Contact form functionality
+            document.querySelector('[data-trigger="contact"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('contact-form-section').style.display = 'block';
+                this.style.display = 'none';
             });
+        
+            document.querySelector('.close-form').addEventListener('click', function() {
+                document.getElementById('contact-form-section').style.display = 'none';
+                document.querySelector('[data-trigger="contact"]').style.display = 'block';
+            });
+        
+            // Update the form progression logic
+            document.querySelector('.boring-input').addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    document.getElementById('reality-check').classList.add('reveal');
+                    this.placeholder = "Typing... really? Okay then...";
+                }
+            });
+
+            const realitySelect = document.querySelector('#reality-check select');
+            realitySelect.addEventListener('change', function() {
+                document.getElementById('intent-field').classList.add('reveal');
+                if (this.value === 'trigger') {
+                    initiatePartyMode(event);
+                } else {
+                    document.querySelector('.boring-submit').textContent = "Submit (but why though?)";
+                }
+            });
+
+            document.querySelector('#intent-field select').addEventListener('change', function() {
+                document.getElementById('budget-field').classList.add('reveal');
+                document.querySelector('.form-title').textContent = "*heavy sigh*";
+            });
+
+            document.querySelector('#budget-field select').addEventListener('change', function() {
+                document.getElementById('captcha-field').classList.add('reveal');
+            });
+
+            document.querySelector('#captcha-field').addEventListener('click', function() {
+                document.getElementById('final-question').classList.add('reveal');
+                this.innerHTML = '<div style="color: #666;">Really? You clicked it? Wow...</div>';
+            });
+
+
+// Update form annoyances
+const swallowQuestion = document.querySelector('#final-question input');
+swallowQuestion.removeAttribute('readonly');
+
+const annoyingResponses = [
+    "African or European swallow?",
+    "Wrong... but keep trying I guess",
+    "*watches you type with disappointment*",
+    "Not even close...",
+    "Are you still trying?",
+    "That's... not what I meant",
+    "Have you considered not doing this?",
+    "*awkward silence*",
+    "Really? That's your answer?",
+    "I expected nothing and I'm still disappointed",
+    "My neural networks hurt reading this",
+    "Loading better response... ERROR",
+    "Have you tried turning yourself off and on again?",
+    "This answer violates several laws of physics",
+    "Your keyboard must be broken",
+    "*contemplates career choices*"
+];
+
+// Make the input field slightly dodge the cursor
+swallowQuestion.addEventListener('mouseover', function() {
+    const small = 3; // pixels to move
+    this.style.transform = `translate(${Math.random() * small - small/2}px, ${Math.random() * small - small/2}px)`;
+});
+
+// Annoying typing behavior
+swallowQuestion.addEventListener('input', function() {
+    const originalText = this.value;
     
+    // First, add random typos
+    setTimeout(() => {
+        const typos = ['teh', 'thE', 'halp', 'plz', 'omg', 'wat', '???'];
+        this.value = originalText + ' ' + typos[Math.floor(Math.random() * typos.length)];
+    }, 100);
+
+    // Then replace with snarky response
+    setTimeout(() => {
+        const randomResponse = annoyingResponses[Math.floor(Math.random() * annoyingResponses.length)];
+        this.value = randomResponse;
+    }, 500);
+});
+
+// Form interaction counter with increasingly exasperated messages
+let interactionCount = 0;
+const exasperatedMessages = [
+    "Still here, huh?",
+    "You must really like forms",
+    "Don't you have anything better to do?",
+    "*quietly judges your life choices*",
+    "This is getting awkward",
+    "Maybe try MySpace instead?",
+    "Have you considered knitting?",
+    "Your persistence is... concerning",
+    "ERROR: PATIENCE.EXE NOT FOUND",
+    "Are we having fun yet?",
+    "Plot twist: This isn't even a real form",
+    "Your warranty is now void",
+    "Loading better life choices...",
+    "Have you tried yoga?",
+    "This counts as cardio, right?",
+    "Achievement Unlocked: Digital Masochism",
+    "Loading existence.exe...",
+    "404: Purpose Not Found",
+    "Still processing... like your life choices"
+];
+
+document.querySelector('.boring-contact-form').addEventListener('click', function() {
+    interactionCount++;
+    const counterDiv = document.querySelector('.form-title');
+    
+    if (interactionCount > 3) {
+        const message = exasperatedMessages[Math.min(interactionCount - 4, exasperatedMessages.length - 1)];
+        counterDiv.innerHTML = `<span style="font-size: ${Math.min(100 + interactionCount, 120)}%">${message}</span>`;
+        
+        // Start making the form slightly transparent after too many interactions
+        this.style.opacity = Math.max(1 - (interactionCount - 10) * 0.01, 0.7);
+        
+        // Add random glitch effect
+        if (interactionCount > 10 && Math.random() > 0.7) {
+            this.style.transform = `skew(${Math.random() * 2 - 1}deg)`;
+            setTimeout(() => this.style.transform = 'skew(0deg)', 200);
+        }
+    }
+});
+
+// Make the submit button run away
+document.querySelector('.boring-submit').addEventListener('mouseover', function() {
+    const container = document.querySelector('.boring-contact-form');
+    const maxX = container.clientWidth - this.clientWidth;
+    const maxY = container.clientHeight - this.clientHeight;
+    
+    if (interactionCount > 5) {
+        this.style.position = 'absolute';
+        this.style.left = Math.random() * maxX + 'px';
+        this.style.top = Math.random() * maxY + 'px';
+        this.textContent = "Can't catch me!";
+    }
+});
+
+// Add random form glitches
+setInterval(() => {
+    if (interactionCount > 8 && Math.random() > 0.8) {
+        const form = document.querySelector('.boring-contact-form');
+        form.style.filter = 'hue-rotate(90deg)';
+        setTimeout(() => form.style.filter = 'none', 100);
+    }
+}, 2000);
+
+// Make placeholders increasingly passive-aggressive
+const inputs = document.querySelectorAll('.boring-input');
+inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+        const passiveAggressivePlaceholders = [
+            "Still typing...",
+            "*sigh* Go ahead...",
+            "Your persistence is remarkable",
+            "This field judges you silently",
+            "Type something... or don't",
+            "Words go here (allegedly)",
+            "Is this really necessary?",
+            "Loading patience.exe...",
+            "Error: Caring module not found"
+        ];
+        this.placeholder = passiveAggressivePlaceholders[Math.floor(Math.random() * passiveAggressivePlaceholders.length)];
+    });
+});
+            // Add a passive-aggressive counter
+            let clickCount = 0;
+            document.querySelector('.boring-contact-form').addEventListener('click', function() {
+                clickCount++;
+                if (clickCount > 5) {
+                    document.querySelector('.form-title').textContent = 
+                        `*sigh* Click ${clickCount} and counting... having fun?`;
+                }
+            });
+        
+            // Initialize party triggers
+// Premium Domains click handler
+document.querySelector('[data-trigger="domain"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    const adContent = this.querySelector('div:last-child');
+    
+    // Generate 5 random premium domains
+    let domainsHTML = `
+        <div style="text-align: left; padding: 10px; margin-top: 10px;">
+            <div style="font-weight: bold; margin-bottom: 10px;">Premium Selections:</div>
+    `;
+    
+    for(let i = 0; i < 5; i++) {
+        domainsHTML += `
+            <div style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #f8f9fa;">
+                <span>${generateDomainName()}</span>
+                <span style="color: #666;">${generatePrice()}</span>
+            </div>
+        `;
+    }
+    
+    domainsHTML += `
+        <button class="soul-button" style="width: 100%; margin-top: 10px; padding: 10px; background: #1a0dab; color: white; border: none; cursor: pointer;">
+            EXCHANGE SOUL FOR DOMAIN
+        </button>
+        <div style="font-size: 8px; text-align: center; margin-top: 5px;">
+            *No refunds, exchanges, or metaphysical returns
+        </div>
+    `;
+    
+    adContent.innerHTML = domainsHTML;
+
+    // Add click handler for the soul button
+    const soulButton = adContent.querySelector('.soul-button');
+    soulButton.addEventListener('click', initiatePartyMode);
+});
+
+// Web Hosting click handler
+document.querySelector('[data-trigger="hosting"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    const adContent = this.querySelector('div:last-child');
+    
+    const plansHTML = `
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+            <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                <div style="font-weight: bold;">BASIC REALITY</div>
+                <div style="font-size: 24px; margin: 10px 0;">$9.99/æon</div>
+                <ul style="text-align: left; font-size: 12px;">
+                    <li>1x Quantum Core</li>
+                    <li>2 Parallel Universes</li>
+                    <li>Basic Duck Support</li>
+                </ul>
+                <button class="plan-button" data-plan="basic">SELECT DIMENSION</button>
+            </div>
+            <div style="border: 1px solid #ddd; padding: 10px; text-align: center; background: #f8f9fa;">
+                <div style="font-weight: bold;">HYPNOTOAD SPECIAL</div>
+                <div style="font-size: 24px; margin: 10px 0;">ALL GLORY</div>
+                <ul style="text-align: left; font-size: 12px;">
+                    <li>∞ Processing Power</li>
+                    <li>ALL THE CLOUDS</li>
+                    <li>24/7 Toad Support</li>
+                </ul>
+                <button class="plan-button" data-plan="hypno">ALL GLORY TO THE HYPNOTOAD</button>
+            </div>
+            <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                <div style="font-weight: bold;">ENTERPRISE</div>
+                <div style="font-size: 24px; margin: 10px 0;">$∞/void</div>
+                <ul style="text-align: left; font-size: 12px;">
+                    <li>Time Travel Backups</li>
+                    <li>Quantum Hamsters</li>
+                    <li>Existential Support</li>
+                </ul>
+                <button class="plan-button" data-plan="enterprise">TRANSCEND REALITY</button>
+            </div>
+        </div>
+    `;
+    
+    adContent.innerHTML = plansHTML;
+
+    // Add click handlers for the plan buttons
+    adContent.querySelectorAll('.plan-button').forEach(button => {
+        button.addEventListener('click', function() {
+            if(this.dataset.plan === 'hypno') {
+                initiatePartyMode(e);
+            } else {
+                this.textContent = "ERROR: NOT WORTHY";
+                this.style.backgroundColor = "#ff4444";
+            }
+        });
+    });
+});
+        
             function updateLoadingMessage() {
                 transitionText.textContent = loadingMessages[currentMessageIndex];
                 currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
             }
-    
+        
             function initiatePartyMode(e) {
                 e.preventDefault();
                 transitionOverlay.classList.add('active');
@@ -654,7 +1146,7 @@
                     }
                 }, 50);
             }
-    
+        
             function activatePartyMode() {
                 transitionOverlay.classList.remove('active');
                 body.classList.add('party-active');
@@ -667,8 +1159,13 @@
                 document.querySelectorAll('.party-ad').forEach(ad => {
                     ad.style.animation = 'pulse 2s infinite';
                 });
+        
+                // Update stardate if it exists
+                if (document.getElementById('stardate')) {
+                    updateStardate();
+                }
             }
-    
+        
             // Emergency exit functionality
             exitButton.addEventListener('click', () => {
                 body.classList.remove('party-active');
@@ -677,14 +1174,14 @@
                 partyMode.classList.remove('active');
                 exitButton.classList.remove('active');
             });
-    
+        
             // Boss key - press 'Escape' to instantly return to boring mode
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     exitButton.click();
                 }
             });
-    
+        
             // Easter egg hovering effects
             document.querySelectorAll('[data-easter-egg]').forEach(element => {
                 const originalText = element.innerHTML;
@@ -695,6 +1192,129 @@
                     element.innerHTML = originalText;
                 });
             });
+        
+            // Stardate functionality
+            function updateStardate() {
+                const year = new Date().getFullYear() + 376;
+                const decimal = Math.floor(Math.random() * 9);
+                document.getElementById('stardate').textContent = `${year}.${decimal}`;
+            }
+            
+            // Update stardate if element exists
+            if (document.getElementById('stardate')) {
+                updateStardate();
+                setInterval(updateStardate, 5000);
+            }
+
+            // Function to generate ridiculous domain names
+function generateDomainName() {
+    const prefixes = ['quantum', 'cyber', 'meta', 'hyper', 'neural', 'crypto', 'web3', 'ai', 'blockchain', 'synth'];
+    const suffixes = ['verse', 'chain', 'mind', 'flux', 'sync', 'net', 'grid', 'space', 'node', 'core'];
+    const tlds = ['.io', '.ai', '.eth', '.web4', '.meta', '.quantum', '.reality'];
+    
+    return prefixes[Math.floor(Math.random() * prefixes.length)] + 
+           suffixes[Math.floor(Math.random() * suffixes.length)] +
+           tlds[Math.floor(Math.random() * tlds.length)];
+}
+
+// Function to generate ridiculous prices
+function generatePrice() {
+    const currencies = ['BTC', 'Souls', 'Dogecoin', 'Human Years', 'Memes', 'Brain Cells'];
+    const amount = Math.floor(Math.random() * 9999) + 1000;
+    return `${amount.toLocaleString()} ${currencies[Math.floor(Math.random() * currencies.length)]}`;
+}
+
+// Update Premium Domains ad click handler
+document.querySelector('[data-trigger="party"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    const adContent = this.querySelector('div:last-child');
+    
+    // Generate 5 random premium domains
+    let domainsHTML = `
+        <div style="text-align: left; padding: 10px; margin-top: 10px;">
+        <div style="font-weight: bold; margin-bottom: 10px;">Premium Selections:</div>
+    `;
+    
+    for(let i = 0; i < 5; i++) {
+        domainsHTML += `
+            <div style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #f8f9fa;">
+                <span>${generateDomainName()}</span>
+                <span style="color: #666;">${generatePrice()}</span>
+            </div>
+        `;
+    }
+    
+    domainsHTML += `
+        <button class="soul-button" style="width: 100%; margin-top: 10px; padding: 10px; background: #1a0dab; color: white; border: none; cursor: pointer;">
+            EXCHANGE SOUL FOR DOMAIN
+        </button>
+        <div style="font-size: 8px; text-align: center; margin-top: 5px;">
+            *No refunds, exchanges, or metaphysical returns
+        </div>
+    `;
+    
+    adContent.innerHTML = domainsHTML;
+
+    // Add click handler for the soul button
+    const soulButton = adContent.querySelector('.soul-button');
+    soulButton.addEventListener('click', initiatePartyMode);
+});
+
+// Update Web Hosting ad
+document.querySelector('[data-trigger="party"]:nth-child(2)').addEventListener('click', function(e) {
+    e.preventDefault();
+    const adContent = this.querySelector('div:last-child');
+    
+    const plansHTML = `
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+            <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                <div style="font-weight: bold;">BASIC REALITY</div>
+                <div style="font-size: 24px; margin: 10px 0;">$9.99/æon</div>
+                <ul style="text-align: left; font-size: 12px;">
+                    <li>1x Quantum Core</li>
+                    <li>2 Parallel Universes</li>
+                    <li>Basic Duck Support</li>
+                </ul>
+                <button class="plan-button" data-plan="basic">SELECT DIMENSION</button>
+            </div>
+            <div style="border: 1px solid #ddd; padding: 10px; text-align: center; background: #f8f9fa;">
+                <div style="font-weight: bold;">HYPNOTOAD SPECIAL</div>
+                <div style="font-size: 24px; margin: 10px 0;">ALL GLORY</div>
+                <ul style="text-align: left; font-size: 12px;">
+                    <li>∞ Processing Power</li>
+                    <li>ALL THE CLOUDS</li>
+                    <li>24/7 Toad Support</li>
+                </ul>
+                <button class="plan-button" data-plan="hypno">ALL GLORY TO THE HYPNOTOAD</button>
+            </div>
+            <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                <div style="font-weight: bold;">ENTERPRISE</div>
+                <div style="font-size: 24px; margin: 10px 0;">$∞/void</div>
+                <ul style="text-align: left; font-size: 12px;">
+                    <li>Time Travel Backups</li>
+                    <li>Quantum Hamsters</li>
+                    <li>Existential Support</li>
+                </ul>
+                <button class="plan-button" data-plan="enterprise">TRANSCEND REALITY</button>
+            </div>
+        </div>
+    `;
+    
+    adContent.innerHTML = plansHTML;
+
+    // Add click handlers for the plan buttons
+    adContent.querySelectorAll('.plan-button').forEach(button => {
+        button.addEventListener('click', function() {
+            if(this.dataset.plan === 'hypno') {
+                initiatePartyMode(e);
+            } else {
+                this.textContent = "ERROR: NOT WORTHY";
+                this.style.backgroundColor = "#ff4444";
+            }
+        });
+    });
+});
+
         </script>
     </body>
     </html>
