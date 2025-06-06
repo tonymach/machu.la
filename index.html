@@ -667,18 +667,6 @@
                     <div style="color: white; font-family: monospace;">
                         Neural Processing: PREEM | Stardate: <span id="stardate"></span>
                     </div>
-                    
-                    <script>
-                        function updateStardate() {
-                            const year = new Date().getFullYear() + 376;
-                            const decimal = Math.floor(Math.random() * 9);
-                            document.getElementById('stardate').textContent = `${year}.${decimal}`;
-                        }
-                        
-                        // Update immediately and then every few seconds for fun
-                        updateStardate();
-                        setInterval(updateStardate, 5000);  // Updates every 5 seconds
-                    </script>
                 </div>
     
                 <div class="marquee-container">
@@ -798,9 +786,9 @@
                         ⚡️ POWERED BY THALAMIC RELAY & MILITECH TECH! ⚡️
                     </div>
                     <div style="margin-top: 1rem;">
-                        <img src="/api/placeholder/88/31" alt="Made with GeoCities" title="The dancing baby lives!" class="counter-img" />
-                        <img src="/api/placeholder/88/31" alt="ICQ Us!" title="Uh oh!" class="counter-img" />
-                        <img src="/api/placeholder/88/31" alt="Webring Member" title="What goes around comes around" class="counter-img" />
+                        <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23000'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%230f0' font-family='monospace' font-size='8'%3EGeoCities%3C/text%3E%3C/svg%3E" alt="Made with GeoCities" title="The dancing baby lives!" class="counter-img" />
+                        <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23ff0'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='monospace' font-size='10'%3EICQ: 12345%3C/text%3E%3C/svg%3E" alt="ICQ Us!" title="Uh oh!" class="counter-img" />
+                        <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23f0f'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='monospace' font-size='9'%3EWebring%3C/text%3E%3C/svg%3E" alt="Webring Member" title="What goes around comes around" class="counter-img" />
                     </div>
                     <div style="margin-top: 1rem; animation: pulse 2s infinite;">
                         ♥️ GOOD NEWS EVERYONE! NO TRIBBLES OR CYBERPSYCHOS DETECTED! ♥️
@@ -878,7 +866,7 @@
         
             document.querySelector('#intent-field select').addEventListener('change', function() {
                 document.getElementById('budget-field').classList.add('reveal');
-                document.querySelector('.form-title').textContent = "*heavy sigh*";
+                document.querySelector('.verification-title').textContent = "*heavy sigh*";
             });
         
             document.querySelector('#budget-field select').addEventListener('change', function() {
@@ -895,6 +883,12 @@
                 transitionText.textContent = loadingMessages[currentMessageIndex];
                 currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
             }
+
+            const boringForm = document.getElementById('boring-contact-form');
+            boringForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                initiatePartyMode(e);
+            });
         
             function initiatePartyMode(e) {
                 if (e) e.preventDefault();
@@ -1183,267 +1177,384 @@
 
 
             // Web Hosting click handler
-// Replace the hosting click handler with this chaos-enhanced version
-document.querySelector('[data-trigger="hosting"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    const adContent = this.querySelector('div:last-child');
-    
-    const plansHTML = `
-        <div style="text-align: center; margin-bottom: 15px; font-family: monospace; color: #1a0dab;">
-            <div class="quantum-scanner" style="font-size: 1.2em; margin-bottom: 5px;">SCANNING AVAILABLE REALITIES...</div>
-            <div style="font-size: 0.8em;" class="quantum-status">QUANTUM STABILITY: 98.3%</div>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
-            <div class="hosting-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center; transition: all 0.3s ease;">
-                <div style="font-weight: bold;" class="plan-title">BASIC REALITY</div>
-                <div class="price-display" style="font-size: 24px; margin: 10px 0; transition: all 0.3s ease;">$9.99/æon*</div>
-                <ul style="text-align: left; font-size: 12px;" class="feature-list">
-                    <li>1x Quantum Core</li>
-                    <li>2 Parallel Universes</li>
-                    <li>Basic Duck Support</li>
-                    <li>Limited Existential Crisis</li>
-                    <li>Weekly Reality Backups**</li>
-                </ul>
-                <button class="plan-button" data-plan="basic">SELECT DIMENSION</button>
-                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
-                    * Time dilation may affect pricing
-                    ** Reality not guaranteed
-                </div>
-            </div>
-            <div class="hosting-plan hypno-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center; background: #f8f9fa; position: relative; overflow: hidden;">
-                <div class="hypno-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-                     background: radial-gradient(circle, rgba(255,255,255,0) 30%, rgba(0,255,0,0.1) 70%);
-                     pointer-events: none; opacity: 0; transition: opacity 0.3s ease;"></div>
-                <div style="font-weight: bold;">HYPNOTOAD SPECIAL</div>
-                <div class="price-display" style="font-size: 24px; margin: 10px 0;">ALL GLORY</div>
-                <ul style="text-align: left; font-size: 12px;">
-                    <li>∞ Processing Power</li>
-                    <li>ALL THE CLOUDS</li>
-                    <li>24/7 Toad Support</li>
-                    <li>Reality Bending Included</li>
-                    <li>Free Mind Control</li>
-                </ul>
-                <button class="plan-button hypno-button" data-plan="hypno">ALL GLORY TO THE HYPNOTOAD</button>
-                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
-                    ALL HAIL HYPNOTOAD
-                </div>
-            </div>
-            <div class="hosting-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center;">
-                <div style="font-weight: bold;">ENTERPRISE</div>
-                <div class="price-display" style="font-size: 24px; margin: 10px 0;">$∞/void***</div>
-                <ul style="text-align: left; font-size: 12px;" class="feature-list">
-                    <li>Time Travel Backups</li>
-                    <li>Quantum Hamsters</li>
-                    <li>Existential Support</li>
-                    <li>Void Insurance</li>
-                    <li>Reality as a Service</li>
-                </ul>
-                <button class="plan-button" data-plan="enterprise">TRANSCEND REALITY</button>
-                <div class="fine-print" style="font-size: 6px; margin-top: 5px;">
-                    *** Void where prohibited (everywhere is void)
-                </div>
-            </div>
-        </div>
-    `;
-    
-    adContent.innerHTML = plansHTML;
-
-    // Quantum scanner effect
-    const quantumScanner = adContent.querySelector('.quantum-scanner');
-    const quantumStatus = adContent.querySelector('.quantum-status');
-    setInterval(() => {
-        const messages = [
-            "SCANNING AVAILABLE REALITIES...",
-            "CALCULATING ENTROPY LEVELS...",
-            "SEARCHING PARALLEL DIMENSIONS...",
-            "MEASURING QUANTUM COHERENCE...",
-            "ALIGNING TACHYON BEAMS...",
-            "CONSULTING THE VOID...",
-            "RETICULATING SPLINES...",
-            "SYNCHRONIZING TIMELINES...",
-        ];
-        quantumScanner.textContent = messages[Math.floor(Math.random() * messages.length)];
-        
-        // Random quantum stability
-        const stability = (85 + Math.random() * 15).toFixed(1);
-        quantumStatus.textContent = `QUANTUM STABILITY: ${stability}%`;
-        quantumStatus.style.color = stability < 90 ? '#ff4444' : '#1a0dab';
-    }, 2000);
-
-    // Hypno plan effects
-    const hypnoPlan = adContent.querySelector('.hypno-plan');
-    const hypnoOverlay = adContent.querySelector('.hypno-overlay');
-    const hypnoButton = adContent.querySelector('.hypno-button');
-    
-    hypnoPlan.addEventListener('mouseover', function() {
-        hypnoOverlay.style.opacity = '1';
-        this.style.transform = 'scale(1.02)';
-        
-        // Create hypnotic background effect
-        this.style.background = 'conic-gradient(from 0deg, #4ADE80, #60A5FA, #4ADE80)';
-        this.style.animation = 'spin 2s linear infinite';
-        
-        // Add glowing effect to the hypno button
-        hypnoButton.style.textShadow = '0 0 10px rgba(0,255,0,0.5)';
-        
-        // Add CSS animation for spinning
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes spin {
-                from { background-rotation: 0deg; }
-                to { background-rotation: 360deg; }
-            }
-        `;
-        document.head.appendChild(style);
-    });
-
-    hypnoPlan.addEventListener('mouseout', function() {
-        hypnoOverlay.style.opacity = '0';
-        this.style.transform = 'scale(1)';
-        this.style.background = '#f8f9fa';
-        this.style.animation = 'none';
-        hypnoButton.style.textShadow = 'none';
-    });
-
-    // Make prices do crazy things
-    const priceDisplays = adContent.querySelectorAll('.price-display');
-    setInterval(() => {
-        priceDisplays.forEach(price => {
-            if(!price.textContent.includes('GLORY')) {
-                const currencies = ['BTC', 'DOGE', 'SOULS', '🌟', '💫', '🌈', '🚀'];
-                const amounts = ['∞', '9999', '404', '42', '13.37', '0xDEADBEEF'];
-                const symbols = ['$', '€', '£', '¥', '₿', '◈', '✧'];
-                const timeUnits = ['æon', 'epoch', 'eon', 'cycle', 'quantum', 'void'];
+            document.querySelector('[data-trigger="hosting"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                const adContent = this.querySelector('div:last-child');
                 
-                const newPrice = `${symbols[Math.floor(Math.random() * symbols.length)]}${
-                    amounts[Math.floor(Math.random() * amounts.length)]} ${
-                    currencies[Math.floor(Math.random() * currencies.length)]}/${
-                    timeUnits[Math.floor(Math.random() * timeUnits.length)]}`;
-                
-                price.textContent = newPrice;
-                price.style.transform = 'scale(1.1)';
-                price.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-                setTimeout(() => {
-                    price.style.transform = 'scale(1)';
-                    price.style.color = '';
-                }, 200);
-            }
-        });
-    }, 1500);
+                // Keep track of user's choices to generate customized chaos
+                let userProfile = {
+                    expertise: '',
+                    location: '',
+                    budget: '',
+                    existentialLevel: 0,
+                    chaosPreference: 0
+                };
 
-    // Feature list chaos
-    const featureLists = adContent.querySelectorAll('.feature-list');
-    setInterval(() => {
-        featureLists.forEach(list => {
-            if(Math.random() > 0.8) {
-                const features = [
-                    "Schrödinger's Backup™",
-                    "Quantum Coffee Maker v2.0",
-                    "Recursive Dreams API",
-                    "Time Loop Protection++",
-                    "Void Insurance (VOID WHERE VOID)",
-                    "Reality Debugging Suite",
-                    "Entropy Reduction Service",
-                    "Paradox Support 24/7",
-                    "Quantum Entangled Storage",
-                    "Neural Network Massages",
-                    "Blockchain of Consciousness",
-                    "Web 5.0 Beta Access",
-                    "Metaverse VIP Lounge",
-                    "AI Therapy Sessions",
-                    "Digital Zen Garden",
-                    "Cyber Meditation Pod"
-                ];
-                
-                const li = document.createElement('li');
-                li.textContent = features[Math.floor(Math.random() * features.length)];
-                li.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-                li.style.textShadow = '0 0 5px rgba(255,255,255,0.5)';
-                list.appendChild(li);
-                
-                // Make it glitch before removing
-                setTimeout(() => {
-                    li.style.transform = 'glitch 0.2s infinite';
-                    li.style.opacity = '0.5';
-                }, 2500);
-                setTimeout(() => list.removeChild(li), 3000);
-            }
-        });
-    }, 2000);
+                const plansHTML = `
+                    <div style="padding: 20px;">
+                        <div class="hosting-verification" style="margin-bottom: 20px; text-align: center;">
+                            <h3 style="color: #1a0dab;" class="verification-title">Reality Hosting Assessment Protocol</h3>
+                            <div style="color: #666; font-size: 12px;">* Your choices will determine your fate</div>
+                        </div>
 
-    // Add click handlers for the plan buttons
-    adContent.querySelectorAll('.plan-button').forEach(button => {
-        let failureAttempts = 0;
-        
-        button.addEventListener('mouseover', function() {
-            if(this.dataset.plan !== 'hypno') {
-                this.style.transform = `rotate(${Math.random() * 5 - 2.5}deg)`;
-                
-                // Add glitch effect
-                if(failureAttempts > 2) {
-                    this.style.animation = 'glitch 0.3s infinite';
-                    setTimeout(() => this.style.animation = '', 300);
-                }
-            } else {
-                // Hypno button gets special effects
-                this.style.animation = 'rainbow 1s linear infinite';
-                this.style.transform = 'scale(1.1)';
-            }
-        });
+                        <div class="verification-step" id="step1">
+                            <label>Technical Expertise Level:</label>
+                            <select class="hosting-input" data-type="expertise" style="width: 100%; padding: 8px; margin: 5px 0;">
+                                <option value="">Select your level of delusion...</option>
+                                <option value="noob">I once pressed F12 and felt like a hacker</option>
+                                <option value="css">I can center a div (sometimes)</option>
+                                <option value="stackoverflow">Stack Overflow is my homepage</option>
+                                <option value="wordcoder">I write HTML in Microsoft Word</option>
+                                <option value="trigger">ALL GLORY TO THE HYPNOTOAD</option>
+                            </select>
+                            <div class="error-message" style="color: #ff4444; font-size: 12px; display: none;">
+                                Error: Your imposter syndrome is showing
+                            </div>
+                        </div>
 
-        button.addEventListener('mouseout', function() {
-            this.style.transform = 'none';
-            if(this.dataset.plan === 'hypno') {
-                this.style.animation = 'none';
-                this.style.transform = 'scale(1)';
-            }
-        });
+                        <div class="hosting-plans hidden" style="margin-top: 20px;">
+                            <!-- Plans will be dynamically injected here -->
+                        </div>
 
-        button.addEventListener('click', function(e) {
-            if(this.dataset.plan === 'hypno') {
-                // Special hypno effects before party mode
-                this.style.animation = 'spin 0.5s linear infinite';
-                this.textContent = 'INITIALIZING HYPNOSIS.EXE';
-                setTimeout(() => {
-                    initiatePartyMode(e);
-                }, 1000);
-            } else {
-                failureAttempts++;
-                this.textContent = getRandomErrorMessage();
-                this.style.backgroundColor = "#ff4444";
+                        <div class="hosting-progress" style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+                            Calculating your reality quotient... (0/∞)
+                        </div>
+                    </div>
+                `;
                 
-                // Make the whole plan shake
-                const plan = this.closest('.hosting-plan');
-                plan.style.animation = 'shake 0.5s';
-                setTimeout(() => plan.style.animation = '', 500);
-                
-                // Make other buttons judge you
-                adContent.querySelectorAll('.plan-button').forEach(otherButton => {
-                    if(otherButton !== this) {
-                        otherButton.textContent = getRandomJudgement();
+                adContent.innerHTML = plansHTML;
+
+                // Plan variations based on user choices
+                const planVariations = {
+                    noob: {
+                        basic: {
+                            title: "TRAINING WHEELS REALITY",
+                            price: "$4.99/confusion",
+                            features: [
+                                "1x Tutorial Mode",
+                                "Stack Overflow Premium",
+                                "Panic Button Support",
+                                "Auto-save (60% of the time)",
+                                "Undo Life Choices"
+                            ]
+                        },
+                        hypno: {
+                            title: "HYPNOTOAD BEGINNER PACK",
+                            price: "GLORY IN TRAINING",
+                            features: [
+                                "Baby's First Hypnosis",
+                                "Mind Control Training Wheels",
+                                "24/7 Toad Mentoring",
+                                "Reality Bending 101",
+                                "Free 'How to Obey' Guide"
+                            ]
+                        },
+                        enterprise: {
+                            title: "FAKE IT TILL YOU MAKE IT",
+                            price: "$∞/imposter",
+                            features: [
+                                "Corporate Buzzword Generator",
+                                "Automatic Jargon Insertion",
+                                "Meeting Simulator",
+                                "LinkedIn Auto-Bragger",
+                                "Confidence Synthesizer"
+                            ]
+                        }
+                    },
+                    css: {
+                        basic: {
+                            title: "FLEXBOX NIGHTMARE",
+                            price: "margin: auto;",
+                            features: [
+                                "!important Priority Support",
+                                "Z-index: 999999",
+                                "Position: relative;",
+                                "Display: none; (when needed)",
+                                "Emergency CSS Reset"
+                            ]
+                        },
+                        hypno: {
+                            title: "HYPNOTOAD CSS FRAMEWORK",
+                            price: "ALL GLORY TO THE GRID",
+                            features: [
+                                "Transform: reality(180deg)",
+                                "Transition: mind ease-in 2s",
+                                "Animation: obey infinite",
+                                "Filter: consciousness(0%)",
+                                "Overflow: transcendent"
+                            ]
+                        },
+                        enterprise: {
+                            title: "ENTERPRISE CSS SOLUTION",
+                            price: "float: none;",
+                            features: [
+                                "Legacy IE Support",
+                                "Table-based Layouts",
+                                "Infinite Specificity",
+                                "!important Everything",
+                                "Bootstrap 2.0"
+                            ]
+                        }
+                    },
+                    stackoverflow: {
+                        basic: {
+                            title: "COPY-PASTE STARTER PACK",
+                            price: "15 rep/month",
+                            features: [
+                                "Auto-Copy Best Answer",
+                                "Duplicate Question Finder",
+                                "Comment Downvoter Pro",
+                                "RTFM Autoresponder",
+                                "Actually Marked as Answer"
+                            ]
+                        },
+                        hypno: {
+                            title: "HYPNOTOAD OVERFLOW",
+                            price: "ALL GLORY TO THE ALGORITHM",
+                            features: [
+                                "Infinite Reputation Points",
+                                "Auto-Close Questions",
+                                "Mind Control Comments",
+                                "Reality-Bending Answers",
+                                "Quantum Copy-Paste"
+                            ]
+                        },
+                        enterprise: {
+                            title: "ENTERPRISE OVERFLOW",
+                            price: "Closed as Duplicate",
+                            features: [
+                                "Legacy Code Generator",
+                                "Technical Debt Maximizer",
+                                "Meeting Scheduler Pro",
+                                "Buzzword Compiler",
+                                "Agile Waterfall Hybrid"
+                            ]
+                        }
                     }
-                });
-            }
-        });
-    });
-});
+                };
 
-// Add some extra judgmental messages
-function getRandomJudgement() {
-    const messages = [
-        "ಠ_ಠ",
-        "(╯°□°）╯︵ ┻━┻",
-        "bruh...",
-        "really???",
-        "（￣へ￣）",
-        "*facepalm*",
-        "noob alert!",
-        "¯\\_(ツ)_/¯",
-        "404: wisdom not found",
-        "Sir... pls...",
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
-}
+                let planUpdateInterval;
+                let annoyanceLevel = 0;
+                const progressBar = adContent.querySelector('.hosting-progress');
+                const plansContainer = adContent.querySelector('.hosting-plans');
+
+                function updatePlans(expertiseLevel) {
+                    if (expertiseLevel === 'trigger') {
+                        initiatePartyMode(e);
+                        return;
+                    }
+
+                    const plans = planVariations[expertiseLevel];
+                    if (!plans) return;
+
+                    let plansHTML = `
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    `;
+
+                    ['basic', 'hypno', 'enterprise'].forEach(planType => {
+                        const plan = plans[planType];
+                        plansHTML += `
+                            <div class="hosting-plan ${planType}-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center; position: relative; overflow: hidden;">
+                                <div class="plan-glitch-overlay"></div>
+                                <div class="plan-title" style="font-weight: bold;">${plan.title}</div>
+                                <div class="price-display" style="font-size: 24px; margin: 10px 0;">${plan.price}</div>
+                                <ul class="feature-list" style="text-align: left; font-size: 12px;">
+                                    ${plan.features.map(feature => `<li>${feature}</li>`).join('')}
+                                </ul>
+                                <button class="plan-button" data-plan="${planType}">${getPlanButtonText(planType)}</button>
+                            </div>
+                        `;
+                    });
+
+                    plansHTML += '</div>';
+                    plansContainer.innerHTML = plansHTML;
+                    plansContainer.classList.remove('hidden');
+
+                    // Add chaotic effects
+                    initializeChaosEffects();
+                }
+
+                function getPlanButtonText(planType) {
+                    switch(planType) {
+                        case 'hypno': return 'ALL GLORY TO THE HYPNOTOAD';
+                        case 'basic': return 'EMBRACE MEDIOCRITY';
+                        case 'enterprise': return 'MORTGAGE YOUR SOUL';
+                        default: return 'SELECT PLAN';
+                    }
+                }
+
+                function initializeChaosEffects() {
+                    // Make prices fluctuate
+                    const priceDisplays = plansContainer.querySelectorAll('.price-display');
+                    if (planUpdateInterval) clearInterval(planUpdateInterval);
+                    
+                    planUpdateInterval = setInterval(() => {
+                        priceDisplays.forEach(price => {
+                            if (!price.textContent.includes('GLORY')) {
+                                const currencies = ['$', '€', '₿', '◈', '✧', '❂', '⟠'];
+                                const amounts = ['∞', '404', '42', '13.37', '0xDEAD', '8008135'];
+                                const units = ['void', 'eternity', 'chaos', 'dimension', 'reality'];
+                                
+                                if (Math.random() > 0.7) {
+                                    price.textContent = `${currencies[Math.floor(Math.random() * currencies.length)]}${
+                                        amounts[Math.floor(Math.random() * amounts.length)]}/${
+                                        units[Math.floor(Math.random() * units.length)]}`;
+                                    
+                                    price.style.transform = 'scale(1.1)';
+                                    price.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+                                    setTimeout(() => {
+                                        price.style.transform = 'scale(1)';
+                                        price.style.color = '';
+                                    }, 200);
+                                }
+                            }
+                        });
+                    }, 2000);
+
+                    // Add event listeners to plan buttons
+                    const buttons = plansContainer.querySelectorAll('.plan-button');
+                    buttons.forEach(button => {
+                        if (button.dataset.plan === 'hypno') {
+                            button.addEventListener('click', (e) => initiatePartyMode(e));
+                        } else {
+                            let clickCount = 0;
+                            button.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                clickCount++;
+                                
+                                if (clickCount > 2) {
+                                    this.style.position = 'absolute';
+                                    const container = this.closest('.hosting-plan');
+                                    const maxX = container.clientWidth - this.clientWidth;
+                                    const maxY = container.clientHeight - this.clientHeight;
+                                    this.style.left = `${Math.random() * maxX}px`;
+                                    this.style.top = `${Math.random() * maxY}px`;
+                                }
+
+                                this.textContent = getRandomErrorMessage(clickCount);
+                                this.style.backgroundColor = "#ff4444";
+                                
+                                // Make other buttons judge
+                                buttons.forEach(otherButton => {
+                                    if (otherButton !== this) {
+                                        otherButton.textContent = getRandomJudgement();
+                                        otherButton.style.transform = 'rotate(${Math.random() * 5 - 2.5}deg)';
+                                    }
+                                });
+                            });
+
+                            // Make buttons dodge on hover after a few clicks
+                            button.addEventListener('mouseover', function() {
+                                if (clickCount > 1) {
+                                    this.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px) rotate(${Math.random() * 10 - 5}deg)`;
+                                }
+                            });
+                        }
+                    });
+
+                    // Add glitch effects to plan cards
+                    const plans = plansContainer.querySelectorAll('.hosting-plan');
+                    plans.forEach(plan => {
+                        plan.addEventListener('mouseover', function() {
+                            if (this.classList.contains('hypno-plan')) {
+                                this.style.animation = 'rainbow 1s linear infinite';
+                            } else {
+                                if (Math.random() > 0.7) {
+                                    this.style.animation = 'glitch 0.3s infinite';
+                                    setTimeout(() => this.style.animation = '', 300);
+                                }
+                            }
+                        });
+                    });
+                }
+
+                // Update feature lists with random chaos
+                function addRandomFeature(list) {
+                    const features = [
+                        "Quantum Coffee Break Generator",
+                        "Recursive Procrastination Engine",
+                        "Stack Overflow Auto-Copier",
+                        "Reality Validation Failed",
+                        "Time Loop Detection System",
+                        "Existential Crisis Manager",
+                        "Void Warranty (void where void)",
+                        "Schrödinger's Backup System",
+                        "HTTP 418 I'm a Teapot Support",
+                        "Neural Network Massage Therapy"
+                    ];
+                    
+                    const li = document.createElement('li');
+                    li.textContent = features[Math.floor(Math.random() * features.length)];
+                    li.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+                    list.appendChild(li);
+                    
+                    setTimeout(() => {
+                        li.style.animation = 'glitch 0.2s infinite';
+                        li.style.opacity = '0.5';
+                        setTimeout(() => list.removeChild(li), 500);
+                    }, 2500);
+                }
+
+                // Event listener for expertise selection
+                adContent.querySelector('[data-type="expertise"]').addEventListener('change', function() {
+                    const expertiseLevel = this.value;
+                    userProfile.expertise = expertiseLevel;
+                    updatePlans(expertiseLevel);
+                    
+                    // Start random feature addition
+                    setInterval(() => {
+                        const featureLists = plansContainer.querySelectorAll('.feature-list');
+                        featureLists.forEach(list => {
+                            if (Math.random() > 0.8) {
+                                addRandomFeature(list);
+                            }
+                        });
+                    }, 3000);
+                });
+            });
+
+            // Extra helper functions for chaos
+            function getRandomErrorMessage(clickCount) {
+                const messages = [
+                    "ERROR: NOT WORTHY",
+                    "INSUFFICIENT CHAOS",
+                    "REALITY.EXE FAILED",
+                    "TRY AGAIN NEVER",
+                    "VOID REJECTION",
+                    "QUANTUM DENIAL",
+                    "ACCESS UNLIKELY",
+                    "EXISTENCE ERROR",
+                    "*disappointed sigh*",
+                    "TASK FAILED SUCCESSFULLY",
+                    "ERROR 418: I'M A TEAPOT",
+                    "REALITY NOT FOUND",
+                    "DNS_PROBE_REALITY_FAILED",
+                    "500 INTERNAL BRAIN ERROR",
+                    "404 WISDOM NOT FOUND"
+                ];
+                return messages[Math.min(clickCount, messages.length - 1)];
+            }
+
+            function getRandomJudgement() {
+                const judgements = [
+                    "ಠ_ಠ",
+                    "bruh...",
+                    "*sigh*",
+                    "really???",
+                    "wow...",
+                    "n00b",
+                    "¯\\_(ツ)_/¯",
+                    "(╯°□°）╯︵ ┻━┻",
+                    "404: wisdom not found",
+                    "*facepalm*",
+                    "（￣へ￣）",
+                    "(；一_一)",
+                    "( ≧Д≦)",
+                    "(╯°□°）╯︵ ┻━┻",
+                    "┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻"
+                ];
+                return judgements[Math.floor(Math.random() * judgements.length)];
+            }
 
 // Add some extra keyframe animations
 const style = document.createElement('style');
@@ -1464,6 +1575,13 @@ style.textContent = `
     @keyframes rainbow {
         0% { filter: hue-rotate(0deg); }
         100% { filter: hue-rotate(360deg); }
+    }
+    .blink {
+        animation: blink 1s step-start infinite;
+    }
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        50.01%, 100% { opacity: 0; }
     }
 `;
 document.head.appendChild(style);
