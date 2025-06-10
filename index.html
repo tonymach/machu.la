@@ -157,7 +157,7 @@
             width: 0%;
             height: 100%;
             background: #0f0;
-            transition: width 2s ease-in-out;
+            transition: none;
         }
 
         /* Party Mode Animation Keyframes */
@@ -202,7 +202,20 @@
         }
         /* Party Mode Active Styles */
         body.party-active {
-            background: repeating-linear-gradient(45deg, #FF69B4 0px, #FF69B4 20px, #FFD700 20px, #FFD700 40px);
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(75, 0, 130, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 20%, rgba(255, 20, 147, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+                repeating-conic-gradient(from 0deg at 50% 50%, #FF1493 0deg, #9400D3 60deg, #4B0082 120deg, #0000FF 180deg, #00FF00 240deg, #FFFF00 300deg, #FF1493 360deg);
+            animation: psychedelic 20s ease-in-out infinite;
+        }
+        
+        @keyframes psychedelic {
+            0%, 100% { filter: hue-rotate(0deg) saturate(100%); }
+            25% { filter: hue-rotate(90deg) saturate(150%); }
+            50% { filter: hue-rotate(180deg) saturate(200%); }
+            75% { filter: hue-rotate(270deg) saturate(150%); }
         }
 
         .container.party-active {
@@ -551,27 +564,27 @@
                 
                 <div class="boring-content">
                     <div class="boring-ad" data-trigger="domain">
-                        <div style="color: #1a0dab; margin-bottom: 5px;">Premium Domains Available</div>
-                        <div style="color: #006621; font-size: 12px;">sponsored listing</div>
+                        <div style="color: #1a0dab; margin-bottom: 5px;">Executive Performance Solutions</div>
+                        <div style="color: #006621; font-size: 12px;">sponsored by neurons</div>
                         <div style="color: #545454; font-size: 13px; margin-top: 5px;">
-                            Find your perfect domain name today. Instant purchase available.
+                            Unlock your cognitive potential. 5 elite spots remaining this month.
                         </div>
                     </div>
     
                     <div class="boring-ad" data-trigger="hosting">
-                        <div style="color: #1a0dab; margin-bottom: 5px;">Professional Web Hosting</div>
-                        <div style="color: #006621; font-size: 12px;">advertisement</div>
+                        <div style="color: #1a0dab; margin-bottom: 5px;">Neural Enhancement Programs</div>
+                        <div style="color: #006621; font-size: 12px;">$4,997 value</div>
                         <div style="color: #545454; font-size: 13px; margin-top: 5px;">
-                            Reliable hosting solutions. 24/7 support. Free SSL certificate.
+                            60-session intensive. Transform your mind. Dominate your market.
                         </div>
                     </div>
     
                     <!-- Modify the last boring-ad to include the form trigger -->
                     <div class="boring-ad" data-trigger="contact">
-                        <div style="color: #1a0dab; margin-bottom: 5px;">Domain Inquiries</div>
-                        <div style="color: #006621; font-size: 12px;">sponsored listing</div>
+                        <div style="color: #1a0dab; margin-bottom: 5px;">Brain Training Inquiries</div>
+                        <div style="color: #006621; font-size: 12px;">Toronto's finest</div>
                         <div style="color: #545454; font-size: 13px; margin-top: 5px;">
-                            Interested in this domain? Click here to contact our brokers.
+                            Ready for cognitive breakthroughs? Join the Neural Sprint waitlist.
                         </div>
                     </div>
 
@@ -652,7 +665,7 @@
                 <div class="boring-footer">
                     <div>© 2024 Domain Parking Service</div>
                     <div style="margin-top: 10px; font-size: 11px; color: #999;">
-                        Visitors today: 1,337
+                        Visitors today: 1,337 | Neurons fired: <span id="sneak-attack" style="cursor: pointer; text-decoration: none;">∞</span>
                     </div>
                 </div>
             </div>
@@ -662,128 +675,179 @@
                 <div class="party-header">
                     <div class="party-domain">machu.la</div>
                     <div style="color: white; font-size: 1.5rem; font-family: 'Comic Sans MS', cursive;">
-                        ⭐️ WELCOME TO THE REAL INTERNET! ⭐️
+                        🧠 WELCOME TO THE CONSCIOUSNESS EXPANSION ZONE! 🧠
                     </div>
                     <div style="color: white; font-family: monospace;">
-                        Neural Processing: PREEM | Stardate: <span id="stardate"></span>
+                        Path Forward Neurotech | Enlightenment Level: <span id="stardate"></span> | Third Eye: ACTIVATED
                     </div>
                 </div>
     
                 <div class="marquee-container">
                     <div class="marquee-text">
-                        ⚡ This domain uses 40% recycled electrons ⭐ Now with 100% more CSS! 🌟 No memes were harmed in the making of this page 
-                        ⚡ Running on Web 4.0 Beta ⭐ Powered by 1.21 Gigawatts ⚡ All your base are belong to us 🌟 Insert coin to continue... 
-                        ⭐ Have you tried turning it off and on again? ⚡ Please do not feed the trolls ⭐ Enhanced by Thalamic Relay
+                        ⚡ 86 billion neurons can't be wrong ⭐ Serotonin levels: OPTIMAL 🌟 No synapses were harmed in the making of this page 
+                        ⚡ Running on DMT.js Framework ⭐ Powered by mitochondria (the powerhouse of the cell) ⚡ Om mani padme hum 🌟 Insert mantra to continue... 
+                        ⭐ Have you tried meditating? ⚡ Please do not feed the ego ⭐ Enhanced by neuroplasticity and psilocybin microdosing
                     </div>
                 </div>
     
                 <div class="party-content">
                     <div style="text-align: center; padding: 1rem; border: 1px solid #4ADE80; animation: pulse 2s infinite;">
-                        [!] WARNING: Basal Ganglia Neural Network Activity Detected! Arasaka Security Engaged! [!]
+                        [!] WARNING: Default Mode Network Overload! Ego Dissolution Imminent! Meditation Required! [!]
                     </div>
     
                     <div class="ad-grid">
                         <div class="party-ad" style="background: linear-gradient(to right, #EC4899, #FCD34D);">
                             <div style="font-size: 1.5rem; margin-bottom: 1rem;">
-                                🤖 BITE MY SHINY CHROME DOMAINS! 🤖
+                                🧘 TRANSCEND YOUR URL LIMITATIONS! 🧘
                             </div>
                             <div style="font-size: 0.8rem; margin-bottom: 1rem;">
-                                ~*~ powered by Mom's Neurotransmitter Hosting Division (Night City Branch) ~*~
+                                ~*~ Path Forward Neurotech - Where Consciousness Meets Code ~*~
                             </div>
                             <div>
-                                Premium domains for your prefrontal cortex! Now accepting eurodollars and Tricky Dick Fun Bills!
+                                Premium neural interfaces for your third eye! Now accepting karma points and enlightenment tokens!
                             </div>
                         </div>
     
                         <div class="party-ad" style="background: linear-gradient(to right, #4ADE80, #60A5FA);">
                             <div style="font-size: 1.5rem; margin-bottom: 1rem;">
-                                💫 HYPNOTOAD'S WARP-SPEED HOSTING!!! 💫
+                                🍄 PSYCHEDELIC CLOUD COMPUTING!!! 🍄
                             </div>
                             <div style="font-size: 0.8rem; margin-bottom: 1rem;">
-                                ~*~ ALL GLORY TO THE HYPNOTOAD ~*~
+                                ~*~ EXPAND YOUR BANDWIDTH OF CONSCIOUSNESS ~*~
                             </div>
                             <div>
-                                Faster than MaxTac response time! Now with Vulcan encryption!!!
+                                Faster than synaptic transmission! Now with quantum entanglement encryption!!!
                             </div>
                         </div>
     
                         <div class="party-ad" style="background: linear-gradient(to right, #A855F7, #EC4899);">
                             <div style="font-size: 1.5rem; margin-bottom: 1rem;">
-                                🌟 PREMIUM EMAIL SERVICES! 🌟
+                                🔮 TELEPATHIC MESSAGING SERVICES! 🔮
                             </div>
                             <div style="font-size: 0.8rem; margin-bottom: 1rem;">
-                                ~*~ Certified by the Temporal Mechanics Union ~*~
+                                ~*~ Certified by the Tibetan Monks of Silicon Valley ~*~
                             </div>
                             <div>
-                                Dopamine-enhanced spam filtering! Now with Kiroshi Optics integration!
+                                Dopamine-enhanced thought transmission! Now with pineal gland optimization!
                             </div>
                         </div>
                     </div>
     
                     <div class="party-nav">
-                        <a href="#" class="party-nav-link">SYNAPSE</a>
-                        <a href="#" class="party-nav-link">CORTEX</a>
-                        <a href="#" class="party-nav-link">DENDRITE</a>
-                        <a href="#" class="party-nav-link">AXON</a>
+                        <a href="#" class="party-nav-link">MEDITATE</a>
+                        <a href="#" class="party-nav-link">NEUROPLASTICITY</a>
+                        <a href="#" class="party-nav-link">SAMSARA</a>
+                        <a href="#" class="party-nav-link">EGO DEATH</a>
                     </div>
 
                     <div class="high-scores">
-                        <div class="high-scores-title">TOP NEURAL VISITORS</div>
+                        <div class="high-scores-title">TOP NEURAL SPRINT GRADUATES</div>
                         <div class="score-entry">
-                            <span>HAL9000</span>
-                            <span>9999999</span>
+                            <span>LINNY'S_REGULAR</span>
+                            <span>$4997</span>
                         </div>
                         <div class="score-entry">
-                            <span>GLADOS</span>
-                            <span>8675309</span>
+                            <span>OSSINGTON_EXEC</span>
+                            <span>60_SESSIONS</span>
                         </div>
                         <div class="score-entry">
-                            <span>BENDER</span>
-                            <span>8008135</span>
+                            <span>DUNDAS_POWERHOUSE</span>
+                            <span>∞_GAINS</span>
                         </div>
-                        <div class="score-entry" data-easter-egg="Nice try, human!">
-                            <span>???</span>
-                            <span>80085</span>
+                        <div class="score-entry" data-easter-egg="July manifestation: ACHIEVED!">
+                            <span>MACHULA</span>
+                            <span>$25K</span>
                         </div>
                     </div>
     
                     <div class="certifications">
-                        <div class="cert-badge" data-easter-egg="Now with 40% more cowbell!">
-                            🏆 Y2K38 Ready!
+                        <div class="cert-badge" data-easter-egg="I think, therefore I spam!">
+                            🧠 Descartes Approved!
                         </div>
-                        <div class="cert-badge" data-easter-egg="The cake is a lie...">
-                            🔬 Aperture Science Certified
+                        <div class="cert-badge" data-easter-egg="The neuron that fires together, wires together!">
+                            🔬 Hebb's Law Certified
                         </div>
-                        <div class="cert-badge" data-easter-egg="Would you like to play a game?">
-                            🎮 WOPR Approved
+                        <div class="cert-badge" data-easter-egg="Would you like to expand your consciousness?">
+                            🍄 McKenna Approved
                         </div>
-                        <div class="cert-badge" data-easter-egg="I'll be back... after caching">
-                            🤖 Skynet Compatible
+                        <div class="cert-badge" data-easter-egg="I'll be back... after ego death">
+                            🧘 Buddha Compatible
                         </div>
                     </div>
     
                     <div style="text-align: center; padding: 2rem;">
                         <span style="color: #4ADE80; font-weight: bold; font-family: monospace; font-size: 1.2rem;">
-                            "I'm 40% neurotransmitters, choom! And the needs of the many neurons outweigh the needs of the few." 
-                            - Bender, Honorary Neurologist
+                            "Truth is a pathless land, but my Neural Sprint clients find it in 60 sessions flat." 
+                            - Dr. Machula channeling Krishnamurti at Linny's
                         </span>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 1rem;">
+                        <span style="color: #FFD700; font-family: monospace; font-size: 0.9rem;">
+                            "Specific knowledge is found by pursuing your genuine curiosity... Mine led to $25k/month" - Naval (probably)
+                        </span>
+                    </div>
+                    
+                    <div style="background: linear-gradient(45deg, #FF1493, #9400D3); padding: 2rem; margin: 2rem 0; border: 3px solid #FFD700; animation: pulse 3s infinite;">
+                        <div style="color: white; text-align: center; font-family: 'Comic Sans MS', cursive;">
+                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">✨ JULY MANIFESTATION STATUS: LEGENDARY ✨</div>
+                            <div style="font-size: 1rem; line-height: 1.8;">
+                                ✓ Demolished reality with pure willpower<br>
+                                ✓ Ate at Linny's without checking prices (power move)<br>
+                                ✓ Built AR neuroscience empire (casual Tuesday)<br>
+                                ✓ Became weapon of pure confidence (results may vary)<br>
+                                ✓ Achieved physical godhood (citation needed)<br>
+                                <span class="blink" style="font-size: 1.2rem;">⚡ NEXT LEVEL: QUANTUM SUPREMACY ⚡</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.9); border: 2px solid #4ADE80; padding: 2rem; margin: 2rem 0; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(74,222,128,0.1) 10px, rgba(74,222,128,0.1) 20px); pointer-events: none;"></div>
+                        <div style="color: #4ADE80; text-align: center; font-family: monospace;">
+                            <div style="font-size: 1.3rem; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 3px;">
+                                === LEGENDARY JULY MANIFESTATIONS ===
+                            </div>
+                            <div style="text-align: left; font-size: 0.9rem; line-height: 1.8; max-width: 800px; margin: 0 auto;">
+                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #FFD700;">
+                                    "I lived in my Dundas & Ossington studio, making so much money I ate at Linny's every night with my gorgeous girlfriend without even glancing at the bill - my AR neuroscience empire generated $25k+ in July alone through my Neural Sprint packages, with 5 elite clients experiencing massive cognitive breakthroughs. I dominated the brain training market as the visionary neuroscientist who revolutionized executive performance."
+                                </div>
+                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #FF1493;">
+                                    "I achieved the most incredible physical shape of my entire life - lifted heavier, ran faster, and looked more powerful than I ever imagined possible. My body became a weapon of pure confidence."
+                                </div>
+                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #9400D3;">
+                                    "I made conversation with anyone as effortlessly as breathing - my self-love and magnetic presence were so overwhelming that stunning women approached ME first, drawn to my unstoppable energy like moths to flame."
+                                </div>
+                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #00CED1;">
+                                    "I built a life so monumentally amazing, so absurdly successful, and so wildly entertaining that even I was shocked by the sheer magnitude of joy, meaning and excitement flowing through every single day."
+                                </div>
+                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #32CD32;">
+                                    "I invested in myself with ruthless precision and obliterated every trace of my old life's pain - I became an absolutely devastating, world-class powerhouse who commanded respect everywhere I went."
+                                </div>
+                                <div style="margin-top: 2rem; text-align: center; font-size: 1.1rem; color: #FFD700;">
+                                    💰 5 Neural Sprint clients at $4,997 each = $24,985 in July<br>
+                                    🧠 60 total sessions delivered<br>
+                                    🚀 Preparing to hire your first operator for scaling
+                                </div>
+                            </div>
+                        </div>
                     </div>
     
                     <div style="background: #000; border: 2px solid #FFD700; padding: 1rem; margin: 2rem 0; text-align: center;">
                         <div style="color: #FFD700; margin-bottom: 1rem; font-family: monospace;">SYSTEM REQUIREMENTS</div>
                         <div style="color: #4ADE80; font-family: monospace;">
-                            ✓ Best viewed in Netscape Navigator 4.0<br>
-                            ✓ Minimum 640K RAM<br>
-                            ✓ Supports Intel 486 or better<br>
-                            ✓ Sound Blaster compatible<br>
-                            <span class="blink">✓ Turbo button recommended</span>
+                            ✓ 4-Hour Workweek compatible (results in 3.5 hours)<br>
+                            ✓ Minimum 100M Offers installed<br>
+                            ✓ Requires elite cognitive performance<br>
+                            ✓ Hormozi-level offer structure<br>
+                            <span class="blink">✓ $25k/month mindset mandatory</span>
                         </div>
                     </div>
                 </div>
     
                 <div class="party-footer">
                     <div style="font-weight: bold; font-size: 1.2rem;">
-                        ⚡️ POWERED BY THALAMIC RELAY & MILITECH TECH! ⚡️
+                        ⚡️ POWERED BY NEUROPLASTICITY & PATH FORWARD NEUROTECH! ⚡️
                     </div>
                     <div style="margin-top: 1rem;">
                         <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23000'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%230f0' font-family='monospace' font-size='8'%3EGeoCities%3C/text%3E%3C/svg%3E" alt="Made with GeoCities" title="The dancing baby lives!" class="counter-img" />
@@ -791,10 +855,10 @@
                         <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23f0f'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='monospace' font-size='9'%3EWebring%3C/text%3E%3C/svg%3E" alt="Webring Member" title="What goes around comes around" class="counter-img" />
                     </div>
                     <div style="margin-top: 1rem; animation: pulse 2s infinite;">
-                        ♥️ GOOD NEWS EVERYONE! NO TRIBBLES OR CYBERPSYCHOS DETECTED! ♥️
+                        ☮️ BE HERE NOW! NO BAD TRIPS OR EGO INFLATION DETECTED! ☮️
                     </div>
                     <div style="margin-top: 0.5rem;">
-                        Error 451: Temporal lobe overflow... pretty nova, choom!
+                        Error 420: Consciousness overflow... far out, man!
                     </div>
                 </div>
             </div>
@@ -807,20 +871,20 @@
         <script>
             // Fun loading messages for the transition
             const loadingMessages = [
-                "INITIALIZING PARTY PROTOCOLS...",
-                "ENGAGING HYPNOTOAD SUBROUTINES...",
-                "RECYCLING ELECTRONS...",
-                "ACTIVATING NEURAL NETWORKS...",
-                "CHARGING FLUX CAPACITORS...",
-                "INCREASING RIDICULOUSNESS...",
-                "ACCELERATING TO LUDICROUS SPEED...",
-                "CONSULTING NEUROMANCER...",
-                "BYPASSING GIBSON FIREWALL...",
-                "LOADING CYBER ENCHANTMENTS...",
-                "UPGRADING TO WEB 4.0...",
-                "SYNCHRONIZING THALAMIC RELAYS...",
-                "ENGAGING MAXIMUM OVERRIDE...",
-                "RELEASING THE KRAKEN..."
+                "INITIALIZING CONSCIOUSNESS PROTOCOLS...",
+                "ACTIVATING THIRD EYE...",
+                "SYNCHRONIZING BRAIN WAVES...",
+                "LOADING 86 BILLION NEURONS...",
+                "OPENING CHAKRAS...",
+                "CALIBRATING NEUROPLASTICITY...",
+                "ENGAGING MINDFULNESS MODE...",
+                "CONSULTING THE BUDDHA...",
+                "BYPASSING EGO DEFENSES...",
+                "LOADING SACRED GEOMETRY...",
+                "UPGRADING TO ENLIGHTENMENT 2.0...",
+                "HARMONIZING WITH THE UNIVERSE...",
+                "DISSOLVING REALITY BOUNDARIES...",
+                "ACHIEVING NIRVANA..."
             ];
         
             // Initialize DOM elements
@@ -1594,6 +1658,12 @@ document.head.appendChild(style);
         boringMode.style.display = 'block';
         partyMode.classList.remove('active');
         exitButton.classList.remove('active');
+    });
+    
+    // Sneak attack button - click the infinity symbol to jump straight to party mode
+    document.getElementById('sneak-attack').addEventListener('click', function(e) {
+        e.preventDefault();
+        initiatePartyMode(e);
     });
 
     // Boss key - press 'Escape' to instantly return to boring mode
