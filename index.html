@@ -710,8 +710,8 @@
                 <div class="admin-section">
                     <div class="admin-label">Votes Cast</div>
                     <table class="admin-table">
-                        <thead><tr><th>Voter</th><th>Choice</th><th>When</th></tr></thead>
-                        <tbody id="admin-results-tbody"><tr><td colspan="3" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                        <thead><tr><th>Voter</th><th>Question</th><th>Choice</th><th>When</th></tr></thead>
+                        <tbody id="admin-results-tbody"><tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -1351,6 +1351,7 @@ async function loadAdminTab(tab) {
             ? '<tr><td colspan="3" style="color:#2a5a2a;font-style:italic;">No votes yet.</td></tr>'
             : data.map(v => `<tr>
                 <td>${escHtml(v.pins?.label || v.pins?.code || '?')}</td>
+                <td style="color:#3a5a3a;font-size:.7rem;">${escHtml(v.board_questions?.question || '—')}</td>
                 <td style="color:#4ADE80;">${escHtml(v.choice_text)}</td>
                 <td style="color:#2a5a2a;">${new Date(v.created_at).toLocaleString()}</td>
               </tr>`).join('');
