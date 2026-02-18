@@ -792,8 +792,8 @@
                 <div class="admin-section">
                     <div class="admin-label">All PINs</div>
                     <table class="admin-table">
-                        <thead><tr><th>Code</th><th>Label</th><th>Votes Cast</th><th>Created</th></tr></thead>
-                        <tbody id="admin-pins-tbody"><tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                        <thead><tr><th>Code</th><th>Label</th><th>Votes Cast</th><th>Created</th><th></th></tr></thead>
+                        <tbody id="admin-pins-tbody"><tr><td colspan="5" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -810,8 +810,8 @@
                     <div class="admin-label">Votes Cast</div>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
-                            <thead><tr><th>Voter</th><th>Question</th><th>Choice</th><th>Close</th><th>Expert</th><th>Reasoning</th><th>When</th></tr></thead>
-                            <tbody id="admin-results-tbody"><tr><td colspan="7" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                            <thead><tr><th>Voter</th><th>Question</th><th>Choice</th><th>Close</th><th>Expert</th><th>Reasoning</th><th>When</th><th></th></tr></thead>
+                            <tbody id="admin-results-tbody"><tr><td colspan="8" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -1515,16 +1515,18 @@ async function loadAdminTab(tab) {
                 histEl.innerHTML = allQs.map(q => {
                     const votes = q.votes?.[0]?.count ?? 0;
                     const isActive = !!q.active;
-                    return `<div class="admin-q-history-item${isActive?' active-q':''}">
+                    return `<div class="admin-q-history-item${isActive?' active-q':''}" data-qid="${q.id}">
                         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;">
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:.8rem;color:${isActive?'#4ADE80':'#a0c8a0'};line-height:1.5;margin-bottom:.25rem;">${escHtml(q.question)}</div>
                                 <div style="font-size:.63rem;color:#2a5a2a;">${votes} vote${votes!==1?'s':''} &nbsp;·&nbsp; ${new Date(q.created_at).toLocaleDateString()}</div>
                             </div>
-                            <div style="flex-shrink:0;padding-top:.1rem;">
+                            <div style="flex-shrink:0;display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end;padding-top:.1rem;">
                                 ${isActive
                                     ? '<span style="color:#4ADE80;font-size:.6rem;letter-spacing:1px;font-family:monospace;">ACTIVE</span>'
-                                    : `<button class="admin-btn" style="font-size:.62rem;padding:.25rem .6rem;" onclick="activateQuestion('${q.id}')">Set Active</button>`}
+                                    : `<button class="admin-btn" style="font-size:.62rem;padding:.25rem .5rem;" onclick="activateQuestion('${q.id}')">Activate</button>`}
+                                <button class="admin-btn" style="font-size:.62rem;padding:.25rem .5rem;" onclick="editQuestion('${q.id}')">Edit</button>
+                                <button class="admin-btn" style="font-size:.62rem;padding:.25rem .5rem;border-color:#ff4444;color:#ff8888;" onclick="deleteQuestion('${q.id}',${JSON.stringify(q.question)})">Del</button>
                             </div>
                         </div>
                     </div>`;
@@ -1535,14 +1537,18 @@ async function loadAdminTab(tab) {
         const { data } = await admin.from('pins').select('*, votes(count)').order('created_at', { ascending: false });
         const tbody = document.getElementById('admin-pins-tbody');
         tbody.innerHTML = (!data || !data.length)
-            ? '<tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">No pins yet — create one above.</td></tr>'
+            ? '<tr><td colspan="5" style="color:#2a5a2a;font-style:italic;">No pins yet — create one above.</td></tr>'
             : data.map(p => {
                 const voteCount = p.votes?.[0]?.count ?? 0;
                 return `<tr>
                 <td><code style="color:#4ADE80;">${escHtml(p.code)}</code></td>
-                <td>${escHtml(p.label||'—')}</td>
+                <td id="pin-label-${p.id}">${escHtml(p.label||'—')}</td>
                 <td><span class="admin-badge ${voteCount>0?'used':'unused'}">${voteCount} vote${voteCount!==1?'s':''}</span></td>
                 <td style="color:#2a5a2a;">${new Date(p.created_at).toLocaleDateString()}</td>
+                <td style="white-space:nowrap;">
+                    <button class="admin-btn" style="font-size:.62rem;padding:.2rem .5rem;" onclick="editPin('${p.id}',${JSON.stringify(p.label||'')})">Edit</button>
+                    <button class="admin-btn" style="font-size:.62rem;padding:.2rem .5rem;border-color:#ff4444;color:#ff8888;" onclick="deletePin('${p.id}',${JSON.stringify(p.code)})">Del</button>
+                </td>
               </tr>`;}).join('');
     } else if (tab === 'results') {
         // Load questions for filter dropdown
@@ -1586,7 +1592,7 @@ async function loadAdminTab(tab) {
         const tbody = document.getElementById('admin-results-tbody');
         const dotStr = n => n ? '●'.repeat(n) + '○'.repeat(5 - n) : '—';
         tbody.innerHTML = (!votes || !votes.length)
-            ? '<tr><td colspan="7" style="color:#2a5a2a;font-style:italic;">No votes yet.</td></tr>'
+            ? '<tr><td colspan="8" style="color:#2a5a2a;font-style:italic;">No votes yet.</td></tr>'
             : votes.map(v => `<tr>
                 <td>${escHtml(v.pins?.label || v.pins?.code || '?')}</td>
                 <td style="color:#3a5a3a;font-size:.68rem;max-width:160px;word-break:break-word;">${escHtml((v.board_questions?.question||'—').slice(0,45))}${(v.board_questions?.question||'').length>45?'…':''}</td>
@@ -1595,6 +1601,7 @@ async function loadAdminTab(tab) {
                 <td style="font-size:.68rem;letter-spacing:1px;color:#4ADE80;white-space:nowrap;">${dotStr(v.expertise)}</td>
                 <td style="color:#a0c8a0;font-size:.7rem;max-width:180px;word-break:break-word;">${v.justification ? escHtml(v.justification) : '<span style="color:#2a4a2a;">—</span>'}</td>
                 <td style="color:#2a5a2a;white-space:nowrap;">${new Date(v.created_at).toLocaleString()}</td>
+                <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteVote('${v.id}')">✕</button></td>
               </tr>`).join('');
     }
 }
@@ -1638,6 +1645,98 @@ async function activateQuestion(qid) {
     await admin.from('board_questions').update({ active: false }).neq('id', '00000000-0000-0000-0000-000000000000');
     await admin.from('board_questions').update({ active: true }).eq('id', qid);
     await loadAdminTab('question');
+}
+
+// ── Edit question inline ───────────────────────────────────────
+async function editQuestion(qid) {
+    const admin = getSbAdmin(); if (!admin) return;
+    const { data: q } = await admin.from('board_questions').select('*').eq('id', qid).single();
+    if (!q) return;
+    const item = document.querySelector(`[data-qid="${qid}"]`);
+    if (!item) return;
+    item._editOpts = JSON.parse(JSON.stringify(q.options));
+    const optsHtml = q.options.map((o, i) => `
+        <div style="display:flex;gap:.35rem;margin-bottom:.3rem;align-items:center;">
+            <span style="color:#2a5a2a;font-size:.65rem;min-width:22px;font-family:monospace;">${(o.label||o.id.toUpperCase())}</span>
+            <input class="admin-input" style="margin:0;flex:1;font-size:.78rem;" value="${escHtml(o.text)}" data-opt-idx="${i}">
+        </div>`).join('');
+    item.innerHTML = `
+        <div style="margin-bottom:.4rem;">
+            <div style="font-size:.6rem;color:#2a5a2a;letter-spacing:1px;margin-bottom:.25rem;">QUESTION</div>
+            <input class="admin-input" id="eq-text-${qid}" value="${escHtml(q.question)}" style="margin:0;">
+        </div>
+        <div style="margin-bottom:.5rem;">
+            <div style="font-size:.6rem;color:#2a5a2a;letter-spacing:1px;margin-bottom:.25rem;">OPTIONS</div>
+            ${optsHtml}
+        </div>
+        <div style="display:flex;gap:.4rem;">
+            <button class="admin-btn primary" onclick="saveQuestion('${qid}')">Save ↗</button>
+            <button class="admin-btn" style="opacity:.6;" onclick="loadAdminTab('question')">Cancel</button>
+        </div>`;
+}
+
+async function saveQuestion(qid) {
+    const admin = getSbAdmin(); if (!admin) return;
+    const item = document.querySelector(`[data-qid="${qid}"]`);
+    if (!item || !item._editOpts) return;
+    const newQ = document.getElementById(`eq-text-${qid}`)?.value.trim();
+    if (!newQ) { alert('Question text is required.'); return; }
+    const optInputs = item.querySelectorAll('[data-opt-idx]');
+    const newOpts = item._editOpts.map((o, i) => ({ ...o, text: optInputs[i]?.value.trim() || o.text }));
+    const saveBtn = item.querySelector('button');
+    if (saveBtn) { saveBtn.textContent = 'Saving...'; saveBtn.disabled = true; }
+    const { error } = await admin.from('board_questions').update({ question: newQ, options: newOpts }).eq('id', qid);
+    if (error) { alert('Error: ' + error.message); if (saveBtn) { saveBtn.textContent = 'Save ↗'; saveBtn.disabled = false; } }
+    else await loadAdminTab('question');
+}
+
+async function deleteQuestion(qid, questionText) {
+    if (!confirm(`Delete this question?\n\n"${questionText}"\n\nAll associated votes will also be removed.`)) return;
+    const admin = getSbAdmin(); if (!admin) return;
+    await admin.from('votes').delete().eq('question_id', qid);
+    const { error } = await admin.from('board_questions').delete().eq('id', qid);
+    if (error) alert('Error: ' + error.message);
+    else await loadAdminTab('question');
+}
+
+// ── Edit / delete PINs ─────────────────────────────────────────
+async function editPin(pinId, currentLabel) {
+    const cell = document.getElementById(`pin-label-${pinId}`);
+    if (!cell) return;
+    cell.innerHTML = `<input class="admin-input" id="pin-li-${pinId}" value="${escHtml(currentLabel)}" style="margin:0;width:100%;font-size:.75rem;" placeholder="Label...">`;
+    const inp = document.getElementById(`pin-li-${pinId}`);
+    inp.focus(); inp.select();
+    let saved = false;
+    async function save() {
+        if (saved) return; saved = true;
+        const newLabel = inp.value.trim() || null;
+        const admin = getSbAdmin(); if (!admin) return;
+        await admin.from('pins').update({ label: newLabel }).eq('id', pinId);
+        await loadAdminTab('pins');
+    }
+    inp.addEventListener('blur', save);
+    inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); save(); }
+        if (e.key === 'Escape') loadAdminTab('pins');
+    });
+}
+
+async function deletePin(pinId, code) {
+    if (!confirm(`Delete PIN "${code}"?\n\nThis will also remove their vote history.`)) return;
+    const admin = getSbAdmin(); if (!admin) return;
+    await admin.from('votes').delete().eq('pin_id', pinId);
+    const { error } = await admin.from('pins').delete().eq('id', pinId);
+    if (error) alert('Error: ' + error.message);
+    else await loadAdminTab('pins');
+}
+
+// ── Delete vote ────────────────────────────────────────────────
+async function deleteVote(voteId) {
+    if (!confirm('Remove this vote? This cannot be undone.')) return;
+    const admin = getSbAdmin(); if (!admin) return;
+    const { error } = await admin.from('votes').delete().eq('id', voteId);
+    if (error) alert('Error: ' + error.message);
+    else await loadAdminTab('results');
 }
 
 // ── Set new question ──────────────────────────────────────────
