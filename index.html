@@ -954,7 +954,7 @@ async function buildBoard() {
         buildVoteButtons();
     }
 
-    function unlockBoard() {
+    async function unlockBoard() {
         const pin = pinInput.value.trim();
         if (!pin) return;
         if (!useSupa) {
@@ -967,8 +967,21 @@ async function buildBoard() {
                 setTimeout(() => pinInput.classList.remove('shake'), 400);
                 pinInput.focus();
             }
-        } else {
+            return;
+        }
+        // Validate PIN against Supabase before revealing anything
+        pinSubmit.textContent = '...'; pinSubmit.disabled = true;
+        const { data: valid } = await getSb().rpc('check_pin', { p_pin_code: pin });
+        pinSubmit.textContent = 'Unlock ↗'; pinSubmit.disabled = false;
+        if (valid) {
             revealVoteUI();
+        } else {
+            pinError.textContent = '⚠ Invalid PIN';
+            pinError.classList.remove('hidden');
+            pinInput.value = '';
+            pinInput.classList.add('shake');
+            setTimeout(() => pinInput.classList.remove('shake'), 400);
+            pinInput.focus();
         }
     }
 
