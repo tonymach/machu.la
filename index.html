@@ -70,10 +70,10 @@
         .boring-ad {
             border: 1px solid #e0ddd9; padding: 18px 20px; margin: 10px 0;
             text-align: left; cursor: pointer;
-            transition: background .2s ease, border-color .2s ease, transform .15s ease;
+            transition: background .3s cubic-bezier(.16,1,.3,1), border-color .3s cubic-bezier(.16,1,.3,1), transform .3s cubic-bezier(.34,1.56,.64,1);
             position: relative; overflow: hidden; border-radius: 3px;
         }
-        .boring-ad:hover { background: #faf9f7; border-color: #b8b4af; transform: translateX(2px); }
+        .boring-ad:hover { background: #faf9f7; border-color: #b8b4af; transform: translateX(3px); }
         .ad-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #bbb; margin-bottom: 4px; }
         .ad-title { color: #1a0dab; font-size: 14px; margin-bottom: 3px; }
         .ad-url   { color: #006621; font-size: 11px; margin-bottom: 5px; }
@@ -135,7 +135,7 @@
         /* ─── ANIMATIONS ─────────────────────────── */
         @keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.65} }
-        @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeUp   { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
         @keyframes glitch   { 0%{transform:translate(0)} 20%{transform:translate(-2px,2px)} 40%{transform:translate(-2px,-2px)} 60%{transform:translate(2px,2px)} 80%{transform:translate(2px,-2px)} 100%{transform:translate(0)} }
         @keyframes rainbow  { 0%{color:red} 17%{color:orange} 34%{color:yellow} 50%{color:lime} 67%{color:cyan} 84%{color:magenta} 100%{color:red} }
         @keyframes psychedelic {
@@ -146,7 +146,7 @@
         }
 
         /* ─── PARTY MODE ─────────────────────────── */
-        .party-mode { display: none; opacity: 0; transition: opacity .6s ease; }
+        .party-mode { display: none; opacity: 0; transition: opacity .7s cubic-bezier(.16,1,.3,1); }
         .party-mode.active { display: block; opacity: 1; }
 
         body.party-active {
@@ -167,11 +167,11 @@
             background: #030303;
         }
 
-        .party-mode.active .party-header   { animation: fadeUp .5s ease both; }
-        .party-mode.active .board-section  { animation: fadeUp .5s .12s ease both; }
-        .party-mode.active .easter-section { animation: fadeUp .5s .26s ease both; }
-        .party-mode.active .poem-section   { animation: fadeUp .5s .40s ease both; }
-        .party-mode.active .vault-hint     { animation: fadeUp .5s .54s ease both; }
+        .party-mode.active .party-header   { animation: fadeUp .8s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .board-section  { animation: fadeUp .8s .1s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .easter-section { animation: fadeUp .8s .22s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .poem-section   { animation: fadeUp .8s .35s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .vault-hint     { animation: fadeUp .8s .46s cubic-bezier(.16,1,.3,1) both; }
 
         .party-header {
             padding: 2rem 2.5rem; text-align: center;
@@ -248,8 +248,8 @@
         .board-question-card {
             background: rgba(255,215,0,.03); border: 1px solid #1e3a1a;
             border-left: 3px solid #FFD700; padding: 1.4rem 1.6rem; margin-bottom: 1.6rem;
-            opacity: 0; transform: translateY(8px);
-            transition: opacity .4s ease, transform .4s ease;
+            opacity: 0; transform: translateY(12px);
+            transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
         }
         .board-question-card.revealed { opacity: 1; transform: translateY(0); }
         .board-q-label { font-size: .62rem; letter-spacing: 2px; color: #4a6a2a; font-family: monospace; margin-bottom: .6rem; text-transform: uppercase; }
@@ -261,17 +261,17 @@
             width: 100%; display: flex; align-items: center; gap: 1rem;
             background: transparent; border: 1px solid #1a3a1a;
             padding: 1rem 1.2rem; cursor: pointer;
-            font-family: monospace; transition: background .18s ease, border-color .18s ease;
+            font-family: monospace; transition: background .3s cubic-bezier(.16,1,.3,1), border-color .3s cubic-bezier(.16,1,.3,1), transform .25s cubic-bezier(.16,1,.3,1);
             border-radius: 3px; text-align: left;
         }
-        .board-btn:hover { background: rgba(74,222,128,.04); border-color: #2a5a2a; }
-        .board-btn.selected { background: rgba(74,222,128,.07); border-color: #4ADE80; }
+        .board-btn:hover { background: rgba(74,222,128,.04); border-color: #2a5a2a; transform: translateX(2px); }
+        .board-btn.selected { background: rgba(74,222,128,.07); border-color: #4ADE80; transform: translateX(3px); }
         .board-btn-indicator {
             width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
             border: 2px solid #2a4a2a; position: relative;
-            transition: border-color .18s ease, background .18s ease;
+            transition: border-color .3s cubic-bezier(.16,1,.3,1), background .3s cubic-bezier(.34,1.56,.64,1), transform .35s cubic-bezier(.34,1.56,.64,1);
         }
-        .board-btn.selected .board-btn-indicator { border-color: #4ADE80; background: #4ADE80; }
+        .board-btn.selected .board-btn-indicator { border-color: #4ADE80; background: #4ADE80; transform: scale(1.15); }
         .board-btn.selected .board-btn-indicator::after {
             content: ''; position: absolute; inset: 3px;
             background: #030303; border-radius: 50%;
@@ -288,18 +288,21 @@
             color: #4ADE80; padding: .85rem 1.4rem;
             cursor: pointer; font-family: monospace;
             font-size: .78rem; letter-spacing: 2px; text-transform: uppercase;
-            transition: all .2s; display: none; border-radius: 3px;
-            animation: fadeUp .3s ease both;
+            display: none; border-radius: 3px;
+            opacity: 0; transform: translateY(10px);
+            pointer-events: none;
+            transition: background .25s ease, opacity .55s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1);
         }
         .board-submit-btn:hover { background: rgba(74,222,128,.1); }
-        .board-submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .board-submit-btn:disabled { opacity: .5 !important; cursor: not-allowed; }
         .board-submit-btn.visible { display: block; }
+        .board-submit-btn.animated { opacity: 1; transform: translateY(0); pointer-events: all; }
 
         /* Voted confirmation */
         .board-voted {
             text-align: center; padding: 2.5rem 1.5rem;
             border: 1px solid #1a3a1a; background: rgba(74,222,128,.03);
-            animation: fadeUp .4s ease both;
+            animation: fadeUp .7s cubic-bezier(.16,1,.3,1) both;
         }
         .board-voted-check { font-size: 1.8rem; margin-bottom: .8rem; }
         .board-voted-title { font-family: monospace; font-size: .9rem; color: #4ADE80; letter-spacing: 2px; margin-bottom: .4rem; }
@@ -345,8 +348,11 @@
         .board-meta {
             padding: .9rem 1.2rem 1rem; margin-bottom: 1rem;
             background: rgba(74,222,128,.02); border: 1px solid #1a3a1a;
-            border-top: none; animation: fadeUp .3s ease both;
+            border-top: none;
+            opacity: 0; transform: translateY(-8px);
+            transition: opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
         }
+        .board-meta.revealed { opacity: 1; transform: translateY(0); }
         .board-meta-row { margin-bottom: .85rem; }
         .board-meta-row:last-child { margin-bottom: 0; }
         .board-meta-q {
@@ -419,8 +425,14 @@
         }
 
         /* ─── ADMIN OVERLAY ─────────────────────── */
-        .admin-overlay { display:none; position:fixed; inset:0; background:rgba(0,4,20,.98); z-index:4000; overflow-y:auto; font-family:monospace; }
+        .admin-overlay {
+            display:none; position:fixed; inset:0; background:rgba(0,4,20,.98);
+            z-index:4000; overflow-y:auto; font-family:monospace;
+            opacity:0; transform:translateY(14px);
+            transition: opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1);
+        }
         .admin-overlay.active { display:block; }
+        .admin-overlay.shown  { opacity:1; transform:translateY(0); }
         .admin-container { max-width:860px; margin:0 auto; padding:1.5rem; }
         .admin-header { text-align:center; border-bottom:2px solid #4ADE80; padding-bottom:1rem; margin-bottom:1.5rem; position:relative; }
         .admin-title { font-size:1.4rem; color:#4ADE80; letter-spacing:4px; text-transform:uppercase; }
@@ -453,8 +465,14 @@
         #admin-float-btn:hover { opacity:1; background:rgba(74,222,128,.1); }
 
         /* ─── VAULT OVERLAY ─────────────────────── */
-        .vault-overlay { display:none; position:fixed; inset:0; background:rgba(2,0,0,.98); z-index:3000; overflow-y:auto; font-family:monospace; }
+        .vault-overlay {
+            display:none; position:fixed; inset:0; background:rgba(2,0,0,.98);
+            z-index:3000; overflow-y:auto; font-family:monospace;
+            opacity:0; transform:translateY(14px);
+            transition: opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1);
+        }
         .vault-overlay.active { display:block; }
+        .vault-overlay.shown  { opacity:1; transform:translateY(0); }
         .vault-container { max-width:860px; margin:0 auto; padding:1.5rem; }
         .vault-header { text-align:center; border-bottom:2px solid #ff4444; padding-bottom:1rem; margin-bottom:1.5rem; position:relative; }
         .vault-title { font-size:1.8rem; color:#ff4444; letter-spacing:5px; text-transform:uppercase; text-shadow:0 0 20px rgba(255,68,68,.5); }
@@ -655,7 +673,7 @@
                 <div id="board-vote-area" style="display:none;">
                     <div class="board-options" id="board-options"></div>
                     <!-- Voter context — revealed after selecting an option -->
-                    <div class="board-meta hidden" id="board-meta">
+                    <div class="board-meta" id="board-meta" style="display:none;">
                         <div class="board-meta-row">
                             <div class="board-meta-q">How close are you to this issue?</div>
                             <div id="board-dots-closeness"></div>
@@ -942,9 +960,10 @@ async function runBootSequence() {
 }
 
 async function initiatePartyMode() {
-    boringMode.style.transition = 'opacity .4s ease';
+    boringMode.style.transition = 'opacity .45s cubic-bezier(.4,0,1,1), transform .45s cubic-bezier(.4,0,1,1)';
     boringMode.style.opacity = '0';
-    await sleep(350);
+    boringMode.style.transform = 'scale(.97)';
+    await sleep(420);
 
     transOverlay.classList.add('active');
     await sleep(16);
@@ -961,6 +980,8 @@ function activatePartyMode() {
     body.classList.add('party-active');
     container.classList.add('party-active');
     boringMode.style.display = 'none';
+    boringMode.style.opacity = '';
+    boringMode.style.transform = '';
     partyMode.classList.add('active');
     exitButton.classList.add('active');
     updateStardate();
@@ -972,19 +993,25 @@ function activatePartyMode() {
 // EXIT
 // ================================================================
 exitButton.addEventListener('click', () => {
-    partyMode.style.transition = 'opacity .4s ease';
+    partyMode.style.transition = 'opacity .45s cubic-bezier(.4,0,1,1), transform .45s cubic-bezier(.4,0,1,1)';
     partyMode.style.opacity = '0';
+    partyMode.style.transform = 'scale(.98)';
     setTimeout(() => {
         body.classList.remove('party-active');
         container.classList.remove('party-active');
         partyMode.classList.remove('active');
         partyMode.style.opacity = '';
+        partyMode.style.transform = '';
         boringMode.style.display = 'block';
         boringMode.style.opacity = '0';
-        boringMode.style.transition = 'opacity .5s ease';
-        requestAnimationFrame(() => requestAnimationFrame(() => { boringMode.style.opacity = '1'; }));
+        boringMode.style.transform = 'scale(.97)';
+        boringMode.style.transition = 'opacity .55s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1)';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            boringMode.style.opacity = '1';
+            boringMode.style.transform = 'scale(1)';
+        }));
         exitButton.classList.remove('active');
-    }, 400);
+    }, 430);
 });
 
 // ================================================================
@@ -1062,8 +1089,8 @@ async function buildBoard() {
         const metaEl   = document.getElementById('board-meta');
         const submitEl = document.getElementById('board-submit');
         optsEl.innerHTML = '';
-        if (metaEl) metaEl.classList.add('hidden');
-        submitEl.classList.remove('visible');
+        if (metaEl) { metaEl.classList.remove('revealed'); metaEl.style.display = 'none'; }
+        submitEl.classList.remove('visible', 'animated');
 
         let selected = null, closenessVal = null, expertiseVal = null;
 
@@ -1102,8 +1129,14 @@ async function buildBoard() {
                 selected = opt.id;
                 optsEl.querySelectorAll('.board-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
-                if (metaEl) metaEl.classList.remove('hidden');
-                submitEl.classList.add('visible');
+                if (metaEl && metaEl.style.display === 'none') {
+                    metaEl.style.display = 'block';
+                    requestAnimationFrame(() => requestAnimationFrame(() => metaEl.classList.add('revealed')));
+                }
+                if (!submitEl.classList.contains('visible')) {
+                    submitEl.classList.add('visible');
+                    requestAnimationFrame(() => requestAnimationFrame(() => submitEl.classList.add('animated')));
+                }
             });
             optsEl.appendChild(btn);
         });
@@ -1318,8 +1351,8 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         const ao = document.getElementById('admin-overlay');
         const vo = document.getElementById('vault-overlay');
-        if (ao.classList.contains('active')) ao.classList.remove('active');
-        else if (vo.classList.contains('active')) vo.classList.remove('active');
+        if (ao.classList.contains('active')) closeOverlay('admin-overlay');
+        else if (vo.classList.contains('active')) closeOverlay('vault-overlay');
         else if (exitButton.classList.contains('active')) exitButton.click();
     }
 });
@@ -1407,7 +1440,7 @@ async function openVault(){
     const token=getVaultToken();
     if(!token){alert('Vault locked.\n\nVisit: machu.la/#vault-YOUR_GITHUB_TOKEN to unlock.');return;}
     const vo=document.getElementById('vault-overlay'),ce=document.getElementById('vault-content');
-    vo.classList.add('active');setVaultStatus('ESTABLISHING NEURAL LINK...','connecting');
+    openOverlay('vault-overlay');setVaultStatus('ESTABLISHING NEURAL LINK...','connecting');
     ce.innerHTML='<div class="vault-loading" style="padding:1rem;">⟳ Connecting...</div>';
     try{
         const client=new VaultMCPClient(VAULT_SSE_URL,token);
@@ -1457,8 +1490,8 @@ function renderVaultRecord(rec){
 }
 
 document.getElementById('vault-float-btn').addEventListener('click',e=>{e.preventDefault();openVault();});
-document.getElementById('vault-close').addEventListener('click',()=>document.getElementById('vault-overlay').classList.remove('active'));
-document.getElementById('vault-relock-btn').addEventListener('click',()=>{if(confirm('Clear vault token?')){localStorage.removeItem(VAULT_TOKEN_KEY);updateVaultUI();document.getElementById('vault-overlay').classList.remove('active');}});
+document.getElementById('vault-close').addEventListener('click',()=>closeOverlay('vault-overlay'));
+document.getElementById('vault-relock-btn').addEventListener('click',()=>{if(confirm('Clear vault token?')){localStorage.removeItem(VAULT_TOKEN_KEY);updateVaultUI();closeOverlay('vault-overlay');}});
 document.getElementById('vault-submit-btn').addEventListener('click',async function(){
     if(!_vaultClient){alert('Open the vault first.');return;}
     const toolName=document.getElementById('vault-tool-select').value,text=document.getElementById('vault-new-entry').value.trim();
@@ -1471,9 +1504,19 @@ document.getElementById('vault-submit-btn').addEventListener('click',async funct
 // ================================================================
 // ADMIN PANEL
 // ================================================================
+function closeOverlay(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('shown');
+    setTimeout(() => el.classList.remove('active'), 420);
+}
+function openOverlay(id) {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('shown')));
+}
+
 async function openAdmin() {
-    const overlay = document.getElementById('admin-overlay');
-    overlay.classList.add('active');
+    openOverlay('admin-overlay');
     const admin = getSbAdmin();
     document.getElementById('admin-key-gate').style.display = admin ? 'none' : 'block';
     document.getElementById('admin-main').style.display     = admin ? 'block' : 'none';
@@ -1481,7 +1524,7 @@ async function openAdmin() {
 }
 
 document.getElementById('admin-float-btn').addEventListener('click', openAdmin);
-document.getElementById('admin-close').addEventListener('click', () => document.getElementById('admin-overlay').classList.remove('active'));
+document.getElementById('admin-close').addEventListener('click', () => closeOverlay('admin-overlay'));
 
 // Tab switching
 document.querySelectorAll('.admin-tab').forEach(tab => {
