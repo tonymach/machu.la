@@ -171,7 +171,9 @@
         .party-mode.active .board-section  { animation: fadeUp .8s .1s cubic-bezier(.16,1,.3,1) both; }
         .party-mode.active .easter-section { animation: fadeUp .8s .22s cubic-bezier(.16,1,.3,1) both; }
         .party-mode.active .poem-section   { animation: fadeUp .8s .35s cubic-bezier(.16,1,.3,1) both; }
-        .party-mode.active .vault-hint     { animation: fadeUp .8s .46s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .oracle-section  { animation: fadeUp .8s .46s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .network-section { animation: fadeUp .8s .58s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .vault-hint      { animation: fadeUp .8s .70s cubic-bezier(.16,1,.3,1) both; }
 
         .party-header {
             padding: 2rem 2.5rem; text-align: center;
@@ -423,6 +425,108 @@
             .poem-zh { font-size: 1.05rem; }
             .board-options { flex-direction: column; }
         }
+
+        /* ─── ORACLE ─────────────────────────────── */
+        .oracle-section {
+            border: 1px solid #1a3a1a; border-radius: 4px;
+            padding: 1.5rem 1.8rem; margin: 0 0 .8rem;
+            background: rgba(74,222,128,.015);
+        }
+        .oracle-label {
+            font-family: monospace; font-size: .62rem; color: #4ADE80;
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: .35rem;
+        }
+        .oracle-heading {
+            font-size: .95rem; color: #c0f0c0; margin-bottom: .9rem; font-family: monospace;
+        }
+        .oracle-input-row { display: flex; gap: .6rem; align-items: stretch; }
+        .oracle-input {
+            flex: 1; background: transparent; border: 1px solid #1a3a1a; border-radius: 3px;
+            color: #a0d0a0; padding: .65rem .9rem; font-family: monospace; font-size: .82rem;
+            outline: none; transition: border-color .3s cubic-bezier(.16,1,.3,1);
+        }
+        .oracle-input:focus { border-color: #4ADE80; }
+        .oracle-input::placeholder { color: #2a4a2a; }
+        .oracle-btn {
+            background: transparent; border: 1px solid #4ADE80; color: #4ADE80;
+            padding: .65rem 1.2rem; font-family: monospace; font-size: .72rem;
+            letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; border-radius: 3px;
+            transition: background .25s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
+            white-space: nowrap;
+        }
+        .oracle-btn:hover { background: rgba(74,222,128,.1); transform: scale(1.04); }
+        .oracle-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .oracle-response {
+            margin-top: 1.1rem;
+            opacity: 0; transform: translateY(8px);
+            transition: opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
+        }
+        .oracle-response.revealed { opacity: 1; transform: translateY(0); }
+        .oracle-scanning { font-family: monospace; font-size: .7rem; color: #3a6a3a; letter-spacing: 2px; min-height: 1.4em; }
+        .oracle-scan-bar {
+            display: inline-block; width: 7px; height: .8em;
+            background: #4ADE80; margin-left: 4px; vertical-align: middle;
+            animation: cur-blink .55s step-end infinite;
+        }
+        @keyframes cur-blink { 50% { opacity: 0; } }
+        .oracle-answer {
+            font-family: monospace; font-size: .88rem; color: #d0f0d0;
+            line-height: 1.75; border-left: 2px solid #4ADE80; padding-left: .9rem;
+            margin-top: .6rem;
+            opacity: 0; transform: translateY(6px);
+            transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+        }
+        .oracle-answer.revealed { opacity: 1; transform: translateY(0); }
+
+        /* ─── NETWORK ─────────────────────────────── */
+        .network-section {
+            border: 1px solid #1a3a1a; border-radius: 4px;
+            padding: 1.5rem 1.8rem; margin: 0 0 .8rem;
+            background: rgba(74,222,128,.015);
+        }
+        .network-label {
+            font-family: monospace; font-size: .62rem; color: #4ADE80;
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: .35rem;
+        }
+        .network-heading {
+            font-size: .95rem; color: #c0f0c0; margin-bottom: .5rem; font-family: monospace;
+        }
+        .network-desc {
+            font-size: .78rem; color: #4a7a4a; margin-bottom: 1.1rem;
+            font-family: monospace; letter-spacing: .3px; line-height: 1.65;
+        }
+        .network-form-row { display: flex; gap: .6rem; margin-bottom: .6rem; flex-wrap: wrap; }
+        .network-input {
+            flex: 1; min-width: 140px; background: transparent;
+            border: 1px solid #1a3a1a; border-radius: 3px;
+            color: #a0d0a0; padding: .6rem .85rem; font-family: monospace; font-size: .78rem;
+            outline: none; transition: border-color .3s cubic-bezier(.16,1,.3,1);
+        }
+        .network-input:focus { border-color: #4ADE80; }
+        .network-input::placeholder { color: #2a4a2a; font-style: italic; }
+        .network-textarea {
+            width: 100%; background: transparent; border: 1px solid #1a3a1a; border-radius: 3px;
+            color: #a0d0a0; padding: .6rem .85rem; font-family: monospace; font-size: .78rem;
+            resize: none; height: 64px; outline: none; line-height: 1.5;
+            transition: border-color .3s cubic-bezier(.16,1,.3,1);
+        }
+        .network-textarea:focus { border-color: #4ADE80; }
+        .network-textarea::placeholder { color: #2a4a2a; font-style: italic; }
+        .network-submit-btn {
+            width: 100%; background: transparent; border: 1px solid #4ADE80; color: #4ADE80;
+            padding: .7rem 1.4rem; font-family: monospace; font-size: .75rem;
+            letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 3px;
+            margin-top: .5rem;
+            transition: background .25s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
+        }
+        .network-submit-btn:hover { background: rgba(74,222,128,.1); }
+        .network-submitted {
+            text-align: center; padding: 1.2rem 0; font-family: monospace;
+            font-size: .82rem; color: #4ADE80; letter-spacing: 1px; display: none;
+            opacity: 0; transform: translateY(8px);
+            transition: opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
+        }
+        .network-submitted.revealed { opacity: 1; transform: translateY(0); }
 
         /* ─── ADMIN OVERLAY ─────────────────────── */
         .admin-overlay {
@@ -727,6 +831,37 @@
                 </div>
             </div>
 
+            <!-- Oracle -->
+            <div class="oracle-section">
+                <div class="oracle-label">🔮 the oracle</div>
+                <div class="oracle-heading">Ask anything. Results may be accurate.</div>
+                <div class="oracle-input-row">
+                    <input type="text" class="oracle-input" id="oracle-input" placeholder="What's weighing on you..." autocomplete="off">
+                    <button class="oracle-btn" id="oracle-ask">Consult ↗</button>
+                </div>
+                <div class="oracle-response" id="oracle-response">
+                    <div class="oracle-scanning" id="oracle-scanning"></div>
+                    <div class="oracle-answer" id="oracle-answer"></div>
+                </div>
+            </div>
+
+            <!-- Network requests -->
+            <div class="network-section">
+                <div class="network-label">⚡ need something?</div>
+                <div class="network-heading">Anthony's network, open for business.</div>
+                <div class="network-desc">An intro, a resource, a second opinion — put it here. No guarantees. No timeline. But it lands directly with him.</div>
+                <div id="network-form-wrap">
+                    <div class="network-form-row">
+                        <input type="text" class="network-input" id="net-name" placeholder="Your name">
+                        <input type="email" class="network-input" id="net-email" placeholder="Email (optional)">
+                    </div>
+                    <textarea class="network-textarea" id="net-need" placeholder="What do you need?"></textarea>
+                    <textarea class="network-textarea" id="net-offer" placeholder="What could you offer in return? (optional)" style="margin-top:.5rem;height:52px;"></textarea>
+                    <button class="network-submit-btn" id="network-submit">Send it ↗</button>
+                </div>
+                <div class="network-submitted" id="network-submitted">✦ &nbsp; Received. Anthony will see this. &nbsp; ✦</div>
+            </div>
+
             <!-- Classified vault -->
             <div class="vault-hint">
                 <div class="vault-hint-title">⚠ &nbsp; C L A S S I F I E D &nbsp; ⚠</div>
@@ -757,7 +892,7 @@
     <div class="admin-container">
         <div class="admin-header">
             <div class="admin-title">⚙ Board Admin</div>
-            <div class="admin-subtitle">pins · questions · results</div>
+            <div class="admin-subtitle">pins · questions · results · network</div>
             <button id="admin-close" class="admin-close-btn">✕ CLOSE</button>
         </div>
         <div id="admin-key-gate" class="admin-key-gate">
@@ -769,6 +904,7 @@
                 <button class="admin-tab active" data-tab="question">Question</button>
                 <button class="admin-tab" data-tab="pins">PINs</button>
                 <button class="admin-tab" data-tab="results">Results</button>
+                <button class="admin-tab" data-tab="network">Network</button>
             </div>
 
             <!-- Question tab -->
@@ -830,6 +966,19 @@
                         <table class="admin-table">
                             <thead><tr><th>Voter</th><th>Question</th><th>Choice</th><th>Close</th><th>Expert</th><th>Reasoning</th><th>When</th><th></th></tr></thead>
                             <tbody id="admin-results-tbody"><tr><td colspan="8" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network tab -->
+            <div class="admin-panel" id="admin-tab-network">
+                <div class="admin-section">
+                    <div class="admin-label">Help Requests</div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead><tr><th>Name</th><th>Email</th><th>Need</th><th>Offer</th><th>When</th><th></th></tr></thead>
+                            <tbody id="admin-network-tbody"><tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -1343,6 +1492,144 @@ document.querySelector('[data-trigger="hosting"]').addEventListener('click', fun
 });
 
 // ================================================================
+// ORACLE
+// ================================================================
+const ORACLE_RESPONSES = [
+    "The obstacle is the path. Also you're probably just hungry.",
+    "You already know. You're waiting for permission you won't need.",
+    "Stop optimizing the wrong variable.",
+    "Your future self is watching this moment. They look entertained.",
+    "The version of this that actually works looks nothing like what you're picturing.",
+    "This, too, will become a good story.",
+    "You need less advice and more momentum.",
+    "Execute. Adjust. Repeat. The plan is a fiction.",
+    "The gap between knowing and doing is where most lives are lived.",
+    "The thing you keep postponing IS the work.",
+    "High ceiling, low floor. That's you.",
+    "The timing was never the problem.",
+    "You're asking the oracle but you need the mirror.",
+    "Someone who disagrees with you is more right than you'd like.",
+    "The answer you seek is already in your second-best idea.",
+    "Your intuition has been correct about this since the beginning.",
+    "This decision will matter to you for exactly 4.7 years.",
+    "You're not behind. You're a late-season pickup with championship potential.",
+    "Whatever you're building, make it weirder.",
+    "The people who matter will not need you to explain yourself.",
+    "Comfort is a symptom, not a destination.",
+    "The second wind always comes. It's just bad at timing.",
+    "Error 404: Certainty not found. Proceeding anyway is the correct response.",
+    "You have more runway than you think and less time than you're acting like.",
+    "The version of you that figures this out is already on their way.",
+    "There is no hack. There's just the thing, done with more care.",
+    "Your nervous system is not broken. It's calibrating.",
+    "One person's opinion about your life is a data point. Treat it accordingly.",
+    "Whatever room you walk into, you belong there more than you think.",
+    "Progress and peace are not in conflict. You were misinformed.",
+    "The thing that scares you slightly is probably the thing.",
+    "It's not complicated. You're just not ready to make it simple.",
+    "Everyone is figuring it out in real time. Some are just quieter about it.",
+    "The constraint you keep bumping into is actually a door.",
+    "Trust the edit. Kill the darlings. Ship it anyway.",
+    "More reps. Same compound movement. That's the whole strategy.",
+    "The question behind the question is usually more interesting.",
+    "Your standards are not the problem. Your timeline is.",
+    "The person you're being in private is building the person everyone else sees.",
+    "You will be misunderstood. Build something worth misunderstanding.",
+    "SYSTEM ALERT: Overthinking detected. Rebooting to first principles.",
+    "The oracle consulted its models and concluded: just do it, obviously.",
+    "WARNING: High concentration of unacted-upon potential detected. Source: you.",
+    "CALIBRATION COMPLETE. You're more ready than the feeling of ready.",
+    "Signal acquired. Path continues. Visibility: 50 feet. That's enough.",
+    "Kernel panic avoided. Resume operations. One step at a time.",
+    "The forest disappears. The trees remain. Your feet already know the way.",
+    "Whatever you just thought of — that one — yes.",
+    "You've been the bottleneck. You're also the only fix.",
+    "The version of this that fails is more useful than the version that waits.",
+];
+const ORACLE_SCANS = [
+    'CALIBRATING RESONANCE...','CROSS-REFERENCING REGRETS...',
+    'CONSULTING THE ANCESTORS...','RUNNING ENTROPY MODELS...',
+    'SUPPRESSING NOISE...','TRIANGULATING TRUTH...',
+    'DISSOLVING EGO INTERFERENCE...','ALIGNING PROBABILITY FIELDS...',
+];
+let _oracleUsed = [];
+function getOracleResponse() {
+    if (_oracleUsed.length >= ORACLE_RESPONSES.length) _oracleUsed = [];
+    const pool = ORACLE_RESPONSES.filter((_, i) => !_oracleUsed.includes(i));
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    _oracleUsed.push(ORACLE_RESPONSES.indexOf(pick));
+    return pick;
+}
+
+document.getElementById('oracle-ask').addEventListener('click', async () => {
+    const btn       = document.getElementById('oracle-ask');
+    const responseEl= document.getElementById('oracle-response');
+    const scanEl    = document.getElementById('oracle-scanning');
+    const answerEl  = document.getElementById('oracle-answer');
+    btn.disabled    = true;
+    // Reset
+    answerEl.classList.remove('revealed');
+    responseEl.classList.remove('revealed');
+    answerEl.textContent = '';
+    // Show container
+    requestAnimationFrame(() => requestAnimationFrame(() => responseEl.classList.add('revealed')));
+    // Scan loop
+    let si = 0;
+    const scanTick = setInterval(() => {
+        scanEl.innerHTML = ORACLE_SCANS[si % ORACLE_SCANS.length] + '<span class="oracle-scan-bar"></span>';
+        si++;
+    }, 310);
+    await new Promise(r => setTimeout(r, 2500));
+    clearInterval(scanTick);
+    scanEl.innerHTML = '';
+    // Reveal answer
+    answerEl.textContent = getOracleResponse();
+    requestAnimationFrame(() => requestAnimationFrame(() => answerEl.classList.add('revealed')));
+    btn.disabled = false;
+});
+document.getElementById('oracle-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('oracle-ask').click();
+});
+
+// ================================================================
+// NETWORK REQUESTS
+// NOTE: Create this table in Supabase:
+//   CREATE TABLE network_requests (
+//     id uuid default gen_random_uuid() primary key,
+//     name text, email text, need text not null, offer text,
+//     created_at timestamptz default now()
+//   );
+//   ALTER TABLE network_requests ENABLE ROW LEVEL SECURITY;
+//   CREATE POLICY "anyone can insert" ON network_requests FOR INSERT WITH CHECK (true);
+//   CREATE POLICY "service role reads" ON network_requests FOR SELECT USING (auth.role() = 'service_role');
+//   CREATE POLICY "service role deletes" ON network_requests FOR DELETE USING (auth.role() = 'service_role');
+// ================================================================
+document.getElementById('network-submit').addEventListener('click', async () => {
+    const need  = document.getElementById('net-need').value.trim();
+    if (!need) { document.getElementById('net-need').focus(); return; }
+    const btn   = document.getElementById('network-submit');
+    const name  = document.getElementById('net-name').value.trim();
+    const email = document.getElementById('net-email').value.trim();
+    const offer = document.getElementById('net-offer').value.trim();
+    btn.disabled = true; btn.textContent = 'Sending...';
+    const sb = getSb();
+    if (sb) {
+        const { error } = await sb.from('network_requests').insert({
+            name: name || null, email: email || null, need, offer: offer || null
+        });
+        if (error) {
+            btn.disabled = false; btn.textContent = 'Send it ↗';
+            alert('Something went sideways. Try again?');
+            return;
+        }
+    }
+    document.getElementById('network-form-wrap').style.display = 'none';
+    const submitted = document.getElementById('network-submitted');
+    submitted.style.display = 'block';
+    requestAnimationFrame(() => requestAnimationFrame(() => submitted.classList.add('revealed')));
+});
+
+// ================================================================
 // MISC
 // ================================================================
 document.getElementById('sneak-attack').addEventListener('click', initiatePartyMode);
@@ -1646,7 +1933,29 @@ async function loadAdminTab(tab) {
                 <td style="color:#2a5a2a;white-space:nowrap;">${new Date(v.created_at).toLocaleString()}</td>
                 <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteVote('${v.id}')">✕</button></td>
               </tr>`).join('');
+    } else if (tab === 'network') {
+        const { data: reqs } = await admin.from('network_requests').select('*').order('created_at', { ascending: false });
+        const tbody = document.getElementById('admin-network-tbody');
+        if (!reqs?.length) {
+            tbody.innerHTML = '<tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">No requests yet.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = reqs.map(r => `<tr>
+            <td>${escHtml(r.name||'—')}</td>
+            <td style="font-size:.72rem;">${escHtml(r.email||'—')}</td>
+            <td style="max-width:200px;word-break:break-word;">${escHtml(r.need||'—')}</td>
+            <td style="max-width:160px;word-break:break-word;color:#4a7a4a;">${escHtml(r.offer||'—')}</td>
+            <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
+            <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteRequest('${r.id}')">✕</button></td>
+        </tr>`).join('');
     }
+}
+
+async function deleteRequest(id) {
+    const admin = getSbAdmin(); if (!admin) return;
+    if (!confirm('Delete this request?')) return;
+    await admin.from('network_requests').delete().eq('id', id);
+    await loadAdminTab('network');
 }
 
 // ── Pie chart renderer ────────────────────────────────────────
