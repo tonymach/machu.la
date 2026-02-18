@@ -3,1700 +3,1432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>machu.la - Parked Domain</title>
+    <title>machu.la</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Default "Boring" Styles */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            background: #f8f9fa;
+            background: #f0ede8;
             min-height: 100vh;
-            transition: all 0.8s ease-in-out;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            transition: background 0.8s ease;
         }
 
         .container {
-            width: 90%;
-            max-width: 800px;
+            width: 90%; max-width: 720px;
             margin: 0 auto;
             background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: all 0.8s ease-in-out;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
+            transition: max-width 0.8s cubic-bezier(.16,1,.3,1),
+                        border 0.5s ease,
+                        box-shadow 0.7s ease,
+                        background 0.5s ease;
         }
 
-        /* Boring Mode Styles */
-        .boring-mode {
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
+        /* ─── BORING MODE ─────────────────────────── */
+        .boring-mode { position: relative; overflow: hidden; transition: opacity .4s ease; }
+
+        .boring-shimmer {
+            position: absolute; top: 0; left: 0;
+            width: 45%; height: 100%;
+            background: linear-gradient(
+                108deg,
+                transparent 30%,
+                rgba(255, 215, 0, 0.07) 50%,
+                rgba(255, 215, 0, 0.04) 56%,
+                transparent 70%
+            );
+            transform: translateX(-220%);
+            animation: card-sheen 14s ease-in-out infinite;
+            pointer-events: none; z-index: 10;
+        }
+        @keyframes card-sheen {
+            0%, 74%  { transform: translateX(-220%); }
+            86%      { transform: translateX(420%);  }
+            100%     { transform: translateX(420%);  }
         }
 
         .boring-header {
-            padding: 30px;
+            padding: 28px 30px 22px;
             text-align: center;
             border-bottom: 1px solid #eee;
-            position: relative;
+            background: white;
         }
+        .boring-domain { font-size: 22px; color: #222; margin-bottom: 6px; letter-spacing: -0.5px; }
+        .boring-tagline { color: #888; font-size: 13px; }
 
-        .boring-domain {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .boring-content {
-            padding: 30px;
-        }
+        .boring-content { padding: 24px 28px 10px; }
 
         .boring-ad {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin: 10px 0;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid #e0ddd9; padding: 18px 20px; margin: 10px 0;
+            text-align: left; cursor: pointer;
+            transition: background .2s ease, border-color .2s ease, transform .15s ease;
+            position: relative; overflow: hidden; border-radius: 3px;
         }
+        .boring-ad:hover { background: #faf9f7; border-color: #b8b4af; transform: translateX(2px); }
+        .ad-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #bbb; margin-bottom: 4px; }
+        .ad-title { color: #1a0dab; font-size: 14px; margin-bottom: 3px; }
+        .ad-url   { color: #006621; font-size: 11px; margin-bottom: 5px; }
+        .ad-body  { color: #4a4a4a; font-size: 13px; line-height: 1.5; }
 
-        .boring-ad::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent 0%,
-                rgba(255,255,255,0.1) 50%,
-                transparent 100%
-            );
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .boring-ad:hover::after {
-            opacity: 1;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
-        }
+        .boring-divider { border: none; border-top: 1px dashed #e5e2de; margin: 16px 0; }
 
         .boring-footer {
-            text-align: center;
-            padding: 20px;
-            border-top: 1px solid #eee;
-            color: #666;
-            font-size: 12px;
+            text-align: center; padding: 16px 20px 18px;
+            border-top: 1px solid #eee; color: #aaa; font-size: 11px;
+            background: #faf9f7;
         }
 
-        /* Transition Overlay */
+        .boring-contact-form {
+            border: 1px solid #e0ddd9; border-radius: 3px;
+            padding: 20px; margin: 12px 0; background: white;
+        }
+        .boring-input {
+            width: 100%; padding: 8px 10px; margin: 5px 0 14px;
+            border: 1px solid #ddd; border-radius: 3px; font-size: 13px;
+        }
+        .boring-submit {
+            background: #1a73e8; color: white; border: none;
+            padding: 9px 18px; border-radius: 3px; cursor: pointer; font-size: 13px;
+        }
+        .form-group { margin-bottom: 12px; font-size: 13px; color: #444; }
+        .hidden { display: none !important; }
+        .reveal { display: block !important; }
+
+        /* ─── TRANSITION ─────────────────────────── */
         .transition-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: black;
-            z-index: 1000;
-            color: #0f0;
-            font-family: monospace;
-            font-size: 20px;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .transition-overlay.active {
-            display: flex;
+            display: none; position: fixed; inset: 0;
+            background: #000; z-index: 10000;
+            font-family: monospace; padding: 2rem;
+            opacity: 0; transition: opacity .6s ease;
+            justify-content: center; align-items: center;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 1;
         }
+        .transition-overlay.active  { display: flex; }
+        .transition-overlay.visible { opacity: 1; }
 
-        .transition-text {
-            margin: 10px 0;
-            text-align: center;
+        .boot-log { width: min(500px, 90vw); }
+        .boot-line {
+            font-size: .8rem; color: #0f0; padding: .15rem 0;
+            opacity: 0; transform: translateY(4px);
+            transition: opacity .2s ease, transform .2s ease;
         }
+        .boot-line.show  { opacity: 1; transform: translateY(0); }
+        .boot-line.dim   { color: #2a6e2a; }
+        .boot-line.warn  { color: #FFD700; }
+        .boot-line.done  { color: #4ADE80; }
+        .boot-bar-wrap {
+            width: min(500px, 90vw); margin-top: 1.4rem;
+            background: #050505; border: 1px solid #1a3a1a; height: 2px; overflow: hidden;
+        }
+        .boot-bar { height: 100%; width: 0%; background: #0f0; box-shadow: 0 0 6px #0f0; }
+        .boot-pct { margin-top: .5rem; font-size: .65rem; color: #2a6e2a; letter-spacing: 2px; min-height: 1rem; }
 
-        @keyframes typewriter {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        .loading-bar {
-            width: 200px;
-            height: 20px;
-            background: #111;
-            border: 1px solid #0f0;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .loading-progress {
-            width: 0%;
-            height: 100%;
-            background: #0f0;
-            transition: none;
-        }
-
-        /* Party Mode Animation Keyframes */
-        @keyframes rainbow {
-            0% { color: red; }
-            20% { color: yellow; }
-            40% { color: lime; }
-            60% { color: cyan; }
-            80% { color: magenta; }
-            100% { color: red; }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes scroll {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Initial Party Mode (Hidden) */
-        .party-mode {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        /* Party Mode Active Styles */
-        body.party-active {
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 50%, rgba(75, 0, 130, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 50% 20%, rgba(255, 20, 147, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
-                repeating-conic-gradient(from 0deg at 50% 50%, #FF1493 0deg, #9400D3 60deg, #4B0082 120deg, #0000FF 180deg, #00FF00 240deg, #FFFF00 300deg, #FF1493 360deg);
-            animation: psychedelic 20s ease-in-out infinite;
-        }
-        
+        /* ─── ANIMATIONS ─────────────────────────── */
+        @keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.65} }
+        @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes glitch   { 0%{transform:translate(0)} 20%{transform:translate(-2px,2px)} 40%{transform:translate(-2px,-2px)} 60%{transform:translate(2px,2px)} 80%{transform:translate(2px,-2px)} 100%{transform:translate(0)} }
+        @keyframes rainbow  { 0%{color:red} 17%{color:orange} 34%{color:yellow} 50%{color:lime} 67%{color:cyan} 84%{color:magenta} 100%{color:red} }
         @keyframes psychedelic {
-            0%, 100% { filter: hue-rotate(0deg) saturate(100%); }
-            25% { filter: hue-rotate(90deg) saturate(150%); }
-            50% { filter: hue-rotate(180deg) saturate(200%); }
-            75% { filter: hue-rotate(270deg) saturate(150%); }
+            0%,100%{filter:hue-rotate(0deg) saturate(100%)}
+            25%{filter:hue-rotate(90deg) saturate(140%)}
+            50%{filter:hue-rotate(180deg) saturate(180%)}
+            75%{filter:hue-rotate(270deg) saturate(140%)}
         }
 
+        /* ─── PARTY MODE ─────────────────────────── */
+        .party-mode { display: none; opacity: 0; transition: opacity .6s ease; }
+        .party-mode.active { display: block; opacity: 1; }
+
+        body.party-active {
+            background:
+                radial-gradient(circle at 20% 50%, rgba(138,43,226,.25) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(75,0,130,.25) 0%, transparent 50%),
+                radial-gradient(circle at 50% 20%, rgba(255,20,147,.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(255,215,0,.2) 0%, transparent 50%),
+                repeating-conic-gradient(from 0deg at 50% 50%,
+                    #FF1493 0deg, #9400D3 60deg, #4B0082 120deg,
+                    #0000FF 180deg, #00FF00 240deg, #FFFF00 300deg, #FF1493 360deg);
+            animation: psychedelic 22s ease-in-out infinite;
+        }
         .container.party-active {
-            max-width: 1200px;
-            border: 8px solid #FFD700;
-            box-shadow: 0 0 40px rgba(0,0,0,0.3);
+            max-width: 820px;
+            border: 6px solid #FFD700;
+            box-shadow: 0 0 50px rgba(255,215,0,.12), 0 0 100px rgba(255,0,255,.06);
+            background: #030303;
         }
 
-        .party-mode.active {
-            display: block;
-            opacity: 1;
-        }
+        .party-mode.active .party-header   { animation: fadeUp .5s ease both; }
+        .party-mode.active .board-section  { animation: fadeUp .5s .12s ease both; }
+        .party-mode.active .easter-section { animation: fadeUp .5s .26s ease both; }
+        .party-mode.active .poem-section   { animation: fadeUp .5s .40s ease both; }
+        .party-mode.active .vault-hint     { animation: fadeUp .5s .54s ease both; }
 
         .party-header {
-            padding: 2rem;
-            text-align: center;
-            background: linear-gradient(to right, #22D3EE, #60A5FA);
-            border-bottom: 8px solid #FFD700;
-            position: relative;
-            overflow: hidden;
+            padding: 2rem 2.5rem; text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-bottom: 5px solid #FFD700;
         }
-
         .party-domain {
-            font-size: 4rem;
-            font-weight: bold;
+            font-size: 3.5rem; font-weight: bold;
             font-family: 'Comic Sans MS', cursive;
             text-shadow: 2px 2px 0 #ff0000, 4px 4px 0 #00ff00, 6px 6px 0 #0000ff;
-            animation: bounce 2s infinite;
-            position: relative;
+            animation: bounce 2.5s infinite; color: white;
+        }
+        .party-sub {
+            font-family: monospace; font-size: .8rem;
+            color: #4ADE80; margin-top: .6rem; letter-spacing: 1px; opacity: .8;
         }
 
-        .marquee-container {
-            background: black;
-            color: #4ADE80;
-            padding: 0.5rem;
-            overflow: hidden;
-            border-bottom: 2px solid #FFD700;
-            font-family: monospace;
-            position: relative;
+        .party-content { padding: 2rem 2.5rem; background: #030303; color: #c8ffc8; }
+
+        /* Easter egg */
+        .easter-section { padding: 1.8rem 0 2rem; border-bottom: 1px solid #1a3a1a; }
+        .easter-congrats {
+            font-family: monospace; font-size: 1.1rem;
+            color: #4ADE80; letter-spacing: 2px; margin-bottom: 1.2rem;
+        }
+        .easter-body { font-size: .95rem; line-height: 1.9; color: #a0c8a0; max-width: 560px; }
+        .easter-body em { color: #c8ffc8; font-style: normal; }
+
+        /* Poem */
+        .poem-section { padding: 2.5rem 0; border-bottom: 1px solid #1a3a1a; }
+        .poem-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 2.5rem; align-items: start;
+        }
+        .poem-zh {
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'STSong', serif;
+            font-size: 1.05rem; line-height: 2.3; color: #4ADE80;
+            letter-spacing: 2px; font-weight: 400;
+        }
+        .poem-en {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.05rem; line-height: 2.3; color: #e0ffe0;
+            letter-spacing: .4px; padding-top: 0; opacity: .85;
         }
 
-        .marquee-text {
-            white-space: nowrap;
-            display: inline-block;
-            animation: scroll 30s linear infinite;
-            font-size: 1.1rem;
+        /* Vault hint */
+        .vault-hint {
+            padding: 1.4rem 1.8rem; border: 1px dashed #2a2020;
+            font-family: monospace; text-align: center;
+            background: rgba(255,40,40,.02);
+        }
+        .vault-hint-title { color: #ff4444; font-size: .8rem; letter-spacing: 3px; margin-bottom: .6rem; opacity: .8; }
+        .vault-hint-body  { color: #3a5a3a; font-size: .78rem; line-height: 1.9; }
+        .vault-hint-lock  { font-size: .68rem; margin-top: .6rem; }
+        #vault-locked-hint   { color: #2a2020; }
+        #vault-unlocked-hint { color: #4ADE80; display: none; }
+
+        /* Board of Life Directors */
+        .board-section { padding: 2rem 0 1.5rem; border-top: 1px solid #1a3a1a; }
+        .board-label {
+            font-family: monospace; font-size: .72rem;
+            letter-spacing: 4px; color: #FFD700;
+            text-transform: uppercase; margin-bottom: .4rem;
+        }
+        .board-heading {
+            font-size: 1.25rem; color: #c8ffc8;
+            font-family: Georgia, serif;
+            margin-bottom: .5rem; font-weight: normal;
+        }
+        .board-desc {
+            font-size: .8rem; color: #3a5a3a;
+            margin-bottom: 1.8rem; line-height: 1.7; font-family: monospace;
+        }
+        .board-question-card {
+            background: rgba(255,215,0,.03); border: 1px solid #2a3a1a;
+            border-left: 3px solid #FFD700; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
+        }
+        .board-q-label { font-size: .65rem; letter-spacing: 2px; color: #4a6a2a; font-family: monospace; margin-bottom: .5rem; text-transform: uppercase; }
+        .board-q-text  { font-size: 1.05rem; color: #e0ffe0; line-height: 1.65; }
+        .board-options { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .board-btn {
+            flex: 1; min-width: 120px;
+            background: transparent; border: 1px solid #2a4a2a;
+            color: #4ADE80; padding: .7rem 1rem;
+            cursor: pointer; font-family: monospace;
+            font-size: .8rem; letter-spacing: 1px;
+            transition: all .2s; border-radius: 2px; text-align: left;
+        }
+        .board-btn:hover { background: rgba(74,222,128,.06); border-color: #4ADE80; }
+        .board-btn.selected { background: rgba(74,222,128,.12); border-color: #4ADE80; color: #c8ffc8; }
+        .board-btn-label { display: block; font-size: .62rem; color: #2a5a2a; margin-bottom: .2rem; letter-spacing: 2px; }
+        .board-btn-text  { display: block; font-size: .82rem; }
+        .board-submit-btn {
+            background: rgba(74,222,128,.08); border: 1px solid #4ADE80;
+            color: #4ADE80; padding: .6rem 1.4rem;
+            cursor: pointer; font-family: monospace;
+            font-size: .75rem; letter-spacing: 1px;
+            transition: all .2s; display: none;
+        }
+        .board-submit-btn:hover { background: rgba(74,222,128,.18); }
+        .board-submit-btn.visible { display: inline-block; }
+        .board-voted {
+            font-family: monospace; font-size: .8rem;
+            color: #4ADE80; padding: 1rem;
+            border: 1px solid #1a3a1a; text-align: center;
+            background: rgba(74,222,128,.03);
         }
 
-        .party-content {
-            padding: 2rem;
-            background: black;
-            color: #4ADE80;
+        /* PIN gate */
+        .board-pin-gate { margin-bottom: 1.2rem; }
+        .board-pin-label {
+            font-family: monospace; font-size: .72rem;
+            color: #3a5a3a; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: .6rem;
+        }
+        .board-pin-row { display: flex; gap: .6rem; align-items: center; }
+        .board-pin-input {
+            background: transparent; border: 1px solid #2a4a2a;
+            color: #4ADE80; padding: .5rem .8rem;
+            font-family: monospace; font-size: 1rem;
+            letter-spacing: 6px; width: 120px; outline: none;
+            border-radius: 2px; text-align: center;
+            transition: border-color .2s;
+        }
+        .board-pin-input:focus { border-color: #4ADE80; }
+        .board-pin-submit {
+            background: transparent; border: 1px solid #2a4a2a;
+            color: #4ADE80; padding: .5rem 1rem;
+            cursor: pointer; font-family: monospace;
+            font-size: .76rem; letter-spacing: 1px;
+            transition: all .2s; border-radius: 2px;
+        }
+        .board-pin-submit:hover { background: rgba(74,222,128,.08); border-color: #4ADE80; }
+        .board-pin-error {
+            font-family: monospace; font-size: .72rem;
+            color: #ff4444; margin-top: .5rem; letter-spacing: 1px;
         }
 
-        .ad-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .party-ad {
-            padding: 2rem;
-            border: 4px dashed #4ADE80;
-            border-radius: 0.5rem;
-            animation: pulse 3s infinite;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .party-ad:hover {
-            transform: scale(1.02) rotate(-1deg);
-        }
-
-        .party-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin: 2rem 0;
-        }
-
-        .party-nav-link {
-            padding: 0.5rem 1rem;
-            background: black;
-            color: #4ADE80;
-            border: 1px solid #4ADE80;
-            font-family: monospace;
-            text-decoration: none;
-            transform: rotate(-2deg);
-            transition: all 0.3s ease;
-        }
-
-        .party-nav-link:hover {
-            transform: rotate(2deg);
-            background: #4ADE80;
-            color: black;
-        }
-
-        .high-scores {
-            background: rgba(0,0,0,0.8);
-            border: 2px solid #4ADE80;
-            padding: 1rem;
-            margin: 2rem 0;
-        }
-
-        .high-scores-title {
-            text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            animation: rainbow 5s linear infinite;
-            font-family: monospace;
-        }
-
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem;
-            border-bottom: 1px dotted #4ADE80;
-            font-family: monospace;
-        }
-
-        .certifications {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .cert-badge {
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #4ADE80;
-            padding: 1rem;
-            text-align: center;
-            font-family: monospace;
-            cursor: help;
-            transition: all 0.3s ease;
-        }
-
-        .cert-badge:hover {
-            background: #4ADE80;
-            color: black;
-            transform: scale(1.05);
-        }
-
+        /* Party footer */
         .party-footer {
-            text-align: center;
-            padding: 2rem;
-            background: black;
-            border-top: 8px solid #4ADE80;
-            color: #4ADE80;
-            font-family: monospace;
+            text-align: center; padding: 1.2rem 2rem;
+            background: #030303; border-top: 4px solid #4ADE80;
+            color: #2a6e2a; font-family: monospace; font-size: .7rem; letter-spacing: 2px;
         }
 
-        /* Emergency Exit Button */
+        /* Buttons */
         .emergency-exit {
-            display: none;
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-family: monospace;
-            z-index: 1000;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            display: none; position: fixed; top: 10px; right: 10px;
+            background: rgba(0,0,0,.85); color: #ff4444; border: 1px solid #ff4444;
+            padding: 7px 14px; cursor: pointer; font-family: monospace;
+            z-index: 1000; border-radius: 3px; font-size: .72rem; letter-spacing: 1px;
+            transition: all .2s;
+        }
+        .emergency-exit:hover { background: #ff4444; color: white; }
+        .emergency-exit.active { display: block; }
+
+        #vault-float-btn {
+            display: none; position: fixed; bottom: 12px; left: 12px;
+            background: rgba(5,0,0,.92); color: #ff4444; border: 1px solid #ff4444;
+            padding: 6px 12px; cursor: pointer; font-family: monospace;
+            font-size: .7rem; z-index: 999; border-radius: 3px;
+            transition: all .2s; opacity: .65; letter-spacing: 1px;
+        }
+        #vault-float-btn:hover { opacity: 1; background: #ff4444; color: white; }
+
+        @media (max-width: 600px) {
+            .party-domain { font-size: min(11vw, 2.5rem); }
+            .party-content { padding: 1.2rem; }
+            .poem-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .poem-zh { font-size: 1.05rem; }
+            .board-options { flex-direction: column; }
         }
 
-        .emergency-exit:hover {
-            background: #ff6666;
-            transform: scale(1.1);
-        }
+        /* ─── ADMIN OVERLAY ─────────────────────── */
+        .admin-overlay { display:none; position:fixed; inset:0; background:rgba(0,4,20,.98); z-index:4000; overflow-y:auto; font-family:monospace; }
+        .admin-overlay.active { display:block; }
+        .admin-container { max-width:860px; margin:0 auto; padding:1.5rem; }
+        .admin-header { text-align:center; border-bottom:2px solid #4ADE80; padding-bottom:1rem; margin-bottom:1.5rem; position:relative; }
+        .admin-title { font-size:1.4rem; color:#4ADE80; letter-spacing:4px; text-transform:uppercase; }
+        .admin-subtitle { font-size:.68rem; color:#2a4a2a; letter-spacing:3px; margin-top:.3rem; text-transform:uppercase; }
+        .admin-close-btn { position:absolute; top:0; right:0; background:#4ADE80; color:#030303; border:none; padding:7px 14px; cursor:pointer; font-family:monospace; font-size:.8rem; font-weight:bold; }
+        .admin-tabs { display:flex; gap:0; margin-bottom:1.5rem; border-bottom:1px solid #1a3a1a; }
+        .admin-tab { background:transparent; border:none; border-bottom:2px solid transparent; color:#2a5a2a; padding:.5rem 1.1rem; cursor:pointer; font-family:monospace; font-size:.75rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:-1px; transition:all .2s; }
+        .admin-tab:hover { color:#4ADE80; }
+        .admin-tab.active { color:#4ADE80; border-bottom-color:#4ADE80; }
+        .admin-panel { display:none; }
+        .admin-panel.active { display:block; }
+        .admin-section { margin-bottom:1.4rem; }
+        .admin-label { font-size:.65rem; letter-spacing:2px; color:#2a5a2a; text-transform:uppercase; margin-bottom:.5rem; }
+        .admin-input { width:100%; background:#060606; border:1px solid #1a3a1a; color:#c8ffc8; padding:.5rem .8rem; font-family:monospace; font-size:.82rem; outline:none; box-sizing:border-box; margin-bottom:.5rem; border-radius:2px; }
+        .admin-input:focus { border-color:#4ADE80; }
+        .admin-btn { background:transparent; border:1px solid #4ADE80; color:#4ADE80; padding:.42rem .85rem; cursor:pointer; font-family:monospace; font-size:.72rem; letter-spacing:1px; transition:all .2s; margin-right:.4rem; margin-bottom:.4rem; border-radius:2px; }
+        .admin-btn:hover { background:rgba(74,222,128,.1); }
+        .admin-btn.primary { background:rgba(74,222,128,.1); }
+        .admin-btn:disabled { opacity:.4; cursor:not-allowed; }
+        .admin-table { width:100%; border-collapse:collapse; font-size:.75rem; }
+        .admin-table th { color:#2a5a2a; text-align:left; padding:.3rem .5rem; border-bottom:1px solid #1a3a1a; letter-spacing:1px; text-transform:uppercase; font-size:.63rem; }
+        .admin-table td { color:#c8ffc8; padding:.42rem .5rem; border-bottom:1px solid #0a1a0a; vertical-align:middle; }
+        .admin-table tr:hover td { background:rgba(74,222,128,.025); }
+        .admin-badge { display:inline-block; padding:1px 6px; font-size:.62rem; border-radius:2px; }
+        .admin-badge.used   { background:rgba(255,68,68,.1); color:#ff8888; border:1px solid #3a1010; }
+        .admin-badge.unused { background:rgba(74,222,128,.1); color:#4ADE80; border:1px solid #1a3a1a; }
+        .admin-key-gate { text-align:center; padding:2.5rem; border:1px dashed #1a3a1a; }
+        .admin-current-q { color:#4ADE80; font-size:.85rem; padding:.7rem; border:1px solid #1a3a1a; background:#060606; margin-bottom:.8rem; line-height:1.6; }
+        #admin-float-btn { display:none; position:fixed; bottom:12px; left:120px; background:rgba(0,5,20,.92); color:#4ADE80; border:1px solid #4ADE80; padding:6px 12px; cursor:pointer; font-family:monospace; font-size:.7rem; z-index:999; border-radius:3px; transition:all .2s; opacity:.65; letter-spacing:1px; }
+        #admin-float-btn:hover { opacity:1; background:rgba(74,222,128,.1); }
 
-        .emergency-exit.active {
-            display: block;
-        }
-
-        /* Secret Counter (Debug) */
-        .click-count {
-            display: none;
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 10px;
-            color: #666;
-        }
-        /* Mobile Optimizations */
-@media (max-width: 768px) {
-    body {
-        padding: 0.5rem;
-    }
-
-    .container {
-        width: 98%;
-        margin: 0 auto;
-    }
-
-    .party-domain {
-        font-size: min(10vw, 3rem); /* Responsive font size */
-    }
-
-    .marquee-text {
-        font-size: 0.9rem;
-    }
-
-    .ad-grid {
-        grid-template-columns: 1fr; /* Single column on mobile */
-        gap: 1rem;
-    }
-
-    .party-nav {
-        gap: 0.5rem;
-    }
-
-    .party-nav-link {
-        padding: 0.8rem 1.2rem; /* Larger touch target */
-        font-size: 1rem;
-    }
-
-    .certifications {
-        grid-template-columns: 1fr; /* Single column */
-    }
-
-    .cert-badge {
-        padding: 1.2rem; /* Larger touch target */
-    }
-
-    .emergency-exit {
-        top: 5px;
-        right: 5px;
-        padding: 12px 20px; /* Larger touch target */
-        font-size: 1rem;
-    }
-
-    .party-content {
-        padding: 1rem;
-    }
-
-    .high-scores {
-        font-size: 0.9rem;
-    }
-
-    /* Better spacing for mobile */
-    .party-ad {
-        padding: 1.5rem;
-    }
-
-    /* Adjust transition overlay for mobile */
-    .transition-overlay {
-        padding: 10px;
-    }
-
-    .loading-bar {
-        width: 80%;
-        max-width: 200px;
-    }
-
-    /* Adjust boring mode for mobile */
-    .boring-domain {
-        font-size: 20px;
-    }
-
-    .boring-ad {
-        padding: 15px;
-    }
-}
-
-/* Additional touch optimizations */
-@media (hover: none) {
-    .party-nav-link:active,
-    .cert-badge:active,
-    .party-ad:active {
-        transform: scale(0.98);
-    }
-
-    .emergency-exit:active {
-        transform: scale(0.95);
-    }
-}
-
-.boring-contact-form {
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin: 20px 0;
-    background: white;
-}
-
-.boring-input {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.boring-submit {
-    background: #1a73e8;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.form-group {
-    margin-bottom: 15px;
-    transition: all 0.3s ease;
-}
-
-.hidden {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.reveal {
-    display: block;
-    opacity: 1;
-}
-
+        /* ─── VAULT OVERLAY ─────────────────────── */
+        .vault-overlay { display:none; position:fixed; inset:0; background:rgba(2,0,0,.98); z-index:3000; overflow-y:auto; font-family:monospace; }
+        .vault-overlay.active { display:block; }
+        .vault-container { max-width:860px; margin:0 auto; padding:1.5rem; }
+        .vault-header { text-align:center; border-bottom:2px solid #ff4444; padding-bottom:1rem; margin-bottom:1.5rem; position:relative; }
+        .vault-title { font-size:1.8rem; color:#ff4444; letter-spacing:5px; text-transform:uppercase; text-shadow:0 0 20px rgba(255,68,68,.5); }
+        .vault-subtitle { font-size:.68rem; color:#444; letter-spacing:3px; margin-top:.3rem; text-transform:uppercase; }
+        .vault-close-btn { position:absolute; top:0; right:0; background:#ff4444; color:white; border:none; padding:7px 14px; cursor:pointer; font-family:monospace; font-size:.8rem; transition:background .2s; }
+        .vault-close-btn:hover { background:#ff6666; }
+        .vault-status { background:rgba(20,0,0,.9); border:1px solid #ff4444; border-left:3px solid #4ADE80; padding:.4rem 1rem; margin-bottom:1.4rem; font-size:.75rem; color:#4ADE80; display:flex; align-items:center; gap:.5rem; }
+        .vault-status-dot { width:7px; height:7px; border-radius:50%; background:#4ADE80; flex-shrink:0; animation:pulse 2s infinite; }
+        .vault-status-dot.error { background:#ff4444; animation:none; }
+        .vault-status-dot.connecting { background:#FFD700; }
+        .vault-content { margin-bottom:1.5rem; }
+        .vault-section { margin-bottom:1.1rem; border:1px solid #3a1010; border-radius:3px; overflow:hidden; }
+        .vault-section-header { background:rgba(20,0,0,.95); padding:.5rem 1rem; border-bottom:1px solid #3a1010; display:flex; align-items:baseline; gap:.6rem; }
+        .vault-section-name { font-size:.78rem; color:#ff8888; font-weight:bold; text-transform:uppercase; letter-spacing:1px; }
+        .vault-section-desc { font-size:.68rem; color:#553333; }
+        .vault-section-content { padding:.65rem; background:rgba(8,0,0,.9); }
+        .vault-records { display:flex; flex-direction:column; gap:.5rem; }
+        .vault-entry { border:1px solid #2a1010; border-left:3px solid #ff4444; padding:.6rem; background:rgba(15,0,0,.8); word-break:break-word; }
+        .vault-entry-main { font-size:.85rem; color:#ffaaaa; line-height:1.5; margin-bottom:.3rem; }
+        .vault-entry-date { font-size:.62rem; color:#553333; }
+        .vault-entry-tags { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:.2rem; }
+        .vault-tag { background:rgba(255,68,68,.07); border:1px solid #3a1010; color:#ff8888; padding:1px 5px; font-size:.6rem; border-radius:2px; }
+        .vault-loading { color:#553333; font-size:.78rem; }
+        .vault-empty { color:#443333; font-size:.75rem; font-style:italic; }
+        .vault-error { color:#ff4444; font-size:.75rem; }
+        .vault-error-state { text-align:center; padding:2rem; border:1px dashed #ff4444; color:#ffaaaa; }
+        .vault-input-area { border:1px solid #3a1010; border-top:2px solid #ff4444; border-radius:3px; padding:.9rem; background:rgba(10,0,0,.95); margin-top:1.4rem; }
+        .vault-input-title { font-size:.72rem; color:#ff8888; letter-spacing:2px; margin-bottom:.65rem; text-transform:uppercase; }
+        .vault-textarea { width:100%; background:black; border:1px solid #3a1010; color:#ffaaaa; padding:.65rem; font-family:monospace; font-size:.82rem; resize:vertical; min-height:75px; outline:none; box-sizing:border-box; }
+        .vault-textarea:focus { border-color:#ff4444; }
+        .vault-textarea::placeholder { color:#332222; font-style:italic; }
+        .vault-input-controls { display:flex; gap:.5rem; margin-top:.65rem; flex-wrap:wrap; align-items:center; }
+        .vault-btn { background:transparent; border:1px solid #ff4444; color:#ff8888; padding:6px 12px; cursor:pointer; font-family:monospace; font-size:.74rem; transition:all .2s; }
+        .vault-btn:hover { background:#ff4444; color:white; }
+        .vault-btn.primary { background:#ff4444; color:white; font-weight:bold; }
+        .vault-btn.primary:hover { background:#ff6666; }
+        .vault-btn.recording { background:#ff4444; color:white; animation:pulse .8s infinite; }
+        .vault-btn:disabled { opacity:.4; cursor:not-allowed; }
+        .vault-select { flex-grow:1; background:black; border:1px solid #3a1010; color:#ff8888; padding:6px; font-family:monospace; font-size:.74rem; outline:none; }
+        .vault-text-result { font-size:.82rem; color:#ffaaaa; line-height:1.55; }
     </style>
 </head>
 <body>
 
-        <!-- Transition Overlay -->
-        <div class="transition-overlay">
-            <div class="transition-text">INITIALIZING PARTY PROTOCOLS...</div>
-            <div class="loading-bar">
-                <div class="loading-progress"></div>
-            </div>
-            <div class="transition-text">ENGAGING HYPNOTOAD SUBROUTINES...</div>
-        </div>
-    
-        <div class="container">
-            <!-- Boring Mode -->
-            <div class="boring-mode">
-                <div class="boring-header">
-                    <div class="boring-domain">machu.la</div>
-                    <div style="color: #666;">This domain is parked.</div>
-                </div>
-                
-                <div class="boring-content">
-                    <div class="boring-ad" data-trigger="domain">
-                        <div style="color: #1a0dab; margin-bottom: 5px;">Executive Performance Solutions</div>
-                        <div style="color: #006621; font-size: 12px;">sponsored by neurons</div>
-                        <div style="color: #545454; font-size: 13px; margin-top: 5px;">
-                            Unlock your cognitive potential. 5 elite spots remaining this month.
-                        </div>
-                    </div>
-    
-                    <div class="boring-ad" data-trigger="hosting">
-                        <div style="color: #1a0dab; margin-bottom: 5px;">Neural Enhancement Programs</div>
-                        <div style="color: #006621; font-size: 12px;">$4,997 value</div>
-                        <div style="color: #545454; font-size: 13px; margin-top: 5px;">
-                            60-session intensive. Transform your mind. Dominate your market.
-                        </div>
-                    </div>
-    
-                    <!-- Modify the last boring-ad to include the form trigger -->
-                    <div class="boring-ad" data-trigger="contact">
-                        <div style="color: #1a0dab; margin-bottom: 5px;">Brain Training Inquiries</div>
-                        <div style="color: #006621; font-size: 12px;">Toronto's finest</div>
-                        <div style="color: #545454; font-size: 13px; margin-top: 5px;">
-                            Ready for cognitive breakthroughs? Join the Neural Sprint waitlist.
-                        </div>
-                    </div>
-
-                    <!-- Add this new form section (initially hidden) -->
-<!-- Update the form section with more ridiculous fields -->
-<div id="contact-form-section" class="boring-contact-form" style="display: none;">
-    <div style="text-align: right;">
-        <button class="close-form" style="border: none; background: none; color: #666; cursor: pointer;">✕ (really?)</button>
-    </div>
-    <form id="boring-contact-form" style="color: #333;">
-        <h3 style="color: #1a0dab; margin-bottom: 20px;">Contact Domain Broker</h3>
-        
-        <div class="form-group">
-            <label>Your "Real" Name:</label>
-            <input type="text" class="boring-input" placeholder="We both know it's not your real name...">
-        </div>
-
-        <div class="form-group hidden" id="reality-check">
-            <label>Existence Validation:</label>
-            <select class="boring-input">
-                <option>*sigh* Please select...</option>
-                <option>Yes, I definitely exist (sure you do)</option>
-                <option>I think, therefore I might exist?</option>
-                <option>My mom says I'm real</option>
-                <option>Error 404: Self not found</option>
-                <option value="trigger">ALL GLORY TO THE HYPNOTOAD</option>
-            </select>
-        </div>
-
-        <div class="form-group hidden" id="intent-field">
-            <label>Why Are You Really Here?</label>
-            <select class="boring-input">
-                <option>Oh, let me guess...</option>
-                <option>Just clicking random things on the internet</option>
-                <option>Procrastinating something important</option>
-                <option>Looking for meaning in parked domains</option>
-                <option>Desperately seeking validation from form dropdowns</option>
-                <option>My cat walked on the keyboard</option>
-            </select>
-        </div>
-
-        <div class="form-group hidden" id="budget-field">
-            <label>Your "Budget" (as if...)</label>
-            <select class="boring-input">
-                <option>Pick your imaginary budget...</option>
-                <option>The lint in my pocket</option>
-                <option>Three fiddy</option>
-                <option>One slightly used soul</option>
-                <option>Whatever I find behind my couch</option>
-                <option>My collection of rare Pepes</option>
-                <option>∞ exposure and exposure accessories</option>
-            </select>
-        </div>
-
-        <div class="form-group hidden" id="captcha-field">
-            <label>Human Verification (though we have doubts):</label>
-            <div class="boring-input" style="text-align: center;">
-                Please click all squares containing existential dread
-                <div style="margin-top: 10px; font-style: italic; color: #666;">
-                    [ Error: All squares contain existential dread ]
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group hidden" id="final-question">
-            <label>Final Question (this should be good):</label>
-            <input type="text" class="boring-input" placeholder="What is the airspeed velocity of an unladen swallow?" readonly>
-        </div>
-
-        <button type="submit" class="boring-submit">Submit (if you must)</button>
-        <div style="text-align: center; margin-top: 10px; font-size: 11px; color: #999;">
-            * All responses will be carefully ignored
-        </div>
-    </form>
+<!-- ── TRANSITION OVERLAY ── -->
+<div class="transition-overlay" id="transition-overlay">
+    <div class="boot-log" id="boot-log"></div>
+    <div class="boot-bar-wrap"><div class="boot-bar" id="boot-bar"></div></div>
+    <div class="boot-pct" id="boot-pct"></div>
 </div>
+
+<div class="container" id="main-container">
+
+    <!-- ══════════════════════════════════════
+         BORING MODE (parked domain)
+         ══════════════════════════════════════ -->
+    <div class="boring-mode" id="boring-mode">
+        <div class="boring-header">
+            <div class="boring-domain">machu.la</div>
+            <div class="boring-tagline">This domain is parked. Bids accepted in most currencies.</div>
+        </div>
+
+        <div class="boring-shimmer" aria-hidden="true"></div>
+
+        <div class="boring-content">
+
+            <div class="boring-ad" data-trigger="domain">
+                <div class="ad-label">Sponsored</div>
+                <div class="ad-title">Premium Cognitive Real Estate — Acquiring Now</div>
+                <div class="ad-url">cortex-capital.io › acquisitions › frontal-lobe</div>
+                <div class="ad-body">Prefrontal cortex leaseback options available. Amygdala overrides delivered Q4. <span style="color:#888">Hippocampus Premium tier: now enrolling.</span></div>
+            </div>
+
+            <div class="boring-ad" data-trigger="hosting">
+                <div class="ad-label">Sponsored</div>
+                <div class="ad-title">Full Limbic Recalibration — Neural Enhancement Suite</div>
+                <div class="ad-url">pathforwardneurotech.com › optimize › defaults</div>
+                <div class="ad-body">Default mode network override. Pattern interrupt at the neurological level. <span style="color:#888">One (1) genuine epiphany included. Results may include clarity, mild vertigo, and an inexplicable urge to rethink everything.</span></div>
+            </div>
+
+            <div class="boring-ad" data-trigger="contact">
+                <div class="ad-label">Sponsored</div>
+                <div class="ad-title">Speaking Engagements &amp; Consulting — $2,400/hr</div>
+                <div class="ad-url">anthonymachula.ca › speaking › inquiries</div>
+                <div class="ad-body">Brain optimization. Pattern interrupts. Decisions that scale. Limited availability. <span style="color:#888">Your organization's amygdala will thank you.</span></div>
+            </div>
+
+            <div id="contact-form-section" class="boring-contact-form" style="display:none;">
+                <div style="text-align:right;">
+                    <button class="close-form" style="border:none;background:none;color:#999;cursor:pointer;font-size:12px;">✕ close</button>
                 </div>
-    
-                <div class="boring-footer">
-                    <div>© 2024 Domain Parking Service</div>
-                    <div style="margin-top: 10px; font-size: 11px; color: #999;">
-                        Visitors today: 1,337 | Neurons fired: <span id="sneak-attack" style="cursor: pointer; text-decoration: none;">∞</span>
+                <form id="boring-contact-form" method="POST" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" style="color:#333;">
+                    <input type="hidden" name="_subject" value="Neural Sprint Inquiry 🧠">
+                    <h3 style="color:#1a0dab;margin-bottom:16px;font-size:15px;">Contact Domain Broker</h3>
+                    <div class="form-group">
+                        <label>Your "Real" Name:</label>
+                        <input type="text" name="name" id="name-input" class="boring-input" placeholder="We both know it's not your real name...">
+                    </div>
+                    <div class="form-group hidden" id="email-field">
+                        <label>Neural Sprint Invoice Email:</label>
+                        <input type="email" name="email" class="boring-input" placeholder="For the bill. Non-negotiable.">
+                    </div>
+                    <div class="form-group hidden" id="reality-check">
+                        <label>Existence Validation:</label>
+                        <select name="existence" class="boring-input">
+                            <option>*sigh* Please select...</option>
+                            <option>Yes, I definitely exist (sure you do)</option>
+                            <option>I think, therefore I might exist?</option>
+                            <option>My LinkedIn says I'm real</option>
+                            <option>Error 404: Self not found</option>
+                            <option value="trigger">ALL GLORY TO THE HYPNOTOAD</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="intent-field">
+                        <label>Why Are You Really Here?</label>
+                        <select name="intent" class="boring-input">
+                            <option>Oh, let me guess...</option>
+                            <option>Procrastinating something that would genuinely change my life</option>
+                            <option>My cold plunge timer ran out</option>
+                            <option>Looking for meaning in parked domains (found some?)</option>
+                            <option>My cat walked on the keyboard — and honestly had a point</option>
+                            <option>A Notion doc full of Naval quotes sent me here</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="budget-field">
+                        <label>Your "Budget":</label>
+                        <select name="budget" class="boring-input">
+                            <option>Pick your imaginary budget...</option>
+                            <option>The lint in my Lululemon pocket</option>
+                            <option>Three fiddy and a microdose</option>
+                            <option>One slightly pre-optimized soul</option>
+                            <option>∞ exposure, LinkedIn reach, and vibes</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="captcha-field">
+                        <label>Human Verification:</label>
+                        <div class="boring-input" style="text-align:center;cursor:pointer;color:#666;">
+                            Please click all squares containing existential dread
+                            <div style="margin-top:8px;font-style:italic;font-size:11px;">[ Error: All squares contain existential dread ]</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="boring-submit">Submit (if you must)</button>
+                    <div style="text-align:center;margin-top:8px;font-size:10px;color:#aaa;">
+                        * All responses will be carefully read and then manifested
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="boring-footer">
+            <div>© 2025 Domain Parking Service &nbsp;·&nbsp; All Dimensions Reserved</div>
+            <div style="margin-top:6px;">
+                Visitors today: 1,337 &nbsp;·&nbsp;
+                Neurons fired: <span id="sneak-attack" style="cursor:pointer;text-decoration:underline dotted;">∞</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         PARTY MODE
+         ══════════════════════════════════════ -->
+    <div class="party-mode" id="party-mode">
+
+        <div class="party-header">
+            <div class="party-domain">machu.la</div>
+            <div class="party-sub">
+                Enlightenment Level: <span id="stardate"></span>
+            </div>
+        </div>
+
+        <div class="party-content">
+
+            <!-- Board of Life Directors -->
+            <div class="board-section">
+                <div class="board-label">🪑 The Board of Life Directors</div>
+                <div class="board-heading">Major decisions deserve more than one operating system.</div>
+                <div class="board-desc">
+                    If you're here, I probably sent you this link.
+                    There's a real question below. Your vote matters and goes directly to my consciousness cloud™.
+                </div>
+
+                <!-- PIN gate -->
+                <div class="board-pin-gate" id="board-pin-gate">
+                    <div class="board-pin-label">Board access PIN required</div>
+                    <div class="board-pin-row">
+                        <input type="password" class="board-pin-input" id="board-pin-input" maxlength="8" placeholder="· · · ·" autocomplete="off">
+                        <button class="board-pin-submit" id="board-pin-submit">Unlock ↗</button>
+                    </div>
+                    <div class="board-pin-error hidden" id="board-pin-error">⚠ Incorrect PIN</div>
+                </div>
+
+                <div id="board-question-card" class="board-question-card" style="display:none;">
+                    <div class="board-q-label">Current question before the board:</div>
+                    <div class="board-q-text" id="board-q-text"></div>
+                </div>
+
+                <div id="board-vote-area" style="display:none;">
+                    <div class="board-options" id="board-options"></div>
+                    <button class="board-submit-btn" id="board-submit">Cast vote ↗</button>
+                </div>
+
+                <div class="board-voted hidden" id="board-voted">
+                    ✦ &nbsp; Vote received. Thank you — this genuinely helps. &nbsp; ✦
+                </div>
+            </div>
+
+            <!-- Easter egg welcome -->
+            <div class="easter-section">
+                <div class="easter-congrats">✦ &nbsp; You made it. &nbsp; ✦</div>
+                <div class="easter-body">
+                    Most people see a parked domain and move on.
+                    You kept going — which probably says something about you.<br><br>
+                    This is <em>my corner of the internet</em>. No product. No funnel.
+                    Just a poem, and maybe if you have the right PIN, a few buttons to click
+                    to help me make decisions.
+                </div>
+            </div>
+
+            <!-- Poem: Chinese left, English right -->
+            <div class="poem-section">
+                <div class="poem-grid">
+                    <div class="poem-zh" lang="zh">
+                        林去树留。<br>
+                        道失足识。<br>
+                        起落之间，<br>
+                        生命如是。
+                    </div>
+                    <div class="poem-en">
+                        The forest disappears.<br>
+                        The trees remain.<br>
+                        We forget the way.<br>
+                        Our feet remember.<br>
+                        Life, in its falling and rising.
                     </div>
                 </div>
             </div>
-    
-            <!-- Party Mode -->
-            <div class="party-mode">
-                <div class="party-header">
-                    <div class="party-domain">machu.la</div>
-                    <div style="color: white; font-size: 1.5rem; font-family: 'Comic Sans MS', cursive;">
-                        🧠 WELCOME TO THE CONSCIOUSNESS EXPANSION ZONE! 🧠
-                    </div>
-                    <div style="color: white; font-family: monospace;">
-                        Path Forward Neurotech | Enlightenment Level: <span id="stardate"></span> | Third Eye: ACTIVATED
-                    </div>
-                </div>
-    
-                <div class="marquee-container">
-                    <div class="marquee-text">
-                        ⚡ 86 billion neurons can't be wrong ⭐ Serotonin levels: OPTIMAL 🌟 No synapses were harmed in the making of this page 
-                        ⚡ Running on DMT.js Framework ⭐ Powered by mitochondria (the powerhouse of the cell) ⚡ Om mani padme hum 🌟 Insert mantra to continue... 
-                        ⭐ Have you tried meditating? ⚡ Please do not feed the ego ⭐ Enhanced by neuroplasticity and psilocybin microdosing
-                    </div>
-                </div>
-    
-                <div class="party-content">
-                    <div style="text-align: center; padding: 1rem; border: 1px solid #4ADE80; animation: pulse 2s infinite;">
-                        [!] WARNING: Default Mode Network Overload! Ego Dissolution Imminent! Meditation Required! [!]
-                    </div>
-    
-                    <div class="ad-grid">
-                        <div class="party-ad" style="background: linear-gradient(to right, #EC4899, #FCD34D);">
-                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">
-                                🧘 TRANSCEND YOUR URL LIMITATIONS! 🧘
-                            </div>
-                            <div style="font-size: 0.8rem; margin-bottom: 1rem;">
-                                ~*~ Path Forward Neurotech - Where Consciousness Meets Code ~*~
-                            </div>
-                            <div>
-                                Premium neural interfaces for your third eye! Now accepting karma points and enlightenment tokens!
-                            </div>
-                        </div>
-    
-                        <div class="party-ad" style="background: linear-gradient(to right, #4ADE80, #60A5FA);">
-                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">
-                                🍄 PSYCHEDELIC CLOUD COMPUTING!!! 🍄
-                            </div>
-                            <div style="font-size: 0.8rem; margin-bottom: 1rem;">
-                                ~*~ EXPAND YOUR BANDWIDTH OF CONSCIOUSNESS ~*~
-                            </div>
-                            <div>
-                                Faster than synaptic transmission! Now with quantum entanglement encryption!!!
-                            </div>
-                        </div>
-    
-                        <div class="party-ad" style="background: linear-gradient(to right, #A855F7, #EC4899);">
-                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">
-                                🔮 TELEPATHIC MESSAGING SERVICES! 🔮
-                            </div>
-                            <div style="font-size: 0.8rem; margin-bottom: 1rem;">
-                                ~*~ Certified by the Tibetan Monks of Silicon Valley ~*~
-                            </div>
-                            <div>
-                                Dopamine-enhanced thought transmission! Now with pineal gland optimization!
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="party-nav">
-                        <a href="#" class="party-nav-link">MEDITATE</a>
-                        <a href="#" class="party-nav-link">NEUROPLASTICITY</a>
-                        <a href="#" class="party-nav-link">SAMSARA</a>
-                        <a href="#" class="party-nav-link">EGO DEATH</a>
-                    </div>
 
-                    <div class="high-scores">
-                        <div class="high-scores-title">TOP NEURAL SPRINT GRADUATES</div>
-                        <div class="score-entry">
-                            <span>LINNY'S_REGULAR</span>
-                            <span>$4997</span>
+            <!-- Classified vault -->
+            <div class="vault-hint">
+                <div class="vault-hint-title">⚠ &nbsp; C L A S S I F I E D &nbsp; ⚠</div>
+                <div class="vault-hint-body">
+                    [ MANIFESTATION DATA — REDACTED ]<br>
+                    [ EVIDENCE VAULT CONTENTS ENCRYPTED ]
+                </div>
+                <div class="vault-hint-lock">
+                    <span id="vault-locked-hint">🔐 Vault: locked on this device</span>
+                    <span id="vault-unlocked-hint">✅ Vault: unlocked — tap 🔐 VAULT ↙</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="party-footer">
+            ⚡ &nbsp; POWERED BY NEUROPLASTICITY &amp; PURE HUBRIS &nbsp; ⚡
+        </div>
+    </div>
+</div>
+
+<button class="emergency-exit" title="Boss Key">↩ EXIT</button>
+<button id="vault-float-btn">🔐 VAULT</button>
+<button id="admin-float-btn">⚙ BOARD ADMIN</button>
+
+<!-- ── BOARD ADMIN OVERLAY ── -->
+<div id="admin-overlay" class="admin-overlay">
+    <div class="admin-container">
+        <div class="admin-header">
+            <div class="admin-title">⚙ Board Admin</div>
+            <div class="admin-subtitle">pins · questions · results</div>
+            <button id="admin-close" class="admin-close-btn">✕ CLOSE</button>
+        </div>
+        <div id="admin-key-gate" class="admin-key-gate">
+            <div style="color:#2a5a2a;font-size:.75rem;letter-spacing:1px;margin-bottom:.8rem;">SERVICE KEY REQUIRED</div>
+            <div style="color:#3a5a3a;font-size:.72rem;line-height:1.8;">Visit <code style="color:#4ADE80;">machu.la/#sb-admin-YOUR_SERVICE_ROLE_KEY</code><br>to unlock admin on this device</div>
+        </div>
+        <div id="admin-main" style="display:none;">
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="question">Question</button>
+                <button class="admin-tab" data-tab="pins">PINs</button>
+                <button class="admin-tab" data-tab="results">Results</button>
+            </div>
+
+            <!-- Question tab -->
+            <div class="admin-panel active" id="admin-tab-question">
+                <div class="admin-section">
+                    <div class="admin-label">Active Question</div>
+                    <div class="admin-current-q" id="admin-current-q">Loading...</div>
+                </div>
+                <div class="admin-section">
+                    <div class="admin-label">Set New Question</div>
+                    <input type="text" class="admin-input" id="admin-new-q" placeholder="What's the decision?">
+                    <div id="admin-options-list" style="margin-bottom:.5rem;"></div>
+                    <button class="admin-btn" id="admin-add-option">+ Option</button>
+                    <button class="admin-btn primary" id="admin-set-question" style="float:right;">Make Active ↗</button>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+
+            <!-- Pins tab -->
+            <div class="admin-panel" id="admin-tab-pins">
+                <div class="admin-section">
+                    <div class="admin-label">Create PIN</div>
+                    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;">
+                        <div style="flex:1;min-width:120px;">
+                            <div style="font-size:.62rem;color:#2a5a2a;margin-bottom:.3rem;letter-spacing:1px;">LABEL (who is this for?)</div>
+                            <input type="text" class="admin-input" id="admin-pin-label" placeholder="e.g. Sarah" style="margin:0;">
                         </div>
-                        <div class="score-entry">
-                            <span>OSSINGTON_EXEC</span>
-                            <span>60_SESSIONS</span>
+                        <div style="width:120px;">
+                            <div style="font-size:.62rem;color:#2a5a2a;margin-bottom:.3rem;letter-spacing:1px;">PIN CODE (blank = auto)</div>
+                            <input type="text" class="admin-input" id="admin-pin-code" placeholder="auto" maxlength="8" style="margin:0;">
                         </div>
-                        <div class="score-entry">
-                            <span>DUNDAS_POWERHOUSE</span>
-                            <span>∞_GAINS</span>
-                        </div>
-                        <div class="score-entry" data-easter-egg="July manifestation: ACHIEVED!">
-                            <span>MACHULA</span>
-                            <span>$25K</span>
-                        </div>
-                    </div>
-    
-                    <div class="certifications">
-                        <div class="cert-badge" data-easter-egg="I think, therefore I spam!">
-                            🧠 Descartes Approved!
-                        </div>
-                        <div class="cert-badge" data-easter-egg="The neuron that fires together, wires together!">
-                            🔬 Hebb's Law Certified
-                        </div>
-                        <div class="cert-badge" data-easter-egg="Would you like to expand your consciousness?">
-                            🍄 McKenna Approved
-                        </div>
-                        <div class="cert-badge" data-easter-egg="I'll be back... after ego death">
-                            🧘 Buddha Compatible
-                        </div>
-                    </div>
-    
-                    <div style="text-align: center; padding: 2rem;">
-                        <span style="color: #4ADE80; font-weight: bold; font-family: monospace; font-size: 1.2rem;">
-                            "Truth is a pathless land, but my Neural Sprint clients find it in 60 sessions flat." 
-                            - Dr. Machula channeling Krishnamurti at Linny's
-                        </span>
-                    </div>
-                    
-                    <div style="text-align: center; padding: 1rem;">
-                        <span style="color: #FFD700; font-family: monospace; font-size: 0.9rem;">
-                            "Specific knowledge is found by pursuing your genuine curiosity... Mine led to $25k/month" - Naval (probably)
-                        </span>
-                    </div>
-                    
-                    <div style="background: linear-gradient(45deg, #FF1493, #9400D3); padding: 2rem; margin: 2rem 0; border: 3px solid #FFD700; animation: pulse 3s infinite;">
-                        <div style="color: white; text-align: center; font-family: 'Comic Sans MS', cursive;">
-                            <div style="font-size: 1.5rem; margin-bottom: 1rem;">✨ JULY MANIFESTATION STATUS: LEGENDARY ✨</div>
-                            <div style="font-size: 1rem; line-height: 1.8;">
-                                ✓ Demolished reality with pure willpower<br>
-                                ✓ Ate at Linny's without checking prices (power move)<br>
-                                ✓ Built AR neuroscience empire (casual Tuesday)<br>
-                                ✓ Became weapon of pure confidence (results may vary)<br>
-                                ✓ Achieved physical godhood (citation needed)<br>
-                                <span class="blink" style="font-size: 1.2rem;">⚡ NEXT LEVEL: QUANTUM SUPREMACY ⚡</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: rgba(0,0,0,0.9); border: 2px solid #4ADE80; padding: 2rem; margin: 2rem 0; position: relative; overflow: hidden;">
-                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(74,222,128,0.1) 10px, rgba(74,222,128,0.1) 20px); pointer-events: none;"></div>
-                        <div style="color: #4ADE80; text-align: center; font-family: monospace;">
-                            <div style="font-size: 1.3rem; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 3px;">
-                                === LEGENDARY JULY MANIFESTATIONS ===
-                            </div>
-                            <div style="text-align: left; font-size: 0.9rem; line-height: 1.8; max-width: 800px; margin: 0 auto;">
-                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #FFD700;">
-                                    "I lived in my Dundas & Ossington studio, making so much money I ate at Linny's every night with my gorgeous girlfriend without even glancing at the bill - my AR neuroscience empire generated $25k+ in July alone through my Neural Sprint packages, with 5 elite clients experiencing massive cognitive breakthroughs. I dominated the brain training market as the visionary neuroscientist who revolutionized executive performance."
-                                </div>
-                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #FF1493;">
-                                    "I achieved the most incredible physical shape of my entire life - lifted heavier, ran faster, and looked more powerful than I ever imagined possible. My body became a weapon of pure confidence."
-                                </div>
-                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #9400D3;">
-                                    "I made conversation with anyone as effortlessly as breathing - my self-love and magnetic presence were so overwhelming that stunning women approached ME first, drawn to my unstoppable energy like moths to flame."
-                                </div>
-                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #00CED1;">
-                                    "I built a life so monumentally amazing, so absurdly successful, and so wildly entertaining that even I was shocked by the sheer magnitude of joy, meaning and excitement flowing through every single day."
-                                </div>
-                                <div style="margin-bottom: 1.5rem; padding: 1rem; border-left: 3px solid #32CD32;">
-                                    "I invested in myself with ruthless precision and obliterated every trace of my old life's pain - I became an absolutely devastating, world-class powerhouse who commanded respect everywhere I went."
-                                </div>
-                                <div style="margin-top: 2rem; text-align: center; font-size: 1.1rem; color: #FFD700;">
-                                    💰 5 Neural Sprint clients at $4,997 each = $24,985 in July<br>
-                                    🧠 60 total sessions delivered<br>
-                                    🚀 Preparing to hire your first operator for scaling
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div style="background: #000; border: 2px solid #FFD700; padding: 1rem; margin: 2rem 0; text-align: center;">
-                        <div style="color: #FFD700; margin-bottom: 1rem; font-family: monospace;">SYSTEM REQUIREMENTS</div>
-                        <div style="color: #4ADE80; font-family: monospace;">
-                            ✓ 4-Hour Workweek compatible (results in 3.5 hours)<br>
-                            ✓ Minimum 100M Offers installed<br>
-                            ✓ Requires elite cognitive performance<br>
-                            ✓ Hormozi-level offer structure<br>
-                            <span class="blink">✓ $25k/month mindset mandatory</span>
-                        </div>
+                        <button class="admin-btn primary" id="admin-create-pin">Create ↗</button>
                     </div>
                 </div>
-    
-                <div class="party-footer">
-                    <div style="font-weight: bold; font-size: 1.2rem;">
-                        ⚡️ POWERED BY NEUROPLASTICITY & PATH FORWARD NEUROTECH! ⚡️
-                    </div>
-                    <div style="margin-top: 1rem;">
-                        <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23000'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%230f0' font-family='monospace' font-size='8'%3EGeoCities%3C/text%3E%3C/svg%3E" alt="Made with GeoCities" title="The dancing baby lives!" class="counter-img" />
-                        <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23ff0'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='monospace' font-size='10'%3EICQ: 12345%3C/text%3E%3C/svg%3E" alt="ICQ Us!" title="Uh oh!" class="counter-img" />
-                        <img src="data:image/svg+xml,%3Csvg width='88' height='31' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='88' height='31' fill='%23f0f'/%3E%3Ctext x='44' y='20' text-anchor='middle' fill='%23000' font-family='monospace' font-size='9'%3EWebring%3C/text%3E%3C/svg%3E" alt="Webring Member" title="What goes around comes around" class="counter-img" />
-                    </div>
-                    <div style="margin-top: 1rem; animation: pulse 2s infinite;">
-                        ☮️ BE HERE NOW! NO BAD TRIPS OR EGO INFLATION DETECTED! ☮️
-                    </div>
-                    <div style="margin-top: 0.5rem;">
-                        Error 420: Consciousness overflow... far out, man!
-                    </div>
+                <div class="admin-section">
+                    <div class="admin-label">All PINs</div>
+                    <table class="admin-table">
+                        <thead><tr><th>Code</th><th>Label</th><th>Status</th><th>Created</th></tr></thead>
+                        <tbody id="admin-pins-tbody"><tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Results tab -->
+            <div class="admin-panel" id="admin-tab-results">
+                <div class="admin-section">
+                    <div class="admin-label">Votes Cast</div>
+                    <table class="admin-table">
+                        <thead><tr><th>Voter</th><th>Choice</th><th>When</th></tr></thead>
+                        <tbody id="admin-results-tbody"><tr><td colspan="3" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    
-        <button class="emergency-exit" title="Boss Key">↩️ RESTORE SANITY</button>
-        <div class="click-count">0</div>
-    
+    </div>
+</div>
 
-        <script>
-            // Fun loading messages for the transition
-            const loadingMessages = [
-                "INITIALIZING CONSCIOUSNESS PROTOCOLS...",
-                "ACTIVATING THIRD EYE...",
-                "SYNCHRONIZING BRAIN WAVES...",
-                "LOADING 86 BILLION NEURONS...",
-                "OPENING CHAKRAS...",
-                "CALIBRATING NEUROPLASTICITY...",
-                "ENGAGING MINDFULNESS MODE...",
-                "CONSULTING THE BUDDHA...",
-                "BYPASSING EGO DEFENSES...",
-                "LOADING SACRED GEOMETRY...",
-                "UPGRADING TO ENLIGHTENMENT 2.0...",
-                "HARMONIZING WITH THE UNIVERSE...",
-                "DISSOLVING REALITY BOUNDARIES...",
-                "ACHIEVING NIRVANA..."
-            ];
-        
-            // Initialize DOM elements
-            const transitionOverlay = document.querySelector('.transition-overlay');
-            const loadingBar = document.querySelector('.loading-progress');
-            const transitionText = document.querySelector('.transition-text');
-            const container = document.querySelector('.container');
-            const body = document.body;
-            const boringMode = document.querySelector('.boring-mode');
-            const partyMode = document.querySelector('.party-mode');
-            const exitButton = document.querySelector('.emergency-exit');
-            let currentMessageIndex = 0;
-        
-            // Contact form functionality
-            document.querySelector('[data-trigger="contact"]').addEventListener('click', function(e) {
-                e.preventDefault();
-                document.getElementById('contact-form-section').style.display = 'block';
-                this.style.display = 'none';
-            });
-        
-            document.querySelector('.close-form').addEventListener('click', function() {
-                document.getElementById('contact-form-section').style.display = 'none';
-                document.querySelector('[data-trigger="contact"]').style.display = 'block';
-            });
-        
-            // Update the form progression logic
-            document.querySelector('.boring-input').addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    document.getElementById('reality-check').classList.add('reveal');
-                    this.placeholder = "Typing... really? Okay then...";
-                }
-            });
-        
-            const realitySelect = document.querySelector('#reality-check select');
-            realitySelect.addEventListener('change', function() {
-                document.getElementById('intent-field').classList.add('reveal');
-                if (this.value === 'trigger') {
-                    initiatePartyMode(event);
-                } else {
-                    document.querySelector('.boring-submit').textContent = "Submit (but why though?)";
-                }
-            });
-        
-            document.querySelector('#intent-field select').addEventListener('change', function() {
-                document.getElementById('budget-field').classList.add('reveal');
-                document.querySelector('.verification-title').textContent = "*heavy sigh*";
-            });
-        
-            document.querySelector('#budget-field select').addEventListener('change', function() {
-                document.getElementById('captcha-field').classList.add('reveal');
-            });
-        
-            document.querySelector('#captcha-field').addEventListener('click', function() {
-                document.getElementById('final-question').classList.add('reveal');
-                this.innerHTML = '<div style="color: #666;">Really? You clicked it? Wow...</div>';
-            });
-        
-            // Various helper functions
-            function updateLoadingMessage() {
-                transitionText.textContent = loadingMessages[currentMessageIndex];
-                currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
-            }
+<!-- ── PROOF VAULT OVERLAY ── -->
+<div id="vault-overlay" class="vault-overlay">
+    <div class="vault-container">
+        <div class="vault-header">
+            <div class="vault-title">🔐 Proof Vault</div>
+            <div class="vault-subtitle">evidence-based reality anchor</div>
+            <button id="vault-close" class="vault-close-btn">✕ SEAL</button>
+        </div>
+        <div class="vault-status">
+            <span class="vault-status-dot connecting" id="vault-dot"></span>
+            <span id="vault-status-text">Awaiting connection...</span>
+        </div>
+        <div id="vault-content" class="vault-content">
+            <div class="vault-empty" style="padding:1rem;">Open the vault to load evidence.</div>
+        </div>
+        <div class="vault-input-area">
+            <div class="vault-input-title">📡 New Transmission</div>
+            <textarea id="vault-new-entry" class="vault-textarea" placeholder="Speak your truth (or dictate it)..."></textarea>
+            <div class="vault-input-controls">
+                <button id="vault-mic-btn" class="vault-btn">🎤 DICTATE</button>
+                <select id="vault-tool-select" class="vault-select">
+                    <option value="">— select tool —</option>
+                </select>
+                <button id="vault-submit-btn" class="vault-btn primary">TRANSMIT</button>
+            </div>
+            <div style="margin-top:.6rem;text-align:right;">
+                <button id="vault-relock-btn" class="vault-btn" style="font-size:.65rem;opacity:.45;">clear token &amp; re-lock</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            const boringForm = document.getElementById('boring-contact-form');
-            boringForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                initiatePartyMode(e);
-            });
-        
-            function initiatePartyMode(e) {
-                if (e) e.preventDefault();
-                transitionOverlay.classList.add('active');
-                
-                // Start the loading sequence
-                let progress = 0;
-                const messageInterval = setInterval(updateLoadingMessage, 200);
-                
-                const loadingInterval = setInterval(() => {
-                    progress += 2;
-                    loadingBar.style.width = `${progress}%`;
-                    
-                    if (progress >= 100) {
-                        clearInterval(loadingInterval);
-                        clearInterval(messageInterval);
-                        setTimeout(activatePartyMode, 500);
-                    }
-                }, 50);
-            }
-        
-            function activatePartyMode() {
-                transitionOverlay.classList.remove('active');
-                body.classList.add('party-active');
-                container.classList.add('party-active');
-                boringMode.style.display = 'none';
-                partyMode.classList.add('active');
-                exitButton.classList.add('active');
-                
-                // Add some extra flair
-                document.querySelectorAll('.party-ad').forEach(ad => {
-                    ad.style.animation = 'pulse 2s infinite';
-                });
-        
-                // Update stardate if it exists
-                if (document.getElementById('stardate')) {
-                    updateStardate();
-                }
-            }
-        
-            function generateDomainName() {
-                const prefixes = ['quantum', 'cyber', 'meta', 'hyper', 'neural', 'crypto', 'web3', 'ai', 'blockchain', 'synth', 
-                                 'omega', 'ultra', 'mega', 'giga', 'nano', 'techno', 'digital', 'cyber'];
-                const suffixes = ['verse', 'chain', 'mind', 'flux', 'sync', 'net', 'grid', 'space', 'node', 'core', 
-                                 'matrix', 'sphere', 'nexus', 'portal', 'cortex', 'pulse', 'wave'];
-                const tlds = ['.io', '.ai', '.eth', '.web4', '.meta', '.quantum', '.reality', '.void', '.∞', '.error'];
-                
-                return prefixes[Math.floor(Math.random() * prefixes.length)] + 
-                       suffixes[Math.floor(Math.random() * suffixes.length)] +
-                       tlds[Math.floor(Math.random() * tlds.length)];
-            }
-        
-            function generatePrice() {
-                const currencies = ['BTC', 'Souls', 'Dogecoin', 'Human Years', 'Memes', 'Brain Cells', 'Dreams', 
-                                   'Memories', 'Thoughts', 'Reality Shards', 'Time Crystals', 'Quantum Bits'];
-                const amount = Math.floor(Math.random() * 9999) + 1000;
-                return `${amount.toLocaleString()} ${currencies[Math.floor(Math.random() * currencies.length)]}`;
-            }
-        
-            function getRandomStatus() {
-                const statuses = [
-                    "Possibly available",
-                    "Schrödinger's domain",
-                    "Exists in parallel universe",
-                    "Loading...",
-                    "Status unclear",
-                    "Ask again later",
-                    "Quantum state undefined",
-                    "Reality check pending",
-                    "DNS machine broke",
-                    "404 in time-space"
-                ];
-                return statuses[Math.floor(Math.random() * statuses.length)];
-            }
-        
-            function getRandomButtonText() {
-                const texts = [
-                    "PLEASE CLICK ME",
-                    "I PROMISE IT'S WORTH IT",
-                    "DEFINITELY NOT A TRAP",
-                    "SOULS WANTED",
-                    "CLICK FOR INFINITE POWER",
-                    "ABSOLUTELY SAFE*",
-                    "FREE DOMAIN (TERMS APPLY)",
-                    "CLICK TO TRANSCEND",
-                    "EMBRACE ETERNITY",
-                    "BECOME ONE WITH THE WEB"
-                ];
-                return texts[Math.floor(Math.random() * texts.length)];
-            }
-        
-            function getRandomErrorMessage() {
-                const messages = [
-                    "ERROR: NOT WORTHY",
-                    "INSUFFICIENT CHAOS",
-                    "REALITY.EXE FAILED",
-                    "TRY AGAIN NEVER",
-                    "VOID REJECTION",
-                    "QUANTUM DENIAL",
-                    "ACCESS UNLIKELY",
-                    "EXISTENCE ERROR",
-                    "*disappointed sigh*",
-                    "TASK FAILED SUCCESSFULLY"
-                ];
-                return messages[Math.floor(Math.random() * messages.length)];
-            }
-        
-            // Premium Domains click handler
-            document.querySelector('[data-trigger="domain"]').addEventListener('click', function(e) {
-                e.preventDefault();
-                const adContent = this.querySelector('div:last-child');
-                
-                // Generate increasingly absurd domains
-                let domainsHTML = `
-                    <div style="text-align: left; padding: 10px; margin-top: 10px;">
-                        <div style="font-weight: bold; margin-bottom: 10px;" class="loading-domains">
-                            SCANNING QUANTUM REALM FOR D0M41NS...
-                        </div>
-                `;
-                
-                const domains = [];
-                for(let i = 0; i < 5; i++) {
-                    domains.push({
-                        name: generateDomainName(),
-                        price: generatePrice(),
-                        status: getRandomStatus()
-                    });
-                }
-                
-                domains.forEach((domain, index) => {
-                    domainsHTML += `
-                        <div class="domain-entry" style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #f8f9fa; transition: all 0.3s ease;"
-                            onmouseover="this.style.transform = 'translate(${Math.random() * 5}px, ${Math.random() * 5}px)'">
-                            <span class="domain-name" style="flex-grow: 1;">${domain.name}</span>
-                            <span class="domain-price" style="color: #666; min-width: 120px; text-align: right;">
-                                ${domain.price}
-                            </span>
-                            <span class="domain-status" style="font-size: 0.8em; color: #999; margin-left: 10px;">
-                                ${domain.status}
-                            </span>
-                        </div>
-                    `;
-                });
-                
-                domainsHTML += `
-                    <button class="soul-button" style="width: 100%; margin-top: 10px; padding: 10px; background: #1a0dab; color: white; border: none; cursor: pointer; position: relative; overflow: hidden;">
-                        EXCHANGE SOUL FOR DOMAIN (NO REFUNDS)
-                    </button>
-                    <div style="font-size: 8px; text-align: center; margin-top: 5px; font-family: monospace;">
-                        * Soul value may vary. Void where prohibited. Not valid in this dimension.
-                        <br>** Previous incarnations may affect trade-in value
-                        <br>*** Quantum uncertainty principle applies to all transactions
-                    </div>
-                `;
-                
-                adContent.innerHTML = domainsHTML;
+<script>
+// ================================================================
+// SUPABASE CONFIG — replace these two values after creating your project
+// Project URL + anon key: Supabase dashboard → Settings → API
+// ================================================================
+const SUPABASE_URL  = 'REPLACE_WITH_YOUR_SUPABASE_URL';   // https://xxx.supabase.co
+const SUPABASE_ANON = 'REPLACE_WITH_YOUR_ANON_KEY';       // safe to commit, public key
+const SB_ADMIN_LSKEY = 'sb-admin-key';
 
-                let globalClickCount = 0;
-                const soulButton = adContent.querySelector('.soul-button');
-                let buttonState = 0; // Track button state for extra chaos
+let _sb = null, _sbAdmin = null;
+function getSb() {
+    if (!_sb && !SUPABASE_URL.includes('REPLACE'))
+        _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    return _sb;
+}
+function getSbAdmin() {
+    if (_sbAdmin) return _sbAdmin;
+    const k = localStorage.getItem(SB_ADMIN_LSKEY);
+    if (!k || SUPABASE_URL.includes('REPLACE')) return null;
+    _sbAdmin = supabase.createClient(SUPABASE_URL, k);
+    return _sbAdmin;
+}
 
-                // Extra trolly button effects
-                soulButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    globalClickCount++;
+// ================================================================
+// BOARD FALLBACK — used until Supabase is configured
+// ================================================================
+const BOARD = {
+    pin: '1234',   // ← fallback PIN (only used if Supabase not yet configured)
+    question: "Should I double down on the Toronto market or expand PFN internationally first?",
+    options: [
+        { id: 'a', label: 'Option A', text: 'Double down on Toronto — own the market first'       },
+        { id: 'b', label: 'Option B', text: 'Go international — the window is open now'            },
+        { id: 'c', label: 'Option C', text: "Both, in parallel — the constraint is a story I'm telling myself" },
+    ]
+};
 
-                    switch(buttonState) {
-                        case 0:
-                            this.style.width = '90%';
-                            this.style.fontSize = '0.9em';
-                            this.innerHTML = 'N1C3 TRY H4X0R... <span style="font-size: 0.8em">（╯°□°）╯︵ ┻━┻</span>';
-                            this.style.background = '#ff4444';
-                            buttonState++;
-                            break;
-                        case 1:
-                            this.style.width = '80%';
-                            this.style.fontSize = '0.8em';
-                            this.innerHTML = 'PERSISTENCE DETECTED... <span style="font-size: 0.8em">ಠ_ಠ</span>';
-                            this.style.background = '#ff6666';
-                            this.style.transform = 'rotate(2deg)';
-                            buttonState++;
-                            break;
-                        case 2:
-                            this.innerHTML = 'FINE... YOU ASKED FOR IT! <span style="font-size: 0.8em">༼ つ ◕_◕ ༽つ</span>';
-                            setTimeout(() => initiatePartyMode(e), 500);
-                            break;
-                    }
+// ================================================================
+// BOOT SEQUENCE
+// ================================================================
+const BOOT_SEQUENCE = [
+    { text: '> initializing neural_sprint_v3.4...',               cls: 'dim',  ms: 180 },
+    { text: '> scanning for unoptimized beliefs...  [3 FOUND]',   cls: 'warn', ms: 240 },
+    { text: '> migrating ego to cloud (free tier)...              [DEPRECATED]', cls: 'dim', ms: 180 },
+    { text: '> consulting Tibetan monks of Silicon Valley...  [QUEUE: 847]', cls: '', ms: 300 },
+    { text: '> TRUTH FOUND IN UNDER 60 SESSIONS',                 cls: '',     ms: 480 },
+    { text: '> vibes: CALIBRATED  ✓',                             cls: 'done', ms: 280 },
+];
 
-                    // Add glitch effect on click
-                    this.style.filter = 'hue-rotate(90deg) contrast(150%)';
-                    setTimeout(() => this.style.filter = '', 100);
-                });
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-                let dodgeCount = 0;
-                let lastMouseX = 0;
-                let lastMouseY = 0;
+// ================================================================
+// DOM REFS
+// ================================================================
+const transOverlay = document.getElementById('transition-overlay');
+const bootLog      = document.getElementById('boot-log');
+const bootBar      = document.getElementById('boot-bar');
+const bootPct      = document.getElementById('boot-pct');
+const container    = document.getElementById('main-container');
+const body         = document.body;
+const boringMode   = document.getElementById('boring-mode');
+const partyMode    = document.getElementById('party-mode');
+const exitButton   = document.querySelector('.emergency-exit');
 
-                // Make button dodge the cursor in increasingly erratic ways
-                soulButton.addEventListener('mousemove', function(e) {
-                    if (buttonState < 2 && dodgeCount > 2) {
-                        const buttonRect = this.getBoundingClientRect();
-                        const mouseX = e.clientX;
-                        const mouseY = e.clientY;
+async function runBootSequence() {
+    bootLog.innerHTML = ''; bootBar.style.width = '0%'; bootPct.textContent = '';
 
-                        // Calculate mouse movement direction
-                        const deltaX = mouseX - lastMouseX;
-                        const deltaY = mouseY - lastMouseY;
+    const linePromise = (async () => {
+        for (const step of BOOT_SEQUENCE) {
+            const el = document.createElement('div');
+            el.className = 'boot-line' + (step.cls ? ' ' + step.cls : '');
+            el.textContent = step.text;
+            bootLog.appendChild(el);
+            await sleep(20); el.classList.add('show'); await sleep(step.ms);
+        }
+    })();
 
-                        // Move button away from mouse with increasing intensity
-                        const intensity = Math.min(dodgeCount * 2, 20);
-                        const moveX = deltaX * intensity;
-                        const moveY = deltaY * intensity;
+    const barPromise = (async () => {
+        for (let p = 0; p <= 33; p++) { bootBar.style.width = p + '%'; await sleep(20); }
+        await sleep(100); bootBar.style.width = '29%'; await sleep(80);
+        for (let p = 29; p <= 69; p++) { bootBar.style.width = p + '%'; await sleep(14); }
+        bootPct.textContent = '69% — recalibrating vibes...';
+        await sleep(820); bootPct.textContent = '';
+        for (let p = 69; p <= 100; p++) { bootBar.style.width = p + '%'; await sleep(9); }
+    })();
 
-                        const container = adContent;
-                        const containerRect = container.getBoundingClientRect();
-                        
-                        let newX = buttonRect.left - containerRect.left - moveX;
-                        let newY = buttonRect.top - containerRect.top - moveY;
+    await Promise.all([linePromise, barPromise]);
+    await sleep(300);
+}
 
-                        // Keep button within container bounds
-                        newX = Math.max(0, Math.min(newX, containerRect.width - buttonRect.width));
-                        newY = Math.max(0, Math.min(newY, containerRect.height - buttonRect.height));
+async function initiatePartyMode() {
+    boringMode.style.transition = 'opacity .4s ease';
+    boringMode.style.opacity = '0';
+    await sleep(350);
 
-                        this.style.position = 'absolute';
-                        this.style.left = `${newX}px`;
-                        this.style.top = `${newY}px`;
-                        this.style.transform = `rotate(${Math.sin(dodgeCount) * 10}deg)`;
+    transOverlay.classList.add('active');
+    await sleep(16);
+    transOverlay.classList.add('visible');
+    await runBootSequence();
+    transOverlay.classList.remove('visible');
+    await sleep(500);
+    transOverlay.classList.remove('active');
 
-                        lastMouseX = mouseX;
-                        lastMouseY = mouseY;
-                    }
-                });
+    activatePartyMode();
+}
 
-                soulButton.addEventListener('mouseover', function() {
-                    dodgeCount++;
-                    if (dodgeCount > 1 && buttonState < 2) {
-                        this.textContent = getRandomButtonText();
-                        // Add glitch effect
-                        this.style.animation = 'glitch 0.3s infinite';
-                        setTimeout(() => this.style.animation = '', 300);
-                    }
-                });
+function activatePartyMode() {
+    body.classList.add('party-active');
+    container.classList.add('party-active');
+    boringMode.style.display = 'none';
+    partyMode.classList.add('active');
+    exitButton.classList.add('active');
+    updateStardate();
+    updateVaultUI();
+    buildBoard();
+}
 
-                // Add random glitch effects to domains
-                setInterval(() => {
-                    document.querySelectorAll('.domain-entry').forEach(entry => {
-                        if(Math.random() > 0.8) {
-                            const price = entry.querySelector('.domain-price');
-                            price.textContent = generatePrice();
-                            price.style.transform = 'scale(1.1)';
-                            setTimeout(() => price.style.transform = 'scale(1)', 200);
-                            
-                            // Add matrix-style character changes
-                            const domain = entry.querySelector('.domain-name');
-                            const originalText = domain.textContent;
-                            const glitchText = originalText.split('').map(char => 
-                                Math.random() > 0.7 ? String.fromCharCode(Math.random() * 26 + 97) : char
-                            ).join('');
-                            domain.textContent = glitchText;
-                            setTimeout(() => domain.textContent = originalText, 100);
-                        }
-                        if(Math.random() > 0.9) {
-                            entry.querySelector('.domain-status').textContent = getRandomStatus();
-                        }
-                    });
-                }, 2000);
-            });
-
-            // Add some extra chaotic button texts
-            function getRandomButtonText() {
-                const texts = [
-                    "C̷̨̛̛̦͈̠̜͇͖͙̘̖̘̲̉̀L̸̖̱̼̮͒́̈͑̈́͆͌̏͗͝Ḯ̷̧̨̭͈̪̟͍̬̣͓͛̽͗̊̋͜C̷̻͖̠͚̉̅̊͌̍̀K̷̡̩͓̱̘̳̮͖̖͒̀͋̉̎̎̌̃̀͊͑͜ ̶̛͚̝̙͍̱͆̋̽̀̒̈́̇̊͘͝M̸̢̦͕͎̙̯̪̩̱͋̏̈̕͜Ḙ̶̒̋̾͒̐̂̌̈̈́̚",
-                    "∀˥˥ ⅁˥Oɹʎ ┴O ┴HƎ HʎԀNO┴O∀p",
-                    "🆂🅾🆄🅻 🆃🆁🅰🅽🆂🅵🅴🆁 🅸🅽🅸🆃🅸🅰🆃🅴🅳",
-                    "【﻿ｃｌｉｃｋ　ｆｏｒ　ａｓｃｅｎｓｉｏｎ】",
-                    "𝕮𝖑𝖎𝖈𝖐 𝖙𝖔 𝖘𝖚𝖒𝖒𝖔𝖓 𝖙𝖍𝖊 𝖆𝖓𝖈𝖎𝖊𝖓𝖙 𝖔𝖓𝖊𝖘",
-                    "⚠️ D̷̛̯͊͒͋̈̒͝Ạ̶̛̼̹̲̝̦͐̈́̓̆͝N̸͕͉̞̺̐̓̄̅̈́͜Ġ̷͔̦̹̼̃̀̿̈́͐͜Ȅ̵͚̦̯͚̅̌̀͐̕R̴͉̖̩̲̲͛̔̀̏̕ͅ ⚠️",
-                    "ERROR: BUTTON.EXE HAS STOPPED WORKING",
-                    "¯\\_(ツ)_/¯ CLICK IF YOU DARE ¯\\_(ツ)_/¯",
-                    "LOADING SOUL EXTRACTION PROTOCOLS...",
-                    "QUANTUM ENTANGLEMENT INITIATED..."
-                ];
-                return texts[Math.floor(Math.random() * texts.length)];
-            }
-
-
-            // Web Hosting click handler
-            document.querySelector('[data-trigger="hosting"]').addEventListener('click', function(e) {
-                e.preventDefault();
-                const adContent = this.querySelector('div:last-child');
-                
-                // Keep track of user's choices to generate customized chaos
-                let userProfile = {
-                    expertise: '',
-                    location: '',
-                    budget: '',
-                    existentialLevel: 0,
-                    chaosPreference: 0
-                };
-
-                const plansHTML = `
-                    <div style="padding: 20px;">
-                        <div class="hosting-verification" style="margin-bottom: 20px; text-align: center;">
-                            <h3 style="color: #1a0dab;" class="verification-title">Reality Hosting Assessment Protocol</h3>
-                            <div style="color: #666; font-size: 12px;">* Your choices will determine your fate</div>
-                        </div>
-
-                        <div class="verification-step" id="step1">
-                            <label>Technical Expertise Level:</label>
-                            <select class="hosting-input" data-type="expertise" style="width: 100%; padding: 8px; margin: 5px 0;">
-                                <option value="">Select your level of delusion...</option>
-                                <option value="noob">I once pressed F12 and felt like a hacker</option>
-                                <option value="css">I can center a div (sometimes)</option>
-                                <option value="stackoverflow">Stack Overflow is my homepage</option>
-                                <option value="wordcoder">I write HTML in Microsoft Word</option>
-                                <option value="trigger">ALL GLORY TO THE HYPNOTOAD</option>
-                            </select>
-                            <div class="error-message" style="color: #ff4444; font-size: 12px; display: none;">
-                                Error: Your imposter syndrome is showing
-                            </div>
-                        </div>
-
-                        <div class="hosting-plans hidden" style="margin-top: 20px;">
-                            <!-- Plans will be dynamically injected here -->
-                        </div>
-
-                        <div class="hosting-progress" style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
-                            Calculating your reality quotient... (0/∞)
-                        </div>
-                    </div>
-                `;
-                
-                adContent.innerHTML = plansHTML;
-
-                // Plan variations based on user choices
-                const planVariations = {
-                    noob: {
-                        basic: {
-                            title: "TRAINING WHEELS REALITY",
-                            price: "$4.99/confusion",
-                            features: [
-                                "1x Tutorial Mode",
-                                "Stack Overflow Premium",
-                                "Panic Button Support",
-                                "Auto-save (60% of the time)",
-                                "Undo Life Choices"
-                            ]
-                        },
-                        hypno: {
-                            title: "HYPNOTOAD BEGINNER PACK",
-                            price: "GLORY IN TRAINING",
-                            features: [
-                                "Baby's First Hypnosis",
-                                "Mind Control Training Wheels",
-                                "24/7 Toad Mentoring",
-                                "Reality Bending 101",
-                                "Free 'How to Obey' Guide"
-                            ]
-                        },
-                        enterprise: {
-                            title: "FAKE IT TILL YOU MAKE IT",
-                            price: "$∞/imposter",
-                            features: [
-                                "Corporate Buzzword Generator",
-                                "Automatic Jargon Insertion",
-                                "Meeting Simulator",
-                                "LinkedIn Auto-Bragger",
-                                "Confidence Synthesizer"
-                            ]
-                        }
-                    },
-                    css: {
-                        basic: {
-                            title: "FLEXBOX NIGHTMARE",
-                            price: "margin: auto;",
-                            features: [
-                                "!important Priority Support",
-                                "Z-index: 999999",
-                                "Position: relative;",
-                                "Display: none; (when needed)",
-                                "Emergency CSS Reset"
-                            ]
-                        },
-                        hypno: {
-                            title: "HYPNOTOAD CSS FRAMEWORK",
-                            price: "ALL GLORY TO THE GRID",
-                            features: [
-                                "Transform: reality(180deg)",
-                                "Transition: mind ease-in 2s",
-                                "Animation: obey infinite",
-                                "Filter: consciousness(0%)",
-                                "Overflow: transcendent"
-                            ]
-                        },
-                        enterprise: {
-                            title: "ENTERPRISE CSS SOLUTION",
-                            price: "float: none;",
-                            features: [
-                                "Legacy IE Support",
-                                "Table-based Layouts",
-                                "Infinite Specificity",
-                                "!important Everything",
-                                "Bootstrap 2.0"
-                            ]
-                        }
-                    },
-                    stackoverflow: {
-                        basic: {
-                            title: "COPY-PASTE STARTER PACK",
-                            price: "15 rep/month",
-                            features: [
-                                "Auto-Copy Best Answer",
-                                "Duplicate Question Finder",
-                                "Comment Downvoter Pro",
-                                "RTFM Autoresponder",
-                                "Actually Marked as Answer"
-                            ]
-                        },
-                        hypno: {
-                            title: "HYPNOTOAD OVERFLOW",
-                            price: "ALL GLORY TO THE ALGORITHM",
-                            features: [
-                                "Infinite Reputation Points",
-                                "Auto-Close Questions",
-                                "Mind Control Comments",
-                                "Reality-Bending Answers",
-                                "Quantum Copy-Paste"
-                            ]
-                        },
-                        enterprise: {
-                            title: "ENTERPRISE OVERFLOW",
-                            price: "Closed as Duplicate",
-                            features: [
-                                "Legacy Code Generator",
-                                "Technical Debt Maximizer",
-                                "Meeting Scheduler Pro",
-                                "Buzzword Compiler",
-                                "Agile Waterfall Hybrid"
-                            ]
-                        }
-                    }
-                };
-
-                let planUpdateInterval;
-                let annoyanceLevel = 0;
-                const progressBar = adContent.querySelector('.hosting-progress');
-                const plansContainer = adContent.querySelector('.hosting-plans');
-
-                function updatePlans(expertiseLevel) {
-                    if (expertiseLevel === 'trigger') {
-                        initiatePartyMode(e);
-                        return;
-                    }
-
-                    const plans = planVariations[expertiseLevel];
-                    if (!plans) return;
-
-                    let plansHTML = `
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                    `;
-
-                    ['basic', 'hypno', 'enterprise'].forEach(planType => {
-                        const plan = plans[planType];
-                        plansHTML += `
-                            <div class="hosting-plan ${planType}-plan" style="border: 1px solid #ddd; padding: 10px; text-align: center; position: relative; overflow: hidden;">
-                                <div class="plan-glitch-overlay"></div>
-                                <div class="plan-title" style="font-weight: bold;">${plan.title}</div>
-                                <div class="price-display" style="font-size: 24px; margin: 10px 0;">${plan.price}</div>
-                                <ul class="feature-list" style="text-align: left; font-size: 12px;">
-                                    ${plan.features.map(feature => `<li>${feature}</li>`).join('')}
-                                </ul>
-                                <button class="plan-button" data-plan="${planType}">${getPlanButtonText(planType)}</button>
-                            </div>
-                        `;
-                    });
-
-                    plansHTML += '</div>';
-                    plansContainer.innerHTML = plansHTML;
-                    plansContainer.classList.remove('hidden');
-
-                    // Add chaotic effects
-                    initializeChaosEffects();
-                }
-
-                function getPlanButtonText(planType) {
-                    switch(planType) {
-                        case 'hypno': return 'ALL GLORY TO THE HYPNOTOAD';
-                        case 'basic': return 'EMBRACE MEDIOCRITY';
-                        case 'enterprise': return 'MORTGAGE YOUR SOUL';
-                        default: return 'SELECT PLAN';
-                    }
-                }
-
-                function initializeChaosEffects() {
-                    // Make prices fluctuate
-                    const priceDisplays = plansContainer.querySelectorAll('.price-display');
-                    if (planUpdateInterval) clearInterval(planUpdateInterval);
-                    
-                    planUpdateInterval = setInterval(() => {
-                        priceDisplays.forEach(price => {
-                            if (!price.textContent.includes('GLORY')) {
-                                const currencies = ['$', '€', '₿', '◈', '✧', '❂', '⟠'];
-                                const amounts = ['∞', '404', '42', '13.37', '0xDEAD', '8008135'];
-                                const units = ['void', 'eternity', 'chaos', 'dimension', 'reality'];
-                                
-                                if (Math.random() > 0.7) {
-                                    price.textContent = `${currencies[Math.floor(Math.random() * currencies.length)]}${
-                                        amounts[Math.floor(Math.random() * amounts.length)]}/${
-                                        units[Math.floor(Math.random() * units.length)]}`;
-                                    
-                                    price.style.transform = 'scale(1.1)';
-                                    price.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-                                    setTimeout(() => {
-                                        price.style.transform = 'scale(1)';
-                                        price.style.color = '';
-                                    }, 200);
-                                }
-                            }
-                        });
-                    }, 2000);
-
-                    // Add event listeners to plan buttons
-                    const buttons = plansContainer.querySelectorAll('.plan-button');
-                    buttons.forEach(button => {
-                        if (button.dataset.plan === 'hypno') {
-                            button.addEventListener('click', (e) => initiatePartyMode(e));
-                        } else {
-                            let clickCount = 0;
-                            button.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                clickCount++;
-                                
-                                if (clickCount > 2) {
-                                    this.style.position = 'absolute';
-                                    const container = this.closest('.hosting-plan');
-                                    const maxX = container.clientWidth - this.clientWidth;
-                                    const maxY = container.clientHeight - this.clientHeight;
-                                    this.style.left = `${Math.random() * maxX}px`;
-                                    this.style.top = `${Math.random() * maxY}px`;
-                                }
-
-                                this.textContent = getRandomErrorMessage(clickCount);
-                                this.style.backgroundColor = "#ff4444";
-                                
-                                // Make other buttons judge
-                                buttons.forEach(otherButton => {
-                                    if (otherButton !== this) {
-                                        otherButton.textContent = getRandomJudgement();
-                                        otherButton.style.transform = 'rotate(${Math.random() * 5 - 2.5}deg)';
-                                    }
-                                });
-                            });
-
-                            // Make buttons dodge on hover after a few clicks
-                            button.addEventListener('mouseover', function() {
-                                if (clickCount > 1) {
-                                    this.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px) rotate(${Math.random() * 10 - 5}deg)`;
-                                }
-                            });
-                        }
-                    });
-
-                    // Add glitch effects to plan cards
-                    const plans = plansContainer.querySelectorAll('.hosting-plan');
-                    plans.forEach(plan => {
-                        plan.addEventListener('mouseover', function() {
-                            if (this.classList.contains('hypno-plan')) {
-                                this.style.animation = 'rainbow 1s linear infinite';
-                            } else {
-                                if (Math.random() > 0.7) {
-                                    this.style.animation = 'glitch 0.3s infinite';
-                                    setTimeout(() => this.style.animation = '', 300);
-                                }
-                            }
-                        });
-                    });
-                }
-
-                // Update feature lists with random chaos
-                function addRandomFeature(list) {
-                    const features = [
-                        "Quantum Coffee Break Generator",
-                        "Recursive Procrastination Engine",
-                        "Stack Overflow Auto-Copier",
-                        "Reality Validation Failed",
-                        "Time Loop Detection System",
-                        "Existential Crisis Manager",
-                        "Void Warranty (void where void)",
-                        "Schrödinger's Backup System",
-                        "HTTP 418 I'm a Teapot Support",
-                        "Neural Network Massage Therapy"
-                    ];
-                    
-                    const li = document.createElement('li');
-                    li.textContent = features[Math.floor(Math.random() * features.length)];
-                    li.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-                    list.appendChild(li);
-                    
-                    setTimeout(() => {
-                        li.style.animation = 'glitch 0.2s infinite';
-                        li.style.opacity = '0.5';
-                        setTimeout(() => list.removeChild(li), 500);
-                    }, 2500);
-                }
-
-                // Event listener for expertise selection
-                adContent.querySelector('[data-type="expertise"]').addEventListener('change', function() {
-                    const expertiseLevel = this.value;
-                    userProfile.expertise = expertiseLevel;
-                    updatePlans(expertiseLevel);
-                    
-                    // Start random feature addition
-                    setInterval(() => {
-                        const featureLists = plansContainer.querySelectorAll('.feature-list');
-                        featureLists.forEach(list => {
-                            if (Math.random() > 0.8) {
-                                addRandomFeature(list);
-                            }
-                        });
-                    }, 3000);
-                });
-            });
-
-            // Extra helper functions for chaos
-            function getRandomErrorMessage(clickCount) {
-                const messages = [
-                    "ERROR: NOT WORTHY",
-                    "INSUFFICIENT CHAOS",
-                    "REALITY.EXE FAILED",
-                    "TRY AGAIN NEVER",
-                    "VOID REJECTION",
-                    "QUANTUM DENIAL",
-                    "ACCESS UNLIKELY",
-                    "EXISTENCE ERROR",
-                    "*disappointed sigh*",
-                    "TASK FAILED SUCCESSFULLY",
-                    "ERROR 418: I'M A TEAPOT",
-                    "REALITY NOT FOUND",
-                    "DNS_PROBE_REALITY_FAILED",
-                    "500 INTERNAL BRAIN ERROR",
-                    "404 WISDOM NOT FOUND"
-                ];
-                return messages[Math.min(clickCount, messages.length - 1)];
-            }
-
-            function getRandomJudgement() {
-                const judgements = [
-                    "ಠ_ಠ",
-                    "bruh...",
-                    "*sigh*",
-                    "really???",
-                    "wow...",
-                    "n00b",
-                    "¯\\_(ツ)_/¯",
-                    "(╯°□°）╯︵ ┻━┻",
-                    "404: wisdom not found",
-                    "*facepalm*",
-                    "（￣へ￣）",
-                    "(；一_一)",
-                    "( ≧Д≦)",
-                    "(╯°□°）╯︵ ┻━┻",
-                    "┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻"
-                ];
-                return judgements[Math.floor(Math.random() * judgements.length)];
-            }
-
-// Add some extra keyframe animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-    }
-    @keyframes glitch {
-        0% { transform: translate(0); }
-        20% { transform: translate(-2px, 2px); }
-        40% { transform: translate(-2px, -2px); }
-        60% { transform: translate(2px, 2px); }
-        80% { transform: translate(2px, -2px); }
-        100% { transform: translate(0); }
-    }
-    @keyframes rainbow {
-        0% { filter: hue-rotate(0deg); }
-        100% { filter: hue-rotate(360deg); }
-    }
-    .blink {
-        animation: blink 1s step-start infinite;
-    }
-    @keyframes blink {
-        0%, 50% { opacity: 1; }
-        50.01%, 100% { opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
-
-    
-    // Emergency exit functionality
-    exitButton.addEventListener('click', () => {
+// ================================================================
+// EXIT
+// ================================================================
+exitButton.addEventListener('click', () => {
+    partyMode.style.transition = 'opacity .4s ease';
+    partyMode.style.opacity = '0';
+    setTimeout(() => {
         body.classList.remove('party-active');
         container.classList.remove('party-active');
-        boringMode.style.display = 'block';
         partyMode.classList.remove('active');
+        partyMode.style.opacity = '';
+        boringMode.style.display = 'block';
+        boringMode.style.opacity = '0';
+        boringMode.style.transition = 'opacity .5s ease';
+        requestAnimationFrame(() => requestAnimationFrame(() => { boringMode.style.opacity = '1'; }));
         exitButton.classList.remove('active');
-    });
-    
-    // Sneak attack button - click the infinity symbol to jump straight to party mode
-    document.getElementById('sneak-attack').addEventListener('click', function(e) {
-        e.preventDefault();
-        initiatePartyMode(e);
-    });
+    }, 400);
+});
 
-    // Boss key - press 'Escape' to instantly return to boring mode
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            exitButton.click();
+// ================================================================
+// BOARD OF LIFE DIRECTORS
+// ================================================================
+async function buildBoard() {
+    const useSupa = !!getSb();
+
+    // Load active question from Supabase, fall back to BOARD constant
+    let qText = BOARD.question, qOpts = BOARD.options, qId = null;
+    if (useSupa) {
+        try {
+            const { data } = await getSb()
+                .from('board_questions').select('*').eq('active', true).single();
+            if (data) { qText = data.question; qOpts = data.options; qId = data.id; }
+        } catch (_) {}
+    }
+    document.getElementById('board-q-text').textContent = qText;
+
+    // ── PIN gate ──────────────────────────────────────────────
+    const pinInput     = document.getElementById('board-pin-input');
+    const pinSubmit    = document.getElementById('board-pin-submit');
+    const pinError     = document.getElementById('board-pin-error');
+    const pinGate      = document.getElementById('board-pin-gate');
+    const questionCard = document.getElementById('board-question-card');
+    const voteArea     = document.getElementById('board-vote-area');
+
+    function revealVoteUI() {
+        pinGate.classList.add('hidden');
+        questionCard.style.display = '';
+        voteArea.style.display = '';
+        pinError.classList.add('hidden');
+        buildVoteButtons();
+    }
+
+    function unlockBoard() {
+        const pin = pinInput.value.trim();
+        if (!pin) return;
+        if (!useSupa) {
+            // Fallback: local PIN check
+            if (pin === BOARD.pin) { revealVoteUI(); }
+            else { pinError.textContent = '⚠ Incorrect PIN'; pinError.classList.remove('hidden'); pinInput.value = ''; pinInput.focus(); }
+        } else {
+            // Supabase: just reveal UI — PIN validated atomically at vote submit
+            revealVoteUI();
+        }
+    }
+
+    pinSubmit.addEventListener('click', unlockBoard);
+    pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') unlockBoard(); });
+
+    // ── Vote buttons ──────────────────────────────────────────
+    function buildVoteButtons() {
+        const optsEl = document.getElementById('board-options');
+        optsEl.innerHTML = '';
+        let selected = null;
+
+        qOpts.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'board-btn';
+            btn.innerHTML = `<span class="board-btn-label">${opt.label || 'Option ' + opt.id.toUpperCase()}</span><span class="board-btn-text">${opt.text}</span>`;
+            btn.addEventListener('click', () => {
+                selected = opt.id;
+                optsEl.querySelectorAll('.board-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('board-submit').classList.add('visible');
+            });
+            optsEl.appendChild(btn);
+        });
+
+        document.getElementById('board-submit').addEventListener('click', async function() {
+            if (!selected) return;
+            const choice = qOpts.find(o => o.id === selected);
+            const pin    = pinInput.value.trim();
+            this.textContent = 'Submitting...'; this.disabled = true;
+
+            if (useSupa && qId) {
+                const { data, error } = await getSb().rpc('cast_vote', {
+                    p_pin_code:    pin,
+                    p_question_id: qId,
+                    p_choice_id:   selected,
+                    p_choice_text: choice?.text || selected
+                });
+                if (error || !data?.success) {
+                    const msg = data?.error === 'invalid_pin'
+                        ? '⚠ Invalid or already-used PIN'
+                        : '⚠ Something went wrong — try again';
+                    pinError.textContent = msg;
+                    pinError.classList.remove('hidden');
+                    questionCard.style.display = 'none';
+                    voteArea.style.display = 'none';
+                    pinGate.classList.remove('hidden');
+                    pinInput.value = '';
+                    this.textContent = 'Cast vote ↗'; this.disabled = false;
+                    return;
+                }
+            }
+
+            document.getElementById('board-vote-area').classList.add('hidden');
+            document.getElementById('board-voted').classList.remove('hidden');
+        });
+    }
+}
+
+// ================================================================
+// BORING MODE ADS
+// ================================================================
+
+// Contact
+document.querySelector('[data-trigger="contact"]').addEventListener('click', function() {
+    document.getElementById('contact-form-section').style.display = 'block';
+    this.style.display = 'none';
+});
+document.querySelector('.close-form').addEventListener('click', function() {
+    document.getElementById('contact-form-section').style.display = 'none';
+    document.querySelector('[data-trigger="contact"]').style.display = 'block';
+});
+document.getElementById('name-input').addEventListener('input', function() {
+    if (this.value.length > 0) document.getElementById('email-field').classList.add('reveal');
+});
+document.querySelector('#email-field input').addEventListener('input', function() {
+    if (this.value.length > 2) document.getElementById('reality-check').classList.add('reveal');
+});
+document.querySelector('#reality-check select').addEventListener('change', function() {
+    document.getElementById('intent-field').classList.add('reveal');
+    if (this.value === 'trigger') initiatePartyMode();
+});
+document.querySelector('#intent-field select').addEventListener('change', function() {
+    document.getElementById('budget-field').classList.add('reveal');
+});
+document.querySelector('#budget-field select').addEventListener('change', function() {
+    document.getElementById('captcha-field').classList.add('reveal');
+});
+document.getElementById('boring-contact-form').addEventListener('submit', function(e) {
+    e.preventDefault(); initiatePartyMode();
+});
+
+// Domain ad
+function gDomain() {
+    const pre=['quantum','cyber','meta','neural','crypto','synth','omega','ultra','nano','hyper'];
+    const suf=['verse','mind','flux','sync','node','core','matrix','sphere','nexus','cortex'];
+    const tld=['.io','.ai','.eth','.meta','.void','.∞','.error','.reality'];
+    return pre[Math.random()*pre.length|0]+suf[Math.random()*suf.length|0]+tld[Math.random()*tld.length|0];
+}
+function gPrice() {
+    const c=['Souls','BTC','Human Years','Brain Cells','Dreams','Reality Shards','Time Crystals'];
+    return `${(Math.random()*9999+1000|0).toLocaleString()} ${c[Math.random()*c.length|0]}`;
+}
+function gStatus() {
+    const s=["Possibly available","Schrödinger's domain","Loading...","Ask again later","Reality check pending","DNS machine broke","404 in time-space"];
+    return s[Math.random()*s.length|0];
+}
+function gErr(n) {
+    const m=["ERROR: NOT WORTHY","INSUFFICIENT CHAOS","REALITY.EXE FAILED","TRY AGAIN NEVER","*disappointed sigh*","TASK FAILED SUCCESSFULLY"];
+    return m[Math.min(n,m.length-1)];
+}
+
+document.querySelector('[data-trigger="domain"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    const ac = this.querySelector('div:last-child');
+    let html = `<div style="text-align:left;padding:10px;margin-top:10px;font-size:12px;">
+        <div style="font-weight:bold;margin-bottom:8px;letter-spacing:1px;font-family:monospace;">SCANNING QUANTUM REALM FOR D0M41NS...</div>`;
+    for (let i = 0; i < 5; i++) {
+        html += `<div class="domain-entry" style="display:flex;justify-content:space-between;margin:4px 0;padding:5px;background:#f8f9fa;font-family:monospace;font-size:11px;">
+            <span class="domain-name" style="flex-grow:1;">${gDomain()}</span>
+            <span class="domain-price" style="color:#666;min-width:110px;text-align:right;">${gPrice()}</span>
+            <span class="domain-status" style="font-size:.8em;color:#aaa;margin-left:8px;">${gStatus()}</span>
+        </div>`;
+    }
+    html += `<button class="soul-button" style="width:100%;margin-top:10px;padding:9px;background:#1a0dab;color:white;border:none;cursor:pointer;font-size:12px;font-family:monospace;">EXCHANGE SOUL FOR DOMAIN (NO REFUNDS)</button>
+    <div style="font-size:8px;text-align:center;margin-top:4px;font-family:monospace;color:#aaa;">* Soul value may vary. Not valid in this dimension. Previous incarnations affect trade-in value.</div>`;
+    ac.innerHTML = html;
+
+    const sb = ac.querySelector('.soul-button');
+    let bState = 0, dodgeCount = 0;
+    sb.addEventListener('click', function(ev) {
+        ev.preventDefault(); ev.stopPropagation();
+        if (bState === 0)      { this.style.width='90%'; this.innerHTML='N1C3 TRY H4X0R... （╯°□°）╯︵ ┻━┻'; this.style.background='#ff4444'; bState++; }
+        else if (bState === 1) { this.style.width='80%'; this.innerHTML='PERSISTENCE DETECTED... ಠ_ಠ'; this.style.background='#ff6666'; this.style.transform='rotate(2deg)'; bState++; }
+        else                   { this.innerHTML='FINE... ༼ つ ◕_◕ ༽つ'; setTimeout(initiatePartyMode, 500); }
+    });
+    sb.addEventListener('mouseover', function() {
+        dodgeCount++;
+        if (dodgeCount > 2 && bState < 2) {
+            const pr = ac.getBoundingClientRect(), sr = this.getBoundingClientRect();
+            this.style.position = 'absolute';
+            this.style.left = Math.max(0, Math.min(Math.random() * (pr.width - sr.width), pr.width - sr.width)) + 'px';
+            this.style.top  = Math.max(0, Math.min(Math.random() * (pr.height - sr.height), pr.height - sr.height)) + 'px';
+            this.style.transform = `rotate(${Math.sin(dodgeCount) * 8}deg)`;
         }
     });
-
-    // Easter egg hovering effects
-    document.querySelectorAll('[data-easter-egg]').forEach(element => {
-        const originalText = element.innerHTML;
-        element.addEventListener('mouseenter', () => {
-            element.innerHTML = element.getAttribute('data-easter-egg');
+    setInterval(() => {
+        document.querySelectorAll('.domain-entry').forEach(entry => {
+            if (Math.random() > .85) { const p = entry.querySelector('.domain-price'); p.textContent = gPrice(); p.style.transform = 'scale(1.08)'; setTimeout(() => p.style.transform = 'scale(1)', 180); }
+            if (Math.random() > .92) entry.querySelector('.domain-status').textContent = gStatus();
         });
-        element.addEventListener('mouseleave', () => {
-            element.innerHTML = originalText;
+    }, 2200);
+});
+
+// Hosting ad
+document.querySelector('[data-trigger="hosting"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    const ac = this.querySelector('div:last-child');
+    ac.innerHTML = `<div style="padding:14px 0;font-size:13px;">
+        <div style="font-weight:bold;margin-bottom:10px;color:#1a0dab;">Reality Hosting Assessment Protocol</div>
+        <div style="color:#888;font-size:11px;margin-bottom:10px;">* Your choices will determine your fate</div>
+        <label style="font-size:12px;">Technical Expertise Level:</label>
+        <select class="boring-input" data-type="expertise" style="margin-top:5px;">
+            <option value="">Select your level of delusion...</option>
+            <option value="noob">I once pressed F12 and felt like a hacker</option>
+            <option value="css">I can center a div (sometimes)</option>
+            <option value="stackoverflow">Stack Overflow is my homepage</option>
+            <option value="trigger">ALL GLORY TO THE HYPNOTOAD</option>
+        </select>
+        <div class="hosting-plans" style="margin-top:12px;"></div>
+    </div>`;
+
+    const planData = {
+        noob: [
+            { title:"TRAINING WHEELS REALITY", price:"$4.99/confusion", features:["Stack Overflow Premium","Panic Button Support","Auto-save (60% of the time)","Undo Life Choices"] },
+            { title:"FAKE IT TILL YOU MAKE IT", price:"$∞/imposter", features:["Corporate Buzzword Generator","Meeting Simulator","LinkedIn Auto-Bragger","Confidence Synthesizer"], hi:true },
+        ],
+        css: [
+            { title:"FLEXBOX NIGHTMARE", price:"margin: auto;", features:["!important Priority Support","Z-index: 999999","Emergency CSS Reset"] },
+            { title:"ENTERPRISE CSS SOLUTION", price:"float: none;", features:["Legacy IE Support","Table-based Layouts","Bootstrap 2.0"], hi:true },
+        ],
+        stackoverflow: [
+            { title:"COPY-PASTE STARTER PACK", price:"15 rep/month", features:["Auto-Copy Best Answer","Duplicate Question Finder","Actually Marked as Answer"] },
+            { title:"ENTERPRISE OVERFLOW", price:"Closed as Duplicate", features:["Legacy Code Generator","Technical Debt Maximizer","Agile Waterfall Hybrid"], hi:true },
+        ]
+    };
+
+    ac.querySelector('[data-type="expertise"]').addEventListener('change', function() {
+        if (this.value === 'trigger') { initiatePartyMode(); return; }
+        const plans = planData[this.value]; if (!plans) return;
+        const pc = ac.querySelector('.hosting-plans');
+        pc.innerHTML = `<div style="display:grid;grid-template-columns:repeat(${plans.length},1fr);gap:8px;">` +
+            plans.map(p => `<div style="border:1px solid ${p.hi?'#1a0dab':'#ddd'};padding:10px;text-align:center;font-size:11px;">
+                <div style="font-weight:bold;font-size:10px;margin-bottom:6px;">${p.title}</div>
+                <div style="font-size:20px;margin:8px 0;font-family:monospace;">${p.price}</div>
+                <ul style="text-align:left;margin:8px 0;">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+                <button class="plan-btn boring-submit" style="width:100%;font-size:10px;padding:6px;">${p.hi?'MORTGAGE YOUR SOUL':'EMBRACE MEDIOCRITY'}</button>
+            </div>`).join('') + '</div>';
+        let cc = 0;
+        pc.querySelectorAll('.plan-btn').forEach(btn => {
+            btn.addEventListener('click', function(ev) {
+                ev.preventDefault(); cc++;
+                if (cc > 3) { initiatePartyMode(); return; }
+                this.textContent = gErr(cc); this.style.background = '#ff4444';
+            });
         });
     });
+});
 
-    // Stardate functionality
-    function updateStardate() {
-        const year = new Date().getFullYear() + 376;
-        const decimal = Math.floor(Math.random() * 9);
-        document.getElementById('stardate').textContent = `${year}.${decimal}`;
+// ================================================================
+// MISC
+// ================================================================
+document.getElementById('sneak-attack').addEventListener('click', initiatePartyMode);
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        const ao = document.getElementById('admin-overlay');
+        const vo = document.getElementById('vault-overlay');
+        if (ao.classList.contains('active')) ao.classList.remove('active');
+        else if (vo.classList.contains('active')) vo.classList.remove('active');
+        else if (exitButton.classList.contains('active')) exitButton.click();
     }
-    
-    // Update stardate if element exists
-    if (document.getElementById('stardate')) {
-        updateStardate();
-        setInterval(updateStardate, 5000);
+});
+
+// #board shortcut — skip straight to party mode, scroll to board
+if (window.location.hash === '#board') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            activatePartyMode();
+            setTimeout(() => document.querySelector('.board-section')?.scrollIntoView({ behavior:'smooth' }), 500);
+        }, 200);
+    });
+}
+
+function updateStardate() {
+    const el = document.getElementById('stardate');
+    if (el) el.textContent = `${new Date().getFullYear()+376}.${Math.random()*9|0}`;
+}
+updateStardate();
+setInterval(updateStardate, 5000);
+
+// ================================================================
+// PROOF VAULT
+// ================================================================
+const VAULT_SSE_URL   = 'https://proof-vault-mcp.x-25e.workers.dev/sse';
+const VAULT_TOKEN_KEY = 'proof-vault-gh-token';
+
+(function checkVaultUnlock() {
+    const hash = window.location.hash;
+    if (hash.startsWith('#vault-')) {
+        const token = decodeURIComponent(hash.slice(7));
+        if (token) { localStorage.setItem(VAULT_TOKEN_KEY, token); history.replaceState(null, '', window.location.pathname + window.location.search); }
     }
+    if (hash.startsWith('#sb-admin-')) {
+        const key = decodeURIComponent(hash.slice(10));
+        if (key) { localStorage.setItem(SB_ADMIN_LSKEY, key); history.replaceState(null, '', window.location.pathname + window.location.search); }
+    }
+    updateVaultUI();
+})();
+
+function getVaultToken() { return localStorage.getItem(VAULT_TOKEN_KEY); }
+function updateVaultUI() {
+    const token=getVaultToken(), fb=document.getElementById('vault-float-btn'), lh=document.getElementById('vault-locked-hint'), uh=document.getElementById('vault-unlocked-hint');
+    if(fb) fb.style.display=token?'block':'none';
+    if(lh) lh.style.display=token?'none':'inline';
+    if(uh) uh.style.display=token?'inline':'none';
+    // Show admin button whenever service key is stored
+    const ab=document.getElementById('admin-float-btn');
+    if(ab) ab.style.display=localStorage.getItem(SB_ADMIN_LSKEY)?'block':'none';
+}
+
+class VaultMCPClient {
+    constructor(u,t){this.sseUrl=u;this.token=t;this.messageEndpoint=null;this.pending={};this.nextId=1;this._onReady=null;}
+    connect(){return new Promise((r,j)=>{this._onReady=r;this._startSSE(j);});}
+    async _startSSE(onError){
+        try{
+            const resp=await fetch(this.sseUrl,{headers:{'Authorization':`Bearer ${this.token}`,'Accept':'text/event-stream','Cache-Control':'no-cache'}});
+            if(!resp.ok){onError(new Error(`Auth failed (${resp.status})`));return;}
+            const reader=resp.body.getReader(),decoder=new TextDecoder();
+            let buf='',etype='',edata='';
+            while(true){const{done,value}=await reader.read();if(done)break;buf+=decoder.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();for(const line of lines){if(line.startsWith('event:'))etype=line.slice(6).trim();else if(line.startsWith('data:'))edata=(edata?edata+'\n':'')+line.slice(5).trim();else if(line===''){this._handleEvent(etype,edata);etype='';edata='';}}}
+        }catch(err){onError(err);}
+    }
+    _handleEvent(type,data){
+        if(type==='endpoint'){try{this.messageEndpoint=new URL(data,this.sseUrl).toString();}catch{this.messageEndpoint=data;}if(this._onReady){this._onReady(this);this._onReady=null;}}
+        else if(type==='message'||!type){try{const msg=JSON.parse(data);if(msg.id!==undefined&&this.pending[msg.id]){const{resolve,reject,timeout}=this.pending[msg.id];clearTimeout(timeout);delete this.pending[msg.id];msg.error?reject(new Error(msg.error.message||JSON.stringify(msg.error))):resolve(msg.result);}}catch(_){}}
+    }
+    async _request(method,params={}){
+        if(!this.messageEndpoint)throw new Error('Not connected');
+        const id=this.nextId++;
+        const promise=new Promise((resolve,reject)=>{const timeout=setTimeout(()=>{if(this.pending[id]){delete this.pending[id];reject(new Error(`Timeout: ${method}`));}},15000);this.pending[id]={resolve,reject,timeout};});
+        const resp=await fetch(this.messageEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${this.token}`},body:JSON.stringify({jsonrpc:'2.0',id,method,params})});
+        if(!resp.ok&&resp.status!==202)throw new Error(`POST failed: ${resp.status}`);
+        return promise;
+    }
+    initialize(){return this._request('initialize',{protocolVersion:'2024-11-05',capabilities:{},clientInfo:{name:'machu.la',version:'3.0'}});}
+    listTools(){return this._request('tools/list',{});}
+    callTool(name,args={}){return this._request('tools/call',{name,arguments:args});}
+}
+
+let _vaultClient=null;
+function escHtml(t){const d=document.createElement('div');d.appendChild(document.createTextNode(t));return d.innerHTML;}
+
+async function openVault(){
+    const token=getVaultToken();
+    if(!token){alert('Vault locked.\n\nVisit: machu.la/#vault-YOUR_GITHUB_TOKEN to unlock.');return;}
+    const vo=document.getElementById('vault-overlay'),ce=document.getElementById('vault-content');
+    vo.classList.add('active');setVaultStatus('ESTABLISHING NEURAL LINK...','connecting');
+    ce.innerHTML='<div class="vault-loading" style="padding:1rem;">⟳ Connecting...</div>';
+    try{
+        const client=new VaultMCPClient(VAULT_SSE_URL,token);
+        setVaultStatus('AWAITING ENDPOINT...','connecting');await client.connect();
+        await client.initialize();
+        const tr=await client.listTools();const tools=tr?.tools||[];
+        setVaultStatus(`VAULT OPEN — ${tools.length} tool${tools.length!==1?'s':''} available`,'ok');
+        _vaultClient=client;
+        const sel=document.getElementById('vault-tool-select');sel.innerHTML='<option value="">— select tool —</option>';
+        tools.forEach(t=>{const o=document.createElement('option');o.value=t.name;o.textContent=`${t.name}${t.description?' — '+t.description:''}`;sel.appendChild(o);});
+        ce.innerHTML='';
+        const rTools=tools.filter(t=>{const n=t.name.toLowerCase(),req=t.inputSchema?.required||[];return req.length===0||['list','get','all','read','search'].some(k=>n.includes(k));});
+        if(!rTools.length)ce.innerHTML='<div class="vault-empty" style="padding:1rem;">Vault connected. Use the tool selector below.</div>';
+        for(const tool of rTools.slice(0,6)){
+            const sec=document.createElement('div');sec.className='vault-section';
+            sec.innerHTML=`<div class="vault-section-header"><span class="vault-section-name">${escHtml(tool.name)}</span><span class="vault-section-desc">${escHtml(tool.description||'')}</span></div><div class="vault-section-content" id="vr-${escHtml(tool.name)}"><span class="vault-loading">Loading...</span></div>`;
+            ce.appendChild(sec);
+            client.callTool(tool.name,{}).then(r=>{const el=document.getElementById(`vr-${tool.name}`);if(el)el.innerHTML=renderVaultResult(r);}).catch(err=>{const el=document.getElementById(`vr-${tool.name}`);if(el)el.innerHTML=`<span class="vault-error">Error: ${escHtml(err.message)}</span>`;});
+        }
+    }catch(err){setVaultStatus('CONNECTION FAILED','error');document.getElementById('vault-content').innerHTML=`<div class="vault-error-state"><div style="font-size:1.1rem;margin-bottom:.8rem;">⚠️ VAULT ACCESS DENIED</div><div style="font-size:.78rem;margin-bottom:.8rem;">${escHtml(err.message)}</div><div style="font-size:.68rem;color:#553333;">Re-unlock: <code>machu.la/#vault-[NEW_TOKEN]</code></div></div>`;}
+}
+
+function setVaultStatus(msg,state){
+    const t=document.getElementById('vault-status-text'),d=document.getElementById('vault-dot');
+    if(t)t.textContent=msg;
+    if(d){d.className='vault-status-dot';if(state==='error')d.classList.add('error');else if(state==='connecting')d.classList.add('connecting');}
+}
+
+function renderVaultResult(result){
+    if(!result)return'<span class="vault-empty">No data returned</span>';
+    let content=result;
+    if(result.content&&Array.isArray(result.content)){const texts=result.content.filter(c=>c.type==='text').map(c=>c.text);if(texts.length){try{content=JSON.parse(texts.join(''));}catch{return`<div class="vault-text-result">${texts.map(t=>`<div class="vault-entry"><div class="vault-entry-main">${escHtml(t)}</div></div>`).join('')}</div>`;}}}
+    if(content&&typeof content==='object'){for(const key of['records','data','entries','items','results','notes','documents']){if(content[key]&&Array.isArray(content[key])){content=content[key];break;}}}
+    if(Array.isArray(content)){if(!content.length)return'<span class="vault-empty">No records found</span>';return`<div class="vault-records">${content.map(r=>renderVaultRecord(r)).join('')}</div>`;}
+    if(typeof content==='object'&&content!==null)return`<div class="vault-records">${renderVaultRecord(content)}</div>`;
+    return`<div class="vault-text-result">${escHtml(String(content))}</div>`;
+}
+
+function renderVaultRecord(rec){
+    if(typeof rec==='string')return`<div class="vault-entry"><div class="vault-entry-main">${escHtml(rec)}</div></div>`;
+    if(typeof rec!=='object'||rec===null)return`<div class="vault-entry"><div class="vault-entry-main">${escHtml(String(rec))}</div></div>`;
+    const main=['title','name','content','text','note','body','entry','description','message','proof'].map(f=>rec[f]).find(Boolean);
+    const date=['date','created','created_at','createdTime','timestamp','updated_at'].map(f=>rec[f]).find(Boolean);
+    const tags=['tags','tag','category','type','status','labels'].map(f=>rec[f]).find(Boolean);
+    if(!main)return`<div class="vault-entry">${Object.entries(rec).slice(0,8).map(([k,v])=>`<div><span style="color:#553333;">${escHtml(k)}:</span> <span style="color:#ffaaaa;">${escHtml(typeof v==='object'?JSON.stringify(v):String(v))}</span></div>`).join('')}</div>`;
+    return`<div class="vault-entry"><div class="vault-entry-main">${escHtml(String(main))}</div>${date?`<div class="vault-entry-date">⏱ ${escHtml(String(date))}</div>`:''} ${tags?`<div class="vault-entry-tags">${(Array.isArray(tags)?tags:[tags]).map(t=>`<span class="vault-tag">${escHtml(String(t))}</span>`).join('')}</div>`:''}</div>`;
+}
+
+document.getElementById('vault-float-btn').addEventListener('click',e=>{e.preventDefault();openVault();});
+document.getElementById('vault-close').addEventListener('click',()=>document.getElementById('vault-overlay').classList.remove('active'));
+document.getElementById('vault-relock-btn').addEventListener('click',()=>{if(confirm('Clear vault token?')){localStorage.removeItem(VAULT_TOKEN_KEY);updateVaultUI();document.getElementById('vault-overlay').classList.remove('active');}});
+document.getElementById('vault-submit-btn').addEventListener('click',async function(){
+    if(!_vaultClient){alert('Open the vault first.');return;}
+    const toolName=document.getElementById('vault-tool-select').value,text=document.getElementById('vault-new-entry').value.trim();
+    if(!toolName){alert('Select a tool first.');return;}if(!text){alert('Enter some content first.');return;}
+    this.textContent='TRANSMITTING...';this.disabled=true;
+    try{await _vaultClient.callTool(toolName,{content:text,text,note:text,entry:text,body:text,message:text});document.getElementById('vault-new-entry').value='';this.textContent='✓ TRANSMITTED';setTimeout(()=>{this.textContent='TRANSMIT';this.disabled=false;},2000);}
+    catch(err){this.textContent=`✗ ${err.message.slice(0,28)}`;setTimeout(()=>{this.textContent='TRANSMIT';this.disabled=false;},3000);}
+});
+
+// ================================================================
+// ADMIN PANEL
+// ================================================================
+async function openAdmin() {
+    const overlay = document.getElementById('admin-overlay');
+    overlay.classList.add('active');
+    const admin = getSbAdmin();
+    document.getElementById('admin-key-gate').style.display = admin ? 'none' : 'block';
+    document.getElementById('admin-main').style.display     = admin ? 'block' : 'none';
+    if (admin) { initAdminOptionsList(); await loadAdminTab('question'); }
+}
+
+document.getElementById('admin-float-btn').addEventListener('click', openAdmin);
+document.getElementById('admin-close').addEventListener('click', () => document.getElementById('admin-overlay').classList.remove('active'));
+
+// Tab switching
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', async function() {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('admin-tab-' + this.dataset.tab).classList.add('active');
+        await loadAdminTab(this.dataset.tab);
+    });
+});
+
+async function loadAdminTab(tab) {
+    const admin = getSbAdmin(); if (!admin) return;
+    if (tab === 'question') {
+        const { data } = await admin.from('board_questions').select('*').eq('active', true).maybeSingle();
+        const el = document.getElementById('admin-current-q');
+        el.innerHTML = data
+            ? `<strong>${escHtml(data.question)}</strong><br><span style="color:#2a5a2a;font-size:.75rem;">${data.options.map(o=>`${(o.label||o.id.toUpperCase())}: ${o.text}`).join(' &nbsp;·&nbsp; ')}</span>`
+            : '<span style="color:#2a5a2a;font-style:italic;">No active question set yet.</span>';
+    } else if (tab === 'pins') {
+        const { data } = await admin.from('pins').select('*').order('created_at', { ascending: false });
+        const tbody = document.getElementById('admin-pins-tbody');
+        tbody.innerHTML = (!data || !data.length)
+            ? '<tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">No pins yet — create one above.</td></tr>'
+            : data.map(p => `<tr>
+                <td><code style="color:#4ADE80;">${escHtml(p.code)}</code></td>
+                <td>${escHtml(p.label||'—')}</td>
+                <td><span class="admin-badge ${p.used?'used':'unused'}">${p.used?'USED':'UNUSED'}</span></td>
+                <td style="color:#2a5a2a;">${new Date(p.created_at).toLocaleDateString()}</td>
+              </tr>`).join('');
+    } else if (tab === 'results') {
+        const { data } = await admin.from('votes')
+            .select('*, pins(label, code), board_questions(question)')
+            .order('created_at', { ascending: false });
+        const tbody = document.getElementById('admin-results-tbody');
+        tbody.innerHTML = (!data || !data.length)
+            ? '<tr><td colspan="3" style="color:#2a5a2a;font-style:italic;">No votes yet.</td></tr>'
+            : data.map(v => `<tr>
+                <td>${escHtml(v.pins?.label || v.pins?.code || '?')}</td>
+                <td style="color:#4ADE80;">${escHtml(v.choice_text)}</td>
+                <td style="color:#2a5a2a;">${new Date(v.created_at).toLocaleString()}</td>
+              </tr>`).join('');
+    }
+}
+
+// ── Set new question ──────────────────────────────────────────
+let _adminOpts = [{id:'a',text:''},{id:'b',text:''}];
+let _adminOptsInited = false;
+
+function initAdminOptionsList() {
+    if (_adminOptsInited) return; _adminOptsInited = true;
+    renderAdminOpts();
+    document.getElementById('admin-add-option').addEventListener('click', () => {
+        if (_adminOpts.length >= 5) return;
+        _adminOpts.push({ id: String.fromCharCode(97 + _adminOpts.length), text: '' });
+        renderAdminOpts();
+    });
+    document.getElementById('admin-set-question').addEventListener('click', async function() {
+        const admin = getSbAdmin(); if (!admin) return;
+        const q = document.getElementById('admin-new-q').value.trim();
+        const opts = _adminOpts.filter(o => o.text.trim());
+        if (!q)           { alert('Enter a question.'); return; }
+        if (opts.length < 2) { alert('Need at least 2 options.'); return; }
+        this.textContent = 'Saving...'; this.disabled = true;
+        await admin.from('board_questions').update({ active: false }).neq('id', '00000000-0000-0000-0000-000000000000');
+        const { error } = await admin.from('board_questions').insert({ question: q, options: opts, active: true });
+        if (error) alert('Error: ' + error.message);
+        else {
+            document.getElementById('admin-new-q').value = '';
+            _adminOpts = [{id:'a',text:''},{id:'b',text:''}]; renderAdminOpts();
+            await loadAdminTab('question');
+        }
+        this.textContent = 'Make Active ↗'; this.disabled = false;
+    });
+    document.getElementById('admin-create-pin').addEventListener('click', async function() {
+        const admin = getSbAdmin(); if (!admin) return;
+        const label = document.getElementById('admin-pin-label').value.trim();
+        let   code  = document.getElementById('admin-pin-code').value.trim().toUpperCase();
+        if (!code) code = Math.random().toString(36).slice(2,8).toUpperCase();
+        this.textContent = 'Creating...'; this.disabled = true;
+        const { error } = await admin.from('pins').insert({ code, label: label || null });
+        if (error) alert(error.code==='23505' ? 'PIN already exists — try another.' : error.message);
+        else { document.getElementById('admin-pin-label').value=''; document.getElementById('admin-pin-code').value=''; await loadAdminTab('pins'); }
+        this.textContent = 'Create ↗'; this.disabled = false;
+    });
+}
+
+function renderAdminOpts() {
+    const el = document.getElementById('admin-options-list'); el.innerHTML = '';
+    _adminOpts.forEach((opt, i) => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;gap:.4rem;margin-bottom:.4rem;align-items:center;';
+        row.innerHTML = `
+            <span style="color:#2a5a2a;font-size:.68rem;min-width:50px;letter-spacing:1px;">OPT ${opt.id.toUpperCase()}</span>
+            <input type="text" class="admin-input" value="${escHtml(opt.text)}" placeholder="Option text..." style="margin:0;flex:1;" data-idx="${i}">
+            ${_adminOpts.length > 2 ? `<button style="background:transparent;border:1px solid #ff4444;color:#ff4444;padding:.3rem .5rem;cursor:pointer;font-family:monospace;font-size:.7rem;border-radius:2px;" data-remove="${i}">✕</button>` : ''}`;
+        el.appendChild(row);
+    });
+    el.querySelectorAll('[data-idx]').forEach(inp => inp.addEventListener('input', function() { _adminOpts[+this.dataset.idx].text = this.value; }));
+    el.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', function() {
+        _adminOpts.splice(+this.dataset.remove, 1);
+        _adminOpts = _adminOpts.map((o,i) => ({ id: String.fromCharCode(97+i), text: o.text }));
+        renderAdminOpts();
+    }));
+}
+
+// Close admin on ESC (update existing ESC handler below)
+
+(function initSpeech(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition,micBtn=document.getElementById('vault-mic-btn'),textarea=document.getElementById('vault-new-entry');
+    if(!SR){if(micBtn){micBtn.textContent='🎤 (n/a)';micBtn.disabled=true;}return;}
+    const sr=new SR();sr.continuous=true;sr.interimResults=true;sr.lang='en-US';
+    let isRec=false,finalText='';
+    sr.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)finalText+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript;}textarea.value=finalText+(interim?` [${interim}]`:'');};
+    sr.onend=()=>{isRec=false;micBtn.textContent='🎤 DICTATE';micBtn.classList.remove('recording');textarea.value=textarea.value.replace(/\s*\[.*?\]/g,'').trim();};
+    micBtn.addEventListener('click',()=>{if(isRec){sr.stop();}else{finalText=textarea.value;sr.start();isRec=true;micBtn.textContent='⏹ STOP';micBtn.classList.add('recording');}});
+})();
 </script>
-
-    </body>
-    </html>
+</body>
+</html>
