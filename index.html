@@ -341,6 +341,48 @@
             color: #ff4444; margin-top: .55rem; letter-spacing: 1px;
         }
 
+        /* Board meta / voter context */
+        .board-meta {
+            padding: .9rem 1.2rem 1rem; margin-bottom: 1rem;
+            background: rgba(74,222,128,.02); border: 1px solid #1a3a1a;
+            border-top: none; animation: fadeUp .3s ease both;
+        }
+        .board-meta-row { margin-bottom: .85rem; }
+        .board-meta-row:last-child { margin-bottom: 0; }
+        .board-meta-q {
+            font-family: monospace; font-size: .65rem;
+            color: #3a5a3a; letter-spacing: 1.5px;
+            text-transform: uppercase; margin-bottom: .45rem;
+        }
+        .board-dot-row { display: flex; gap: .45rem; align-items: center; }
+        .board-dot {
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 1.5px solid #2a4a2a; cursor: pointer;
+            transition: background .15s, border-color .15s, transform .12s;
+            flex-shrink: 0;
+        }
+        .board-dot:hover { border-color: #4ADE80; transform: scale(1.12); }
+        .board-dot.filled { background: rgba(74,222,128,.6); border-color: #4ADE80; }
+        .board-dot-label { font-family: monospace; font-size: .62rem; color: #4ADE80; margin-left: .4rem; min-width: 80px; }
+        .board-meta-textarea {
+            width: 100%; background: transparent;
+            border: 1px solid #1a3a1a; border-radius: 3px;
+            color: #a0c8a0; padding: .55rem .8rem;
+            font-family: monospace; font-size: .8rem;
+            resize: none; height: 60px; outline: none;
+            transition: border-color .2s; line-height: 1.5;
+        }
+        .board-meta-textarea:focus { border-color: #4ADE80; }
+        .board-meta-textarea::placeholder { color: #2a4a2a; font-style: italic; }
+
+        /* Admin question history */
+        .admin-q-history-item {
+            border: 1px solid #1a3a1a; border-radius: 2px;
+            padding: .65rem .8rem; margin-bottom: .45rem; transition: background .15s;
+        }
+        .admin-q-history-item:hover { background: rgba(74,222,128,.02); }
+        .admin-q-history-item.active-q { border-left: 3px solid #4ADE80; border-color: #4ADE80; }
+
         /* Party footer */
         .party-footer {
             text-align: center; padding: 1.2rem 2rem;
@@ -612,6 +654,20 @@
 
                 <div id="board-vote-area" style="display:none;">
                     <div class="board-options" id="board-options"></div>
+                    <!-- Voter context — revealed after selecting an option -->
+                    <div class="board-meta hidden" id="board-meta">
+                        <div class="board-meta-row">
+                            <div class="board-meta-q">How close are you to this issue?</div>
+                            <div id="board-dots-closeness"></div>
+                        </div>
+                        <div class="board-meta-row">
+                            <div class="board-meta-q">How well can you speak to your answer?</div>
+                            <div id="board-dots-expertise"></div>
+                        </div>
+                        <div class="board-meta-row">
+                            <textarea class="board-meta-textarea" id="board-justification" placeholder="Optional: a sentence or two on your reasoning..."></textarea>
+                        </div>
+                    </div>
                     <button class="board-submit-btn" id="board-submit">Cast vote ↗</button>
                 </div>
 
@@ -711,6 +767,10 @@
                     <button class="admin-btn primary" id="admin-set-question" style="float:right;">Make Active ↗</button>
                     <div style="clear:both;"></div>
                 </div>
+                <div class="admin-section">
+                    <div class="admin-label">Question History</div>
+                    <div id="admin-q-history"><div style="color:#2a5a2a;font-size:.72rem;font-style:italic;">Loading...</div></div>
+                </div>
             </div>
 
             <!-- Pins tab -->
@@ -740,12 +800,20 @@
 
             <!-- Results tab -->
             <div class="admin-panel" id="admin-tab-results">
+                <div class="admin-section" style="margin-bottom:.8rem;">
+                    <select id="admin-results-filter" class="admin-input" style="margin-bottom:0;">
+                        <option value="">All questions</option>
+                    </select>
+                </div>
+                <div id="admin-pie-section" class="admin-section"></div>
                 <div class="admin-section">
                     <div class="admin-label">Votes Cast</div>
-                    <table class="admin-table">
-                        <thead><tr><th>Voter</th><th>Question</th><th>Choice</th><th>When</th></tr></thead>
-                        <tbody id="admin-results-tbody"><tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
-                    </table>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead><tr><th>Voter</th><th>Question</th><th>Choice</th><th>Close</th><th>Expert</th><th>Reasoning</th><th>When</th></tr></thead>
+                            <tbody id="admin-results-tbody"><tr><td colspan="7" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -990,9 +1058,36 @@ async function buildBoard() {
 
     // ── Vote buttons ──────────────────────────────────────────
     function buildVoteButtons() {
-        const optsEl = document.getElementById('board-options');
+        const optsEl   = document.getElementById('board-options');
+        const metaEl   = document.getElementById('board-meta');
+        const submitEl = document.getElementById('board-submit');
         optsEl.innerHTML = '';
-        let selected = null;
+        if (metaEl) metaEl.classList.add('hidden');
+        submitEl.classList.remove('visible');
+
+        let selected = null, closenessVal = null, expertiseVal = null;
+
+        function buildDotRating(containerId, labels, onSelect) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            const row = document.createElement('div');
+            row.className = 'board-dot-row';
+            const labelEl = document.createElement('span');
+            labelEl.className = 'board-dot-label';
+            for (let i = 1; i <= labels.length; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'board-dot';
+                dot.addEventListener('click', () => {
+                    row.querySelectorAll('.board-dot').forEach((d, idx) => d.classList.toggle('filled', idx < i));
+                    labelEl.textContent = labels[i - 1] || '';
+                    onSelect(i);
+                });
+                row.appendChild(dot);
+            }
+            row.appendChild(labelEl);
+            container.appendChild(row);
+        }
 
         qOpts.forEach(opt => {
             const btn = document.createElement('button');
@@ -1007,23 +1102,35 @@ async function buildBoard() {
                 selected = opt.id;
                 optsEl.querySelectorAll('.board-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
-                document.getElementById('board-submit').classList.add('visible');
+                if (metaEl) metaEl.classList.remove('hidden');
+                submitEl.classList.add('visible');
             });
             optsEl.appendChild(btn);
         });
 
-        document.getElementById('board-submit').addEventListener('click', async function() {
+        buildDotRating('board-dots-closeness',
+            ['Observer', 'Aware', 'Involved', 'Close', 'Deeply affected'],
+            v => { closenessVal = v; });
+        buildDotRating('board-dots-expertise',
+            ['Gut feeling', 'Some context', 'Informed', 'Knowledgeable', 'Expert'],
+            v => { expertiseVal = v; });
+
+        submitEl.addEventListener('click', async function() {
             if (!selected) return;
             const choice = qOpts.find(o => o.id === selected);
             const pin    = pinInput.value.trim();
+            const justification = (document.getElementById('board-justification')?.value || '').trim() || null;
             this.textContent = 'Submitting...'; this.disabled = true;
 
             if (useSupa && qId) {
                 const { data, error } = await getSb().rpc('cast_vote', {
-                    p_pin_code:    pin,
-                    p_question_id: qId,
-                    p_choice_id:   selected,
-                    p_choice_text: choice?.text || selected
+                    p_pin_code:      pin,
+                    p_question_id:   qId,
+                    p_choice_id:     selected,
+                    p_choice_text:   choice?.text || selected,
+                    p_closeness:     closenessVal,
+                    p_expertise:     expertiseVal,
+                    p_justification: justification
                 });
                 if (error || !data?.success) {
                     const msg = data?.error === 'already_voted'
@@ -1390,11 +1497,40 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
 async function loadAdminTab(tab) {
     const admin = getSbAdmin(); if (!admin) return;
     if (tab === 'question') {
-        const { data } = await admin.from('board_questions').select('*').eq('active', true).maybeSingle();
+        // Active question display
+        const { data: active } = await admin.from('board_questions').select('*').eq('active', true).maybeSingle();
         const el = document.getElementById('admin-current-q');
-        el.innerHTML = data
-            ? `<strong>${escHtml(data.question)}</strong><br><span style="color:#2a5a2a;font-size:.75rem;">${data.options.map(o=>`${(o.label||o.id.toUpperCase())}: ${o.text}`).join(' &nbsp;·&nbsp; ')}</span>`
+        el.innerHTML = active
+            ? `<strong>${escHtml(active.question)}</strong><br><span style="color:#2a5a2a;font-size:.75rem;">${active.options.map(o=>`${(o.label||o.id.toUpperCase())}: ${o.text}`).join(' &nbsp;·&nbsp; ')}</span>`
             : '<span style="color:#2a5a2a;font-style:italic;">No active question set yet.</span>';
+        // Question history with vote counts
+        const { data: allQs } = await admin.from('board_questions')
+            .select('id, question, active, options, created_at, votes(count)')
+            .order('created_at', { ascending: false });
+        const histEl = document.getElementById('admin-q-history');
+        if (histEl) {
+            if (!allQs || !allQs.length) {
+                histEl.innerHTML = '<div style="color:#2a5a2a;font-size:.72rem;font-style:italic;">No questions yet.</div>';
+            } else {
+                histEl.innerHTML = allQs.map(q => {
+                    const votes = q.votes?.[0]?.count ?? 0;
+                    const isActive = !!q.active;
+                    return `<div class="admin-q-history-item${isActive?' active-q':''}">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;">
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:.8rem;color:${isActive?'#4ADE80':'#a0c8a0'};line-height:1.5;margin-bottom:.25rem;">${escHtml(q.question)}</div>
+                                <div style="font-size:.63rem;color:#2a5a2a;">${votes} vote${votes!==1?'s':''} &nbsp;·&nbsp; ${new Date(q.created_at).toLocaleDateString()}</div>
+                            </div>
+                            <div style="flex-shrink:0;padding-top:.1rem;">
+                                ${isActive
+                                    ? '<span style="color:#4ADE80;font-size:.6rem;letter-spacing:1px;font-family:monospace;">ACTIVE</span>'
+                                    : `<button class="admin-btn" style="font-size:.62rem;padding:.25rem .6rem;" onclick="activateQuestion('${q.id}')">Set Active</button>`}
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+        }
     } else if (tab === 'pins') {
         const { data } = await admin.from('pins').select('*, votes(count)').order('created_at', { ascending: false });
         const tbody = document.getElementById('admin-pins-tbody');
@@ -1409,19 +1545,99 @@ async function loadAdminTab(tab) {
                 <td style="color:#2a5a2a;">${new Date(p.created_at).toLocaleDateString()}</td>
               </tr>`;}).join('');
     } else if (tab === 'results') {
-        const { data } = await admin.from('votes')
-            .select('*, pins(label, code), board_questions(question)')
+        // Load questions for filter dropdown
+        const { data: questions } = await admin.from('board_questions')
+            .select('id, question, active').order('created_at', { ascending: false });
+        const filterEl = document.getElementById('admin-results-filter');
+        const prevFilter = filterEl?.value || '';
+        if (filterEl) {
+            filterEl.innerHTML = '<option value="">All questions</option>' +
+                (questions||[]).map(q => `<option value="${q.id}"${q.active?' style="color:#4ADE80;"':''}${prevFilter===q.id?' selected':''}>${escHtml(q.question.slice(0,55))}${q.active?' ★':''}</option>`).join('');
+            filterEl.onchange = () => loadAdminTab('results');
+        }
+        const currentFilter = filterEl?.value || '';
+        // Load votes
+        let query = admin.from('votes')
+            .select('*, pins(label,code), board_questions(id,question,options)')
             .order('created_at', { ascending: false });
+        if (currentFilter) query = query.eq('question_id', currentFilter);
+        const { data: votes } = await query;
+        // Build pie charts per question
+        const pieSection = document.getElementById('admin-pie-section');
+        if (pieSection && votes && votes.length) {
+            const qMap = {};
+            votes.forEach(v => {
+                const qid = v.question_id;
+                if (!qMap[qid]) qMap[qid] = { question: v.board_questions?.question || '?', counts: {} };
+                qMap[qid].counts[v.choice_text] = (qMap[qid].counts[v.choice_text] || 0) + 1;
+            });
+            pieSection.innerHTML = '<div class="admin-label" style="margin-bottom:.6rem;">Vote Breakdown</div>' +
+                Object.values(qMap).map(qd => {
+                    const pieData = Object.entries(qd.counts).map(([label, count]) => ({ label, count }));
+                    return `<div style="margin-bottom:1rem;">
+                        <div style="font-size:.7rem;color:#3a5a3a;margin-bottom:.5rem;font-family:monospace;">${escHtml(qd.question)}</div>
+                        ${renderPieChart(pieData)}
+                    </div>`;
+                }).join('');
+        } else if (pieSection) {
+            pieSection.innerHTML = '';
+        }
+        // Render table
         const tbody = document.getElementById('admin-results-tbody');
-        tbody.innerHTML = (!data || !data.length)
-            ? '<tr><td colspan="3" style="color:#2a5a2a;font-style:italic;">No votes yet.</td></tr>'
-            : data.map(v => `<tr>
+        const dotStr = n => n ? '●'.repeat(n) + '○'.repeat(5 - n) : '—';
+        tbody.innerHTML = (!votes || !votes.length)
+            ? '<tr><td colspan="7" style="color:#2a5a2a;font-style:italic;">No votes yet.</td></tr>'
+            : votes.map(v => `<tr>
                 <td>${escHtml(v.pins?.label || v.pins?.code || '?')}</td>
-                <td style="color:#3a5a3a;font-size:.7rem;">${escHtml(v.board_questions?.question || '—')}</td>
+                <td style="color:#3a5a3a;font-size:.68rem;max-width:160px;word-break:break-word;">${escHtml((v.board_questions?.question||'—').slice(0,45))}${(v.board_questions?.question||'').length>45?'…':''}</td>
                 <td style="color:#4ADE80;">${escHtml(v.choice_text)}</td>
-                <td style="color:#2a5a2a;">${new Date(v.created_at).toLocaleString()}</td>
+                <td style="font-size:.68rem;letter-spacing:1px;color:#4ADE80;white-space:nowrap;">${dotStr(v.closeness)}</td>
+                <td style="font-size:.68rem;letter-spacing:1px;color:#4ADE80;white-space:nowrap;">${dotStr(v.expertise)}</td>
+                <td style="color:#a0c8a0;font-size:.7rem;max-width:180px;word-break:break-word;">${v.justification ? escHtml(v.justification) : '<span style="color:#2a4a2a;">—</span>'}</td>
+                <td style="color:#2a5a2a;white-space:nowrap;">${new Date(v.created_at).toLocaleString()}</td>
               </tr>`).join('');
     }
+}
+
+// ── Pie chart renderer ────────────────────────────────────────
+function renderPieChart(data) {
+    const COLORS = ['#4ADE80','#FFD700','#60A5FA','#F472B6','#A78BFA','#34D399','#FB923C'];
+    const total = data.reduce((s, d) => s + d.count, 0);
+    if (!total) return '<span style="color:#2a5a2a;font-size:.72rem;">No votes yet</span>';
+    const cx = 56, cy = 56, r = 50;
+    let angle = -Math.PI / 2;
+    const segs = data.map((d, i) => {
+        const frac = d.count / total;
+        const a0 = angle, a1 = angle + frac * 2 * Math.PI;
+        angle = a1;
+        if (frac >= 0.9999) {
+            return { path: `M ${cx} ${cy-r} A ${r} ${r} 0 0 1 ${cx} ${cy+r} A ${r} ${r} 0 0 1 ${cx} ${cy-r} Z`, color: COLORS[i % COLORS.length], label: d.label, count: d.count, pct: 100 };
+        }
+        const x1 = cx + r * Math.cos(a0), y1 = cy + r * Math.sin(a0);
+        const x2 = cx + r * Math.cos(a1), y2 = cy + r * Math.sin(a1);
+        const large = frac > 0.5 ? 1 : 0;
+        return { path: `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`, color: COLORS[i % COLORS.length], label: d.label, count: d.count, pct: Math.round(frac * 100) };
+    });
+    const paths = segs.map(s => `<path d="${s.path}" fill="${s.color}" stroke="#030303" stroke-width="1.5"/>`).join('');
+    const legend = segs.map(s => `<div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.25rem;">
+        <span style="width:9px;height:9px;background:${s.color};border-radius:50%;flex-shrink:0;"></span>
+        <span style="font-size:.7rem;color:#a0c8a0;">${escHtml(s.label)}: ${s.count} <span style="color:#4ADE80;">(${s.pct}%)</span></span>
+    </div>`).join('');
+    return `<div style="display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;">
+        <svg width="112" height="112" viewBox="0 0 112 112" style="flex-shrink:0;">
+            ${paths}
+            <text x="${cx}" y="${cy+4}" text-anchor="middle" fill="#c8ffc8" font-family="monospace" font-size="11">${total}</text>
+        </svg>
+        <div>${legend}</div>
+    </div>`;
+}
+
+// ── Activate a past question ───────────────────────────────────
+async function activateQuestion(qid) {
+    const admin = getSbAdmin(); if (!admin) return;
+    await admin.from('board_questions').update({ active: false }).neq('id', '00000000-0000-0000-0000-000000000000');
+    await admin.from('board_questions').update({ active: true }).eq('id', qid);
+    await loadAdminTab('question');
 }
 
 // ── Set new question ──────────────────────────────────────────
