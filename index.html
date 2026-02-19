@@ -1147,30 +1147,30 @@ const SUPABASE_URL  = 'https://cnzsytyjsenvyemmvwzv.supabase.co';
 const SUPABASE_ANON = 'sb_publishable__-nh8fWDdRRAGlDqRbaRiQ_uOKlmpnJ';
 const SB_ADMIN_LSKEY    = 'sb-admin-key';
 const SB_ADMIN_EXPIRY   = 'sb-admin-expiry';
-const ADMIN_SESSION_TTL = 8 * 60 * 60 * 1000;   // 8 hours in ms
+const ADMIN_SESSION_TTL = 30 * 24 * 60 * 60 * 1000;   // 30 days in ms
 
-// ── Secure session helpers (sessionStorage + expiry) ──────────
-// sessionStorage clears when the tab/browser closes.
-// We also enforce an 8-hour hard expiry on top.
+// ── Secure session helpers (localStorage + 30-day expiry) ─────
+// localStorage persists across browser restarts (personal machine, sole user).
+// A hard 30-day TTL still auto-expires stale tokens.
 function getAdminKey() {
-    const k = sessionStorage.getItem(SB_ADMIN_LSKEY);
-    const e = sessionStorage.getItem(SB_ADMIN_EXPIRY);
+    const k = localStorage.getItem(SB_ADMIN_LSKEY);
+    const e = localStorage.getItem(SB_ADMIN_EXPIRY);
     if (!k || !e) return null;
     if (Date.now() > parseInt(e, 10)) {
-        sessionStorage.removeItem(SB_ADMIN_LSKEY);
-        sessionStorage.removeItem(SB_ADMIN_EXPIRY);
+        localStorage.removeItem(SB_ADMIN_LSKEY);
+        localStorage.removeItem(SB_ADMIN_EXPIRY);
         _sbAdmin = null;
         return null;
     }
     return k;
 }
 function setAdminKey(k) {
-    sessionStorage.setItem(SB_ADMIN_LSKEY, k);
-    sessionStorage.setItem(SB_ADMIN_EXPIRY, String(Date.now() + ADMIN_SESSION_TTL));
+    localStorage.setItem(SB_ADMIN_LSKEY, k);
+    localStorage.setItem(SB_ADMIN_EXPIRY, String(Date.now() + ADMIN_SESSION_TTL));
 }
 function clearAdminKey() {
-    sessionStorage.removeItem(SB_ADMIN_LSKEY);
-    sessionStorage.removeItem(SB_ADMIN_EXPIRY);
+    localStorage.removeItem(SB_ADMIN_LSKEY);
+    localStorage.removeItem(SB_ADMIN_EXPIRY);
     _sbAdmin = null;
 }
 
