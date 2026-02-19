@@ -2,12 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://api.anthropic.com https://api.twilio.com; img-src 'self' data:; frame-ancestors 'none';">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://api.anthropic.com https://api.twilio.com; img-src 'self' data:;">
     <title>machu.la</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        /* Touch-action: eliminate 300 ms delay on all interactive elements */
+        button, a, input, select, textarea, [role="button"] { touch-action: manipulation; }
+        /* Active-state feedback for touch (complements :hover on desktop) */
+        .board-btn:active        { background: rgba(74,222,128,.12) !important; transform: translateX(1px) !important; }
+        .board-pin-submit:active { background: rgba(74,222,128,.15) !important; }
+        .board-submit-btn:active { background: rgba(74,222,128,.15) !important; }
+        .oracle-btn:active       { background: rgba(74,222,128,.14) !important; }
+        .emergency-exit:active   { background: rgba(255,68,68,.25)  !important; }
+        #vault-float-btn:active  { background: rgba(255,68,68,.25)  !important; opacity: 1 !important; }
+        #admin-float-btn:active  { background: rgba(74,222,128,.2)  !important; opacity: 1 !important; }
+        .admin-btn:active        { background: rgba(74,222,128,.18) !important; }
+        .admin-close-btn:active  { opacity: .75; }
 
         body {
             font-family: Arial, sans-serif;
@@ -419,89 +432,169 @@
         #vault-float-btn:hover { opacity: 1; background: #ff4444; color: white; }
 
         @media (max-width: 640px) {
-            /* ── Layout ── */
-            body { padding: 0; align-items: flex-start; }
+            /* ── Layout ─────────────────────────────────────────── */
+            body { padding: 0; align-items: flex-start; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
             .container { width: 100%; border-radius: 0; box-shadow: none; }
 
-            /* ── Boring mode ── */
-            .boring-header { padding: 20px 16px 16px; }
-            .boring-domain { font-size: 18px; }
-            .boring-content { padding: 14px 14px 6px; }
-            .boring-ad { padding: 14px 14px; }
-            .boring-contact-form { padding: 14px; }
-            .boring-footer { padding: 12px 14px; font-size: 10px; }
+            /* ── Boring mode ─────────────────────────────────────── */
+            .boring-header       { padding: 24px 18px 18px; padding-top: max(24px, env(safe-area-inset-top, 24px)); }
+            .boring-domain       { font-size: 20px; }
+            .boring-content      { padding: 16px 16px 8px; }
+            .boring-ad           { padding: 16px; min-height: 52px; }
+            .boring-contact-form { padding: 16px; }
+            .boring-footer       { padding: 14px 16px; font-size: 11px; padding-bottom: max(14px, env(safe-area-inset-bottom, 14px)); }
 
-            /* ── Party header ── */
-            .party-header { padding: 1.4rem 1rem; }
-            .party-domain { font-size: clamp(1.8rem, 11vw, 2.8rem); }
-            .party-sub { font-size: .65rem; }
+            /* ── Party header ────────────────────────────────────── */
+            .party-header { padding: 1.5rem 1.1rem; padding-top: max(1.5rem, calc(env(safe-area-inset-top, 0px) + 1.1rem)); }
+            .party-domain { font-size: clamp(2rem, 12vw, 3rem); }
+            .party-sub    { font-size: .68rem; }
 
-            /* ── Party content ── */
-            .party-content { padding: .9rem .9rem 1.4rem; }
+            /* ── Party content ───────────────────────────────────── */
+            .party-content { padding: 1rem 1rem 1.8rem; }
 
-            /* ── Sections ── */
-            .board-section  { padding-bottom: 1.2rem; margin-bottom: .6rem; }
-            .easter-section { padding: 1.2rem 0 1.4rem; }
-            .poem-section   { padding: 1.4rem 0; }
-            .oracle-section { padding: 1.1rem 1rem; }
-            .vault-hint     { padding: .9rem 0; }
+            /* ── Sections ────────────────────────────────────────── */
+            .board-section  { padding-bottom: 1.5rem; margin-bottom: .8rem; }
+            .easter-section { padding: 1.4rem 0 1.6rem; }
+            .poem-section   { padding: 1.6rem 0; }
+            .oracle-section { padding: 1.3rem 1rem; }
+            .vault-hint     { padding: 1rem 0; }
 
-            /* ── Board headings ── */
-            .board-label   { font-size: .58rem; }
-            .board-heading { font-size: 1rem; }
-            .board-desc    { font-size: .75rem; }
+            /* ── Board headings ──────────────────────────────────── */
+            .board-label   { font-size: .6rem; }
+            .board-heading { font-size: 1.05rem; line-height: 1.4; }
+            .board-desc    { font-size: .78rem; line-height: 1.6; }
 
-            /* ── Board PIN row ── */
-            .board-pin-row { flex-direction: column; gap: .5rem; }
-            .board-pin-input, .board-pin-submit { width: 100%; }
+            /* ── Board PIN ───────────────────────────────────────── */
+            .board-pin-row    { flex-direction: column; gap: .6rem; }
+            .board-pin-input  { width: 100%; font-size: 18px; letter-spacing: 10px; padding: .8rem 1rem; min-height: 52px; border-radius: 8px; }
+            .board-pin-submit { width: 100%; min-height: 52px; font-size: .84rem; border-radius: 8px; padding: .8rem 1rem; }
+            .board-pin-error  { font-size: .72rem; }
 
-            /* ── Board options ── */
-            .board-options { flex-direction: column; }
-            .board-btn { padding: .75rem .9rem; }
-            .board-btn-text { font-size: .78rem; }
+            /* ── Board options ───────────────────────────────────── */
+            .board-options    { flex-direction: column; gap: .6rem; }
+            .board-btn        { padding: 1rem 1.1rem; min-height: 56px; border-radius: 8px; }
+            .board-btn-text   { font-size: .84rem; }
+            .board-btn-label  { font-size: .62rem; }
 
-            /* ── Board meta dot ratings ── */
-            .board-dot { width: 17px; height: 17px; }
-            .board-meta-q { font-size: .6rem; }
-            .board-meta { padding: .7rem .85rem .8rem; }
+            /* ── Board submit ────────────────────────────────────── */
+            .board-submit-btn { min-height: 52px; font-size: .84rem; border-radius: 8px; letter-spacing: 1.5px; }
 
-            /* ── Poem ── */
-            .poem-grid { grid-template-columns: 1fr; gap: 1.1rem; }
-            .poem-zh   { font-size: 1.05rem; text-align: center; }
-            .poem-en   { font-size: .82rem; text-align: center; }
+            /* ── Board voted ─────────────────────────────────────── */
+            .board-voted       { padding: 2rem 1.2rem; border-radius: 8px; }
+            .board-voted-title { font-size: .85rem; }
 
-            /* ── Oracle ── */
-            .oracle-input-row { flex-direction: column; gap: .5rem; }
-            .oracle-btn { width: 100%; padding: .75rem; }
-            .oracle-heading { font-size: .88rem; }
-            .oracle-answer  { font-size: .82rem; }
+            /* ── Board meta dot ratings ──────────────────────────── */
+            .board-dot          { width: 26px; height: 26px; }
+            .board-meta-q       { font-size: .63rem; }
+            .board-meta         { padding: .9rem 1rem 1rem; border-radius: 0 0 8px 8px; }
+            .board-dot-row      { gap: .55rem; flex-wrap: wrap; }
+            .board-meta-textarea { font-size: 16px; height: 76px; padding: .7rem .9rem; border-radius: 6px; }
 
-            /* ── Network ── */
-            .network-form-row { flex-direction: column; gap: .5rem; }
-            .network-input  { min-width: unset; width: 100%; }
-            .network-heading { font-size: .88rem; }
+            /* ── Poem ────────────────────────────────────────────── */
+            .poem-grid { grid-template-columns: 1fr; gap: 1.3rem; }
+            .poem-zh   { font-size: 1.1rem; text-align: center; }
+            .poem-en   { font-size: .86rem; text-align: center; line-height: 1.7; }
 
-            /* ── Float buttons ── */
-            .emergency-exit  { top: 8px; right: 8px; padding: 5px 10px; font-size: .62rem; }
-            #vault-float-btn { bottom: 10px; left: 8px;   padding: 5px 9px; font-size: .6rem; }
-            #admin-float-btn { bottom: 10px; left: 108px; padding: 5px 9px; font-size: .6rem; }
+            /* ── Oracle ──────────────────────────────────────────── */
+            .oracle-input-row { flex-direction: column; gap: .6rem; }
+            .oracle-input     { font-size: 16px; padding: .75rem .9rem; min-height: 50px; border-radius: 8px; }
+            .oracle-btn       { width: 100%; min-height: 50px; font-size: .84rem; border-radius: 8px; padding: .75rem 1rem; }
+            .oracle-heading   { font-size: .9rem; }
+            .oracle-answer    { font-size: .84rem; line-height: 1.68; }
 
-            /* ── Admin overlay ── */
-            .admin-container { padding: .8rem .7rem; }
-            .admin-title { font-size: 1rem; letter-spacing: 2px; }
-            .admin-tabs { flex-wrap: wrap; gap: .25rem; }
-            .admin-tab { font-size: .56rem; padding: .35rem .55rem; letter-spacing: .5px; }
-            .admin-table { font-size: .7rem; }
-            .admin-table th, .admin-table td { padding: .35rem .4rem; }
-            .admin-input { font-size: .75rem; }
-            .admin-section { overflow-x: auto; }
+            /* ── Network ─────────────────────────────────────────── */
+            .network-form-row { flex-direction: column; gap: .6rem; }
+            .network-input    { min-width: unset; width: 100%; font-size: 16px; min-height: 50px; border-radius: 8px; }
+            .network-heading  { font-size: .9rem; }
 
-            /* ── Vault overlay ── */
-            .vault-container { padding: .8rem .7rem; }
-            .vault-title { font-size: 1.2rem; letter-spacing: 3px; }
+            /* ── Float buttons — safe-area aware ─────────────────── */
+            .emergency-exit {
+                top: max(10px, env(safe-area-inset-top, 10px));
+                right: max(10px, env(safe-area-inset-right, 10px));
+                padding: 8px 14px; font-size: .65rem; min-height: 36px; border-radius: 20px;
+            }
+            #vault-float-btn {
+                bottom: max(14px, env(safe-area-inset-bottom, 14px));
+                left: max(12px, env(safe-area-inset-left, 12px));
+                padding: 9px 14px; font-size: .65rem; min-height: 36px; border-radius: 20px;
+            }
+            #admin-float-btn {
+                bottom: max(14px, env(safe-area-inset-bottom, 14px));
+                left: calc(max(12px, env(safe-area-inset-left, 12px)) + 96px);
+                padding: 9px 14px; font-size: .65rem; min-height: 36px; border-radius: 20px;
+            }
 
-            /* ── Party footer ── */
-            .party-footer { font-size: .58rem; padding: .9rem; letter-spacing: 1px; }
+            /* ── Admin overlay — bottom sheet ────────────────────── */
+            .admin-overlay.active {
+                display: flex !important;
+                flex-direction: column;
+                justify-content: flex-end;
+                background: rgba(0,0,0,.65);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+            }
+            .admin-container {
+                border-radius: 18px 18px 0 0;
+                max-height: 90vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 1rem 1rem max(1rem, env(safe-area-inset-bottom, 1rem));
+                background: #020c02;
+                border: 1px solid #1a3a1a;
+                border-bottom: none;
+            }
+            /* Drag handle pill */
+            .admin-container::before {
+                content: '';
+                display: block;
+                width: 36px; height: 4px;
+                background: #2a4a2a;
+                border-radius: 2px;
+                margin: 0 auto .9rem;
+            }
+            .admin-title    { font-size: 1rem; letter-spacing: 2px; }
+            .admin-subtitle { font-size: .58rem; }
+            .admin-close-btn { padding: 8px 14px; min-height: 36px; border-radius: 6px; }
+            .admin-tabs     { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 0; padding-bottom: 2px; }
+            .admin-tab      { font-size: .6rem; padding: .42rem .7rem; letter-spacing: .5px; white-space: nowrap; min-height: 36px; }
+            .admin-table    { font-size: .72rem; }
+            .admin-table th, .admin-table td { padding: .42rem .45rem; }
+            .admin-input    { font-size: 16px; min-height: 44px; border-radius: 6px; }
+            .admin-btn      { min-height: 40px; font-size: .72rem; border-radius: 6px; padding: .5rem 1rem; }
+            .admin-section  { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+            /* ── Vault overlay — bottom sheet ────────────────────── */
+            .vault-overlay.active {
+                display: flex !important;
+                flex-direction: column;
+                justify-content: flex-end;
+                background: rgba(0,0,0,.65);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+            }
+            .vault-container {
+                border-radius: 18px 18px 0 0;
+                max-height: 90vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 1rem 1rem max(1rem, env(safe-area-inset-bottom, 1rem));
+                background: #0c0000;
+                border: 1px solid #3a1010;
+                border-bottom: none;
+            }
+            .vault-container::before {
+                content: '';
+                display: block;
+                width: 36px; height: 4px;
+                background: #3a1010;
+                border-radius: 2px;
+                margin: 0 auto .9rem;
+            }
+            .vault-title    { font-size: 1.2rem; letter-spacing: 3px; }
+            .vault-textarea { font-size: 16px; }
+
+            /* ── Party footer ────────────────────────────────────── */
+            .party-footer { font-size: .6rem; padding: .9rem 1rem; padding-bottom: max(calc(.9rem + env(safe-area-inset-bottom, 0px)), 1rem); letter-spacing: 1px; }
         }
 
         /* ─── ORACLE ─────────────────────────────── */

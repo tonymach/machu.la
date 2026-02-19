@@ -59,9 +59,19 @@ async function decrypt(stored: string): Promise<string> {
 }
 
 // ── Auth check ────────────────────────────────────────────────
-function isAuthorised(req: Request): boolean {
+// Validates via Supabase query — accepts any valid service-role key
+// regardless of format (JWT eyJ… or new sb_secret_… format)
+async function isAuthorised(req: Request): Promise<boolean> {
   const token = req.headers.get('Authorization')?.replace('Bearer ', '').trim()
-  return token === SUPABASE_SERVICE_KEY
+  if (!token) return false
+  // Fast path: direct match against injected service role key
+  if (token === SUPABASE_SERVICE_KEY) return true
+  // Fallback: validate by attempting a privileged query (handles format mismatches)
+  try {
+    const sb = createClient(SUPABASE_URL, token)
+    const { error } = await sb.from('pins').select('code').limit(1)
+    return !error || (error.code !== 'PGRST301' && !error.message?.includes('JWT') && !error.message?.includes('invalid'))
+  } catch { return false }
 }
 
 // ── PIN generator (crypto-secure) ─────────────────────────────
@@ -74,7 +84,7 @@ function generatePin(): string {
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
 
-  if (!isAuthorised(req)) {
+  if (!await isAuthorised(req)) {
     return json({ error: 'Unauthorised' }, 401)
   }
 

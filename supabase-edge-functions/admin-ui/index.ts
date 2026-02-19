@@ -11,7 +11,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
+const SUPABASE_URL     = Deno.env.get('SUPABASE_URL')      ?? ''
+const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -35,8 +36,8 @@ serve(async (req) => {
   const adminJS = `
 // Admin panel is injected and initialized
 (function() {
-  const SUPABASE_URL = window.SUPABASE_URL;
-  const SUPABASE_ANON = window.SUPABASE_ANON;
+  const SUPABASE_URL = '${SUPABASE_URL}';
+  const SUPABASE_ANON = '${SUPABASE_ANON_KEY}';
 
   // Inject HTML into admin-main
   document.getElementById('admin-main').innerHTML = \`
@@ -238,9 +239,9 @@ serve(async (req) => {
   // Client-side phone normaliser
   function normalisePhoneClient(raw) {
     if (!raw) return null;
-    const stripped = raw.trim().replace(/[\s\-\.\(\)]/g, '');
-    const digits = stripped.replace(/^\+/, '');
-    if (!/^\d{7,15}\$/.test(digits)) return null;
+    const stripped = raw.trim().replace(/[\\s\\-\\.\\(\\)]/g, '');
+    const digits = stripped.replace(/^\\+/, '');
+    if (!/^\\d{7,15}$/.test(digits)) return null;
     if (stripped.startsWith('+')) return stripped;
     if (digits.length === 10) return \`+1\${digits}\`;
     if (digits.length === 11 && digits.startsWith('1')) return \`+\${digits}\`;
@@ -474,7 +475,7 @@ serve(async (req) => {
     const btn = document.getElementById('notify-btn');
     const secret = window.getAdminKey();
     if (!secret) { statusEl.style.color = '#ff8888'; statusEl.textContent = '✗ No admin key. Re-enter PIN.'; return; }
-    if (!confirm(\`Send personalized decision notification to all active subscribers?\\n\\nTemplate:\\n"\${template.slice(0,120)}\${template.length>120?'…':''}\"\)) return;
+    if (!confirm(\`Send personalized decision notification to all active subscribers?\\n\\nTemplate:\\n"\${template.slice(0,120)}\${template.length>120?'…':''}\"\`)) return;
     btn.disabled = true; btn.textContent = '...';
     statusEl.style.color = '#4a7a4a'; statusEl.textContent = 'Sending...';
     try {
@@ -506,7 +507,7 @@ serve(async (req) => {
     const btn = document.getElementById('broadcast-btn');
     const secret = window.getAdminKey();
     if (!secret) { statusEl.style.color = '#ff8888'; statusEl.textContent = '✗ No admin key found. Re-enter PIN.'; return; }
-    if (!confirm(\`Send to all contacts?\\n\\n"\${msg}\"\)) return;
+    if (!confirm(\`Send to all contacts?\\n\\n"\${msg}"\`)) return;
     btn.disabled = true; btn.textContent = '...';
     statusEl.style.color = '#4a7a4a'; statusEl.textContent = 'Sending...';
     try {
