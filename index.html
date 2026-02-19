@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://api.anthropic.com https://api.twilio.com; img-src 'self' data:; frame-ancestors 'none';">
     <title>machu.la</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -1144,7 +1145,34 @@
 // ================================================================
 const SUPABASE_URL  = 'https://cnzsytyjsenvyemmvwzv.supabase.co';
 const SUPABASE_ANON = 'sb_publishable__-nh8fWDdRRAGlDqRbaRiQ_uOKlmpnJ';
-const SB_ADMIN_LSKEY = 'sb-admin-key';
+const SB_ADMIN_LSKEY    = 'sb-admin-key';
+const SB_ADMIN_EXPIRY   = 'sb-admin-expiry';
+const ADMIN_SESSION_TTL = 8 * 60 * 60 * 1000;   // 8 hours in ms
+
+// ── Secure session helpers (sessionStorage + expiry) ──────────
+// sessionStorage clears when the tab/browser closes.
+// We also enforce an 8-hour hard expiry on top.
+function getAdminKey() {
+    const k = sessionStorage.getItem(SB_ADMIN_LSKEY);
+    const e = sessionStorage.getItem(SB_ADMIN_EXPIRY);
+    if (!k || !e) return null;
+    if (Date.now() > parseInt(e, 10)) {
+        sessionStorage.removeItem(SB_ADMIN_LSKEY);
+        sessionStorage.removeItem(SB_ADMIN_EXPIRY);
+        _sbAdmin = null;
+        return null;
+    }
+    return k;
+}
+function setAdminKey(k) {
+    sessionStorage.setItem(SB_ADMIN_LSKEY, k);
+    sessionStorage.setItem(SB_ADMIN_EXPIRY, String(Date.now() + ADMIN_SESSION_TTL));
+}
+function clearAdminKey() {
+    sessionStorage.removeItem(SB_ADMIN_LSKEY);
+    sessionStorage.removeItem(SB_ADMIN_EXPIRY);
+    _sbAdmin = null;
+}
 
 let _sb = null, _sbAdmin = null;
 function getSb() {
@@ -1154,10 +1182,37 @@ function getSb() {
 }
 function getSbAdmin() {
     if (_sbAdmin) return _sbAdmin;
-    const k = localStorage.getItem(SB_ADMIN_LSKEY);
+    const k = getAdminKey();
     if (!k || SUPABASE_URL.includes('REPLACE')) return null;
     _sbAdmin = supabase.createClient(SUPABASE_URL, k);
     return _sbAdmin;
+}
+
+// ── admin-data Edge Function helper (encrypted PII proxy) ─────
+async function adminDataGet(resource) {
+    const key = getAdminKey(); if (!key) return null;
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/admin-data?resource=${resource}`, {
+        headers: { 'Authorization': `Bearer ${key}` }
+    });
+    if (!res.ok) return null;
+    return res.json();
+}
+async function adminDataPost(body) {
+    const key = getAdminKey(); if (!key) return { error: 'No admin session' };
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/admin-data`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    return res.json();
+}
+
+// ── Crypto-secure PIN generator (replaces Math.random) ────────
+function generateSecurePin() {
+    const bytes = new Uint8Array(4);
+    crypto.getRandomValues(bytes);
+    const num = new DataView(bytes.buffer).getUint32(0);
+    return num.toString(36).slice(-6).toUpperCase().padStart(6, '0');
 }
 
 // ── Client-side phone normaliser (mirrors Edge Function logic) ─
@@ -1843,7 +1898,7 @@ const VAULT_TOKEN_KEY = 'proof-vault-gh-token';
     }
     if (hash.startsWith('#sb-admin-')) {
         const key = decodeURIComponent(hash.slice(10));
-        if (key) { localStorage.setItem(SB_ADMIN_LSKEY, key); history.replaceState(null, '', window.location.pathname + window.location.search); }
+        if (key) { setAdminKey(key); history.replaceState(null, '', window.location.pathname + window.location.search); }
     }
     updateVaultUI();
 })();
@@ -1856,7 +1911,7 @@ function updateVaultUI() {
     if(uh) uh.style.display=token?'inline':'none';
     // Show admin button whenever service key is stored
     const ab=document.getElementById('admin-float-btn');
-    if(ab) ab.style.display=localStorage.getItem(SB_ADMIN_LSKEY)?'block':'none';
+    if(ab) ab.style.display=getAdminKey()?'block':'none';
 }
 
 class VaultMCPClient {
@@ -2136,29 +2191,28 @@ async function loadAdminTab(tab) {
                 <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteRequest('${r.id}')">✕</button></td>
             </tr>`).join('');
     } else if (tab === 'subscribers') {
-        // Subscribers list
-        const { data: subs } = await admin.from('subscribers').select('*').order('created_at', { ascending: false });
-        const subsTbody = document.getElementById('admin-subs-tbody');
-        const countEl   = document.getElementById('sub-count');
-        const active    = (subs ?? []).filter(s => s.active).length;
-        if (countEl) countEl.textContent = `(${active} active / ${(subs??[]).length} total)`;
+        // ── Reads go through admin-data proxy (PII decrypted server-side) ──
+        const subs    = await adminDataGet('subscribers');
+        const replies = await adminDataGet('replies');
+        const subsTbody    = document.getElementById('admin-subs-tbody');
+        const repliesTbody = document.getElementById('admin-replies-tbody');
+        const countEl      = document.getElementById('sub-count');
+        const activeCount  = (subs ?? []).filter(s => s.active).length;
+        if (countEl) countEl.textContent = `(${activeCount} active / ${(subs??[]).length} total)`;
         subsTbody.innerHTML = (!subs?.length)
             ? '<tr><td colspan="7" style="color:#2a5a2a;font-style:italic;">No subscribers yet — use quick-add above, or text your Twilio number.</td></tr>'
             : subs.map(r => `<tr>
                 <td style="color:#4ADE80;font-weight:bold;">${escHtml(r.name||'—')}</td>
                 <td style="color:#d0f0d0;font-family:monospace;font-size:.78rem;">${escHtml(r.phone||'—')}</td>
                 <td style="font-family:monospace;font-size:.78rem;color:#FFD700;letter-spacing:1px;">${escHtml(r.pin_code||'—')}</td>
-                <td style="color:#4a7a4a;font-size:.72rem;max-width:180px;word-break:break-word;font-style:italic;">${escHtml(r.how_met||r.notes||'—')}</td>
+                <td style="color:#4a7a4a;font-size:.72rem;max-width:180px;word-break:break-word;font-style:italic;">${escHtml(r.how_met||'—')}</td>
                 <td><span style="color:${r.active?'#4ADE80':'#ff8888'};font-size:.72rem;font-family:monospace;">${r.active?'ACTIVE':'PAUSED'}</span></td>
                 <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
                 <td style="display:flex;gap:.3rem;flex-wrap:wrap;">
-                    <button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;" onclick="toggleSub('${r.id}',${r.active})">${r.active?'⏸':'▶'}</button>
+                    <button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;" onclick="toggleSub('${r.id}')">${r.active?'⏸':'▶'}</button>
                     <button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteSub('${r.id}')">✕</button>
                 </td>
             </tr>`).join('');
-        // Inbound replies
-        const { data: replies } = await admin.from('inbound_sms').select('*').order('received_at', { ascending: false }).limit(50);
-        const repliesTbody = document.getElementById('admin-replies-tbody');
         repliesTbody.innerHTML = (!replies?.length)
             ? '<tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">No replies yet.</td></tr>'
             : replies.map(r => `<tr>
@@ -2170,20 +2224,17 @@ async function loadAdminTab(tab) {
     }
 }
 
-async function toggleSub(id, currentActive) {
-    const admin = getSbAdmin(); if (!admin) return;
-    await admin.from('subscribers').update({ active: !currentActive }).eq('id', id);
+async function toggleSub(id) {
+    await adminDataPost({ resource: 'subscribers', action: 'toggle', id });
     await loadAdminTab('subscribers');
 }
 async function deleteSub(id) {
-    const admin = getSbAdmin(); if (!admin) return;
     if (!confirm('Remove this subscriber?')) return;
-    await admin.from('subscribers').delete().eq('id', id);
+    await adminDataPost({ resource: 'subscribers', action: 'delete', id });
     await loadAdminTab('subscribers');
 }
 async function deleteReply(id) {
-    const admin = getSbAdmin(); if (!admin) return;
-    await admin.from('inbound_sms').delete().eq('id', id);
+    await adminDataPost({ resource: 'replies', action: 'delete', id });
     await loadAdminTab('subscribers');
 }
 
@@ -2192,7 +2243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const qaBtn = document.getElementById('qa-submit');
     if (!qaBtn) return;
     qaBtn.addEventListener('click', async function() {
-        const admin = getSbAdmin(); if (!admin) return;
+        if (!getAdminKey()) return;  // session check (proxy handles auth)
         const name   = document.getElementById('qa-name').value.trim();
         const phone  = document.getElementById('qa-phone').value.trim();
         const howMet = document.getElementById('qa-how-met').value.trim();
@@ -2201,15 +2252,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const e164 = normalisePhoneClient(phone);
         if (!e164) { status.style.color='#ff8888'; status.textContent='Couldn\'t parse that phone. Try +1 647… or +49 176…'; return; }
         this.disabled = true; this.textContent = '...';
-        const pin = Math.random().toString(36).slice(2,8).toUpperCase();
-        await admin.from('pins').upsert({ code: pin, label: name }, { onConflict: 'code' });
-        const { error } = await admin.from('subscribers').upsert(
-            { name, phone: e164, pin_code: pin, how_met: howMet || null, active: true },
-            { onConflict: 'phone' }
-        );
-        if (error) {
-            status.style.color='#ff8888'; status.textContent=`✗ ${error.message}`;
+        // Route through admin-data proxy — PII encrypted server-side, PIN crypto-secure
+        const result = await adminDataPost({
+            resource: 'subscribers', action: 'upsert',
+            data: { name, phone: e164, how_met: howMet || null }
+        });
+        if (result?.error) {
+            status.style.color='#ff8888'; status.textContent=`✗ ${result.error}`;
         } else {
+            const pin = result?.pin ?? '?';
             status.style.color='#4ADE80';
             status.textContent=`✓ Added ${name} — PIN: ${pin} — share: "machu.la, PIN is ${pin}"`;
             document.getElementById('qa-name').value='';
@@ -2240,7 +2291,7 @@ async function notifyDecision() {
     if (!template) { document.getElementById('notify-status').textContent = 'Write a message first.'; return; }
     const statusEl = document.getElementById('notify-status');
     const btn = document.getElementById('notify-btn');
-    const secret = localStorage.getItem(SB_ADMIN_LSKEY);
+    const secret = getAdminKey();
     if (!secret) { statusEl.style.color = '#ff8888'; statusEl.textContent = '✗ No admin key. Re-enter PIN.'; return; }
     if (!confirm(`Send personalized decision notification to all active subscribers?\n\nTemplate:\n"${template.slice(0,120)}${template.length>120?'…':''}"`)) return;
     btn.disabled = true; btn.textContent = '...';
@@ -2272,7 +2323,7 @@ async function broadcastSMS() {
     if (!msg) { document.getElementById('broadcast-status').textContent = 'Write something first.'; return; }
     const statusEl = document.getElementById('broadcast-status');
     const btn = document.getElementById('broadcast-btn');
-    const secret = localStorage.getItem(SB_ADMIN_LSKEY);
+    const secret = getAdminKey();
     if (!secret) { statusEl.style.color = '#ff8888'; statusEl.textContent = '✗ No admin key found. Re-enter PIN.'; return; }
     if (!confirm(`Send to all contacts?\n\n"${msg}"`)) return;
     btn.disabled = true; btn.textContent = '...';
@@ -2469,21 +2520,22 @@ function initAdminOptionsList() {
         const label = document.getElementById('admin-pin-label').value.trim();
         let   code  = document.getElementById('admin-pin-code').value.trim().toUpperCase();
         const phone = document.getElementById('admin-pin-phone').value.trim();
-        if (!code) code = Math.random().toString(36).slice(2,8).toUpperCase();
+        // Crypto-secure auto-PIN if not manually entered
+        if (!code) code = generateSecurePin();
         this.textContent = 'Creating...'; this.disabled = true;
         const { error } = await admin.from('pins').insert({ code, label: label || null });
         if (error) {
             alert(error.code==='23505' ? 'PIN already exists — try another.' : error.message);
         } else {
-            // If phone provided, add them as a subscriber
+            // If phone provided, route through admin-data proxy (PII encrypted server-side)
             if (phone) {
                 const e164 = normalisePhoneClient(phone);
                 if (e164) {
-                    const { error: subErr } = await admin.from('subscribers').upsert(
-                        { name: label || code, phone: e164, pin_code: code, active: true },
-                        { onConflict: 'phone' }
-                    );
-                    if (subErr) console.warn('Subscriber insert:', subErr.message);
+                    const subResult = await adminDataPost({
+                        resource: 'subscribers', action: 'upsert',
+                        data: { name: label || code, phone: e164, pin_code: code }
+                    });
+                    if (subResult?.error) console.warn('Subscriber insert:', subResult.error);
                 }
             }
             document.getElementById('admin-pin-label').value='';
