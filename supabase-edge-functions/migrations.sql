@@ -50,6 +50,26 @@ CREATE POLICY IF NOT EXISTS "sub_deletes" ON subscribers FOR DELETE USING (auth.
 ALTER TABLE subscribers ADD COLUMN IF NOT EXISTS pin_code text;
 ALTER TABLE subscribers ADD COLUMN IF NOT EXISTS how_met text;
 
+-- ── rate_limits (per-IP counters for Edge Function rate limiting) ─
+CREATE TABLE IF NOT EXISTS rate_limits (
+  id           text PRIMARY KEY,   -- "{ip}:{action}"
+  count        int DEFAULT 1,
+  window_start timestamptz DEFAULT now()
+);
+ALTER TABLE rate_limits ENABLE ROW LEVEL SECURITY;
+-- Only Edge Functions (service role) may touch rate_limits
+CREATE POLICY IF NOT EXISTS "rl_service_all" ON rate_limits FOR ALL USING (auth.role() = 'service_role');
+
+-- ── Tighten pins RLS — remove public read, route through verify-pin Edge Function ──
+-- Drop any existing anon-accessible policies (names may vary from initial setup)
+DROP POLICY IF EXISTS "Public can read pins"    ON pins;
+DROP POLICY IF EXISTS "pins_public_read"        ON pins;
+DROP POLICY IF EXISTS "pins_anon_read"          ON pins;
+DROP POLICY IF EXISTS "Enable read for all"     ON pins;
+-- Service role only — verify-pin Edge Function uses service role to check validity
+-- (no full table dumps possible via anon key)
+CREATE POLICY IF NOT EXISTS "pins_service_only" ON pins FOR SELECT USING (auth.role() = 'service_role');
+
 -- ── inbound_sms (replies from subscribers) ───────────────────
 CREATE TABLE IF NOT EXISTS inbound_sms (
   id          uuid default gen_random_uuid() primary key,

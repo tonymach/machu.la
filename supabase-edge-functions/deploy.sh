@@ -75,14 +75,20 @@ export SUPABASE_ACCESS_TOKEN
 mkdir -p "$SCRIPT_DIR/../supabase/functions/broadcast-sms"
 mkdir -p "$SCRIPT_DIR/../supabase/functions/handle-inbound-sms"
 mkdir -p "$SCRIPT_DIR/../supabase/functions/admin-data"
+mkdir -p "$SCRIPT_DIR/../supabase/functions/admin-ui"
+mkdir -p "$SCRIPT_DIR/../supabase/functions/verify-pin"
 cp "$SCRIPT_DIR/broadcast-sms/index.ts"     "$SCRIPT_DIR/../supabase/functions/broadcast-sms/index.ts"
 cp "$SCRIPT_DIR/handle-inbound-sms/index.ts" "$SCRIPT_DIR/../supabase/functions/handle-inbound-sms/index.ts"
 cp "$SCRIPT_DIR/admin-data/index.ts"         "$SCRIPT_DIR/../supabase/functions/admin-data/index.ts"
+cp "$SCRIPT_DIR/admin-ui/index.ts"           "$SCRIPT_DIR/../supabase/functions/admin-ui/index.ts"
+cp "$SCRIPT_DIR/verify-pin/index.ts"         "$SCRIPT_DIR/../supabase/functions/verify-pin/index.ts"
 
 supabase functions deploy broadcast-sms --project-ref "$PROJECT_REF"
 supabase functions deploy handle-inbound-sms --project-ref "$PROJECT_REF"
 supabase functions deploy admin-data --project-ref "$PROJECT_REF"
-echo "✓ Edge Functions deployed (broadcast-sms, handle-inbound-sms, admin-data)"
+supabase functions deploy admin-ui --project-ref "$PROJECT_REF"
+supabase functions deploy verify-pin --project-ref "$PROJECT_REF"
+echo "✓ Edge Functions deployed (broadcast-sms, handle-inbound-sms, admin-data, admin-ui, verify-pin)"
 
 echo ""
 echo "── Step 3: Set Edge Function secrets ──"
@@ -92,8 +98,9 @@ supabase secrets set --project-ref "$PROJECT_REF" \
   TWILIO_FROM_NUMBER="$TWILIO_FROM_NUMBER" \
   ANTHONY_PHONE="$ANTHONY_PHONE" \
   ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
-  ENCRYPTION_KEY="$ENCRYPTION_KEY"
-echo "✓ Secrets set (including ENCRYPTION_KEY)"
+  ENCRYPTION_KEY="$ENCRYPTION_KEY" \
+  SUPABASE_SERVICE_ROLE_KEY="$SUPABASE_SERVICE_KEY"
+echo "✓ Secrets set (including ENCRYPTION_KEY + SUPABASE_SERVICE_ROLE_KEY)"
 
 echo ""
 echo "╔══════════════════════════════════════════╗"
