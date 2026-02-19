@@ -1038,13 +1038,34 @@
                         <span id="broadcast-status" style="font-family:monospace;font-size:.72rem;color:#4a7a4a;"></span>
                     </div>
                 </div>
+                <!-- Quick-add subscriber -->
+                <div class="admin-section">
+                    <div class="admin-label" style="color:#4ADE80;letter-spacing:2px;">+ Quick Add</div>
+                    <div style="color:#4a7a4a;font-size:.68rem;margin-bottom:.6rem;font-family:monospace;">Or just text your Twilio number: "Sarah Chen +16475551234 met at that rooftop thing"</div>
+                    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;">
+                        <div style="flex:1;min-width:110px;">
+                            <div style="font-size:.6rem;color:#2a5a2a;margin-bottom:.25rem;letter-spacing:1px;">NAME</div>
+                            <input type="text" class="admin-input" id="qa-name" placeholder="Sarah Chen" style="margin:0;">
+                        </div>
+                        <div style="flex:1;min-width:130px;">
+                            <div style="font-size:.6rem;color:#2a5a2a;margin-bottom:.25rem;letter-spacing:1px;">PHONE</div>
+                            <input type="text" class="admin-input" id="qa-phone" placeholder="+1 647… or +49 176…" style="margin:0;">
+                        </div>
+                        <div style="flex:2;min-width:160px;">
+                            <div style="font-size:.6rem;color:#2a5a2a;margin-bottom:.25rem;letter-spacing:1px;">HOW YOU MET</div>
+                            <input type="text" class="admin-input" id="qa-how-met" placeholder="rooftop thing on King St" style="margin:0;">
+                        </div>
+                        <button class="admin-btn primary" id="qa-submit">Add ↗</button>
+                    </div>
+                    <div id="qa-status" style="font-family:monospace;font-size:.72rem;color:#4a7a4a;margin-top:.4rem;min-height:1.2rem;"></div>
+                </div>
                 <!-- Subscriber list -->
                 <div class="admin-section">
                     <div class="admin-label" style="color:#4ADE80;letter-spacing:2px;">📋 Subscribers <span id="sub-count" style="color:#2a5a2a;font-size:.72rem;"></span></div>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
-                            <thead><tr><th>Name</th><th>Phone</th><th>Notes</th><th>Status</th><th>Added</th><th></th></tr></thead>
-                            <tbody id="admin-subs-tbody"><tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                            <thead><tr><th>Name</th><th>Phone</th><th>PIN</th><th>How Met</th><th>Status</th><th>Added</th><th></th></tr></thead>
+                            <tbody id="admin-subs-tbody"><tr><td colspan="7" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -2122,11 +2143,12 @@ async function loadAdminTab(tab) {
         const active    = (subs ?? []).filter(s => s.active).length;
         if (countEl) countEl.textContent = `(${active} active / ${(subs??[]).length} total)`;
         subsTbody.innerHTML = (!subs?.length)
-            ? '<tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">No subscribers yet. Add a phone when creating a PIN.</td></tr>'
+            ? '<tr><td colspan="7" style="color:#2a5a2a;font-style:italic;">No subscribers yet — use quick-add above, or text your Twilio number.</td></tr>'
             : subs.map(r => `<tr>
                 <td style="color:#4ADE80;font-weight:bold;">${escHtml(r.name||'—')}</td>
                 <td style="color:#d0f0d0;font-family:monospace;font-size:.78rem;">${escHtml(r.phone||'—')}</td>
-                <td style="color:#4a7a4a;font-size:.72rem;max-width:160px;word-break:break-word;">${escHtml(r.notes||'—')}</td>
+                <td style="font-family:monospace;font-size:.78rem;color:#FFD700;letter-spacing:1px;">${escHtml(r.pin_code||'—')}</td>
+                <td style="color:#4a7a4a;font-size:.72rem;max-width:180px;word-break:break-word;font-style:italic;">${escHtml(r.how_met||r.notes||'—')}</td>
                 <td><span style="color:${r.active?'#4ADE80':'#ff8888'};font-size:.72rem;font-family:monospace;">${r.active?'ACTIVE':'PAUSED'}</span></td>
                 <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
                 <td style="display:flex;gap:.3rem;flex-wrap:wrap;">
@@ -2164,6 +2186,40 @@ async function deleteReply(id) {
     await admin.from('inbound_sms').delete().eq('id', id);
     await loadAdminTab('subscribers');
 }
+
+// ── Quick-add subscriber ───────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    const qaBtn = document.getElementById('qa-submit');
+    if (!qaBtn) return;
+    qaBtn.addEventListener('click', async function() {
+        const admin = getSbAdmin(); if (!admin) return;
+        const name   = document.getElementById('qa-name').value.trim();
+        const phone  = document.getElementById('qa-phone').value.trim();
+        const howMet = document.getElementById('qa-how-met').value.trim();
+        const status = document.getElementById('qa-status');
+        if (!name || !phone) { status.style.color='#ff8888'; status.textContent='Name and phone required.'; return; }
+        const e164 = normalisePhoneClient(phone);
+        if (!e164) { status.style.color='#ff8888'; status.textContent='Couldn\'t parse that phone. Try +1 647… or +49 176…'; return; }
+        this.disabled = true; this.textContent = '...';
+        const pin = Math.random().toString(36).slice(2,8).toUpperCase();
+        await admin.from('pins').upsert({ code: pin, label: name }, { onConflict: 'code' });
+        const { error } = await admin.from('subscribers').upsert(
+            { name, phone: e164, pin_code: pin, how_met: howMet || null, active: true },
+            { onConflict: 'phone' }
+        );
+        if (error) {
+            status.style.color='#ff8888'; status.textContent=`✗ ${error.message}`;
+        } else {
+            status.style.color='#4ADE80';
+            status.textContent=`✓ Added ${name} — PIN: ${pin} — share: "machu.la, PIN is ${pin}"`;
+            document.getElementById('qa-name').value='';
+            document.getElementById('qa-phone').value='';
+            document.getElementById('qa-how-met').value='';
+            await loadAdminTab('subscribers');
+        }
+        this.disabled = false; this.textContent = 'Add ↗';
+    });
+});
 
 async function deleteRequest(id) {
     const admin = getSbAdmin(); if (!admin) return;
