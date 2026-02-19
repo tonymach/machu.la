@@ -1011,6 +1011,16 @@
 
             <!-- Network tab -->
             <div class="admin-panel" id="admin-tab-network">
+                <!-- ── SMS Broadcast ── -->
+                <div class="admin-section" id="broadcast-section">
+                    <div class="admin-label" style="color:#FFD700;letter-spacing:2px;">📡 SMS Broadcast</div>
+                    <div style="color:#4a7a4a;font-size:.72rem;margin-bottom:.75rem;font-family:monospace;line-height:1.6;">Sends to all call-request contacts who left a phone number.</div>
+                    <textarea id="broadcast-msg" style="width:100%;background:#040d04;border:1px solid #1a3a1a;color:#c8ffc8;font-family:monospace;font-size:.82rem;padding:.65rem;border-radius:4px;resize:vertical;min-height:90px;box-sizing:border-box;outline:none;" placeholder="Type your message..."></textarea>
+                    <div style="display:flex;align-items:center;gap:.75rem;margin-top:.55rem;flex-wrap:wrap;">
+                        <button class="admin-btn" id="broadcast-btn" onclick="broadcastSMS()" style="border-color:#FFD700;color:#FFD700;">↗ Send SMS</button>
+                        <span id="broadcast-status" style="font-family:monospace;font-size:.72rem;color:#4a7a4a;"></span>
+                    </div>
+                </div>
                 <div class="admin-section">
                     <div class="admin-label" style="color:#4ADE80;letter-spacing:2px;">📞 Call Requests</div>
                     <div style="overflow-x:auto;">
@@ -2058,6 +2068,42 @@ async function deleteCall(id) {
     if (!confirm('Delete this call request?')) return;
     await admin.from('call_requests').delete().eq('id', id);
     await loadAdminTab('network');
+}
+
+// ── SMS Broadcast via Supabase Edge Function ──────────────────
+async function broadcastSMS() {
+    const msg = document.getElementById('broadcast-msg').value.trim();
+    if (!msg) { document.getElementById('broadcast-status').textContent = 'Write something first.'; return; }
+    const statusEl = document.getElementById('broadcast-status');
+    const btn = document.getElementById('broadcast-btn');
+    const secret = localStorage.getItem(SB_ADMIN_LSKEY);
+    if (!secret) { statusEl.style.color = '#ff8888'; statusEl.textContent = '✗ No admin key found. Re-enter PIN.'; return; }
+    if (!confirm(`Send to all contacts?\n\n"${msg}"`)) return;
+    btn.disabled = true; btn.textContent = '...';
+    statusEl.style.color = '#4a7a4a'; statusEl.textContent = 'Sending...';
+    try {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/broadcast-sms`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${secret}`
+            },
+            body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            statusEl.style.color = '#4ADE80';
+            statusEl.textContent = `✓ Sent to ${data.sent} contact${data.sent !== 1 ? 's' : ''}${data.skipped ? `, ${data.skipped} skipped (non-phone)` : ''}`;
+            document.getElementById('broadcast-msg').value = '';
+        } else {
+            statusEl.style.color = '#ff8888';
+            statusEl.textContent = `✗ ${data.error || 'Unknown error'}`;
+        }
+    } catch (err) {
+        statusEl.style.color = '#ff8888';
+        statusEl.textContent = `✗ ${err.message}`;
+    }
+    btn.disabled = false; btn.textContent = '↗ Send SMS';
 }
 
 // ── Pie chart renderer ────────────────────────────────────────
