@@ -556,6 +556,25 @@
         }
         .oracle-answer.revealed { opacity: 1; transform: translateY(0); }
 
+        /* Oracle connect form — revealed on right question */
+        .oracle-connect {
+            margin-top: .9rem; padding-top: .9rem;
+            border-top: 1px solid #1a3a1a;
+            opacity: 0; transform: translateY(8px);
+            transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+        }
+        .oracle-connect.revealed { opacity: 1; transform: translateY(0); }
+        .oracle-connect-intro {
+            font-family: monospace; font-size: .72rem; color: #4a7a4a;
+            margin-bottom: .75rem; letter-spacing: .5px; line-height: 1.6;
+        }
+        .oracle-connect-fields { display: flex; flex-direction: column; gap: .5rem; }
+        .oracle-connect-sent {
+            font-family: monospace; font-size: .8rem; color: #4ADE80;
+            letter-spacing: 1px; text-align: center; padding: .6rem 0;
+            display: none;
+        }
+
         /* ─── NETWORK ─────────────────────────────── */
         .network-section {
             border: 1px solid #1a3a1a; border-radius: 4px;
@@ -920,6 +939,15 @@
                 <div class="oracle-response" id="oracle-response">
                     <div class="oracle-scanning" id="oracle-scanning"></div>
                     <div class="oracle-answer" id="oracle-answer"></div>
+                    <div class="oracle-connect" id="oracle-connect">
+                        <div class="oracle-connect-intro">This goes directly to Anthony. No automation. Real conversation.</div>
+                        <div class="oracle-connect-fields">
+                            <input type="text"  class="oracle-input" id="oc-name"    placeholder="Your name">
+                            <input type="text"  class="oracle-input" id="oc-contact" placeholder="Phone · Signal · however you move">
+                        </div>
+                        <button class="oracle-btn" id="oc-submit" style="width:100%;margin-top:.6rem;">Leave coordinates ↗</button>
+                        <div class="oracle-connect-sent" id="oc-sent">✦ &nbsp; Received. Expect something real. &nbsp; ✦</div>
+                    </div>
                 </div>
             </div>
 
@@ -940,16 +968,14 @@
                 <div class="network-submitted" id="network-submitted">✦ &nbsp; Received. Anthony will see this. &nbsp; ✦</div>
             </div>
 
-            <!-- Classified vault -->
+            <!-- Classified vault — for the initiated -->
             <div class="vault-hint">
-                <div class="vault-hint-title">⚠ &nbsp; C L A S S I F I E D &nbsp; ⚠</div>
                 <div class="vault-hint-body">
-                    [ MANIFESTATION DATA — REDACTED ]<br>
-                    [ EVIDENCE VAULT CONTENTS ENCRYPTED ]
+                    [ EVIDENCE VAULT — ENCRYPTED ]
                 </div>
                 <div class="vault-hint-lock">
-                    <span id="vault-locked-hint">🔐 Vault: locked on this device</span>
-                    <span id="vault-unlocked-hint">✅ Vault: unlocked — tap 🔐 VAULT ↙</span>
+                    <span id="vault-locked-hint">🔐 locked</span>
+                    <span id="vault-unlocked-hint">✅ Vault unlocked — tap 🔐 VAULT ↙</span>
                 </div>
             </div>
 
@@ -1051,6 +1077,15 @@
 
             <!-- Network tab -->
             <div class="admin-panel" id="admin-tab-network">
+                <div class="admin-section">
+                    <div class="admin-label" style="color:#4ADE80;letter-spacing:2px;">📞 Call Requests</div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead><tr><th>Name</th><th>Contact</th><th>Asked</th><th>When</th><th></th></tr></thead>
+                            <tbody id="admin-calls-tbody"><tr><td colspan="5" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="admin-section">
                     <div class="admin-label">Help Requests</div>
                     <div style="overflow-x:auto;">
@@ -1630,7 +1665,16 @@ const ORACLE_SCANS = [
     'SUPPRESSING NOISE...','TRIANGULATING TRUTH...',
     'DISSOLVING EGO INTERFERENCE...','ALIGNING PROBABILITY FIELDS...',
 ];
-let _oracleUsed = [];
+let _oracleUsed = [], _oracleConsults = 0, _oracleConnectTriggered = false;
+
+const CONNECT_KEYWORDS = ['you','real','talk','call','meet','connect','anthony','who are','reach','contact','person','human','behind','actual','genuinely','really','anyone'];
+const CONNECT_RESPONSES = [
+    "SIGNAL DETECTED. You're not asking the oracle — you're asking the person behind it. Leave your name and how to reach you.",
+    "ANOMALY: this question exceeds oracle parameters. Routing to human operator. Leave your coordinates.",
+    "The oracle knows when it's being looked through. Some questions are mine to answer directly.",
+    "You keep coming back. That means something. Leave your name and best way to reach you.",
+];
+
 function getOracleResponse() {
     if (_oracleUsed.length >= ORACLE_RESPONSES.length) _oracleUsed = [];
     const pool = ORACLE_RESPONSES.filter((_, i) => !_oracleUsed.includes(i));
@@ -1638,35 +1682,91 @@ function getOracleResponse() {
     _oracleUsed.push(ORACLE_RESPONSES.indexOf(pick));
     return pick;
 }
+function shouldConnect(question) {
+    if (_oracleConnectTriggered) return false;
+    const q = question.toLowerCase();
+    if (CONNECT_KEYWORDS.some(k => q.includes(k))) return true;
+    if (_oracleConsults >= 3) return true;
+    return false;
+}
 
 document.getElementById('oracle-ask').addEventListener('click', async () => {
-    const btn       = document.getElementById('oracle-ask');
-    const responseEl= document.getElementById('oracle-response');
-    const scanEl    = document.getElementById('oracle-scanning');
-    const answerEl  = document.getElementById('oracle-answer');
-    btn.disabled    = true;
-    // Reset
+    const btn        = document.getElementById('oracle-ask');
+    const responseEl = document.getElementById('oracle-response');
+    const scanEl     = document.getElementById('oracle-scanning');
+    const answerEl   = document.getElementById('oracle-answer');
+    const connectEl  = document.getElementById('oracle-connect');
+    const question   = document.getElementById('oracle-input').value.trim();
+
+    btn.disabled = true;
+    _oracleConsults++;
+    const triggerConnect = shouldConnect(question);
+
+    // Reset state
     answerEl.classList.remove('revealed');
+    connectEl.classList.remove('revealed');
     responseEl.classList.remove('revealed');
     answerEl.textContent = '';
-    // Show container
+
     requestAnimationFrame(() => requestAnimationFrame(() => responseEl.classList.add('revealed')));
-    // Scan loop
+
+    // Scan — longer + different messages if about to connect
+    const scans = triggerConnect
+        ? ['CROSS-REFERENCING SIGNAL...','IDENTIFYING SOURCE...','BYPASSING ORACLE LAYER...','ROUTING TO HUMAN...']
+        : ORACLE_SCANS;
     let si = 0;
     const scanTick = setInterval(() => {
-        scanEl.innerHTML = ORACLE_SCANS[si % ORACLE_SCANS.length] + '<span class="oracle-scan-bar"></span>';
+        scanEl.innerHTML = scans[si % scans.length] + '<span class="oracle-scan-bar"></span>';
         si++;
-    }, 310);
-    await new Promise(r => setTimeout(r, 2500));
+    }, triggerConnect ? 400 : 310);
+
+    await new Promise(r => setTimeout(r, triggerConnect ? 3000 : 2500));
     clearInterval(scanTick);
     scanEl.innerHTML = '';
-    // Reveal answer
-    answerEl.textContent = getOracleResponse();
-    requestAnimationFrame(() => requestAnimationFrame(() => answerEl.classList.add('revealed')));
+
+    if (triggerConnect) {
+        _oracleConnectTriggered = true;
+        const resp = _oracleConsults >= 4 && !CONNECT_KEYWORDS.some(k => question.toLowerCase().includes(k))
+            ? CONNECT_RESPONSES[3]
+            : CONNECT_RESPONSES[Math.floor(Math.random() * 3)];
+        answerEl.textContent = resp;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            answerEl.classList.add('revealed');
+            setTimeout(() => connectEl.classList.add('revealed'), 600);
+        }));
+        btn.style.display = 'none';
+    } else {
+        answerEl.textContent = getOracleResponse();
+        requestAnimationFrame(() => requestAnimationFrame(() => answerEl.classList.add('revealed')));
+    }
     btn.disabled = false;
 });
+
 document.getElementById('oracle-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('oracle-ask').click();
+});
+
+document.getElementById('oc-submit').addEventListener('click', async () => {
+    const name    = document.getElementById('oc-name').value.trim();
+    const contact = document.getElementById('oc-contact').value.trim();
+    if (!name || !contact) {
+        (!name ? document.getElementById('oc-name') : document.getElementById('oc-contact')).focus();
+        return;
+    }
+    const submitBtn = document.getElementById('oc-submit');
+    submitBtn.disabled = true; submitBtn.textContent = 'Sending...';
+    const sb = getSb();
+    if (sb) {
+        await sb.from('call_requests').insert({
+            name,
+            contact,
+            trigger_question: document.getElementById('oracle-input').value.trim() || null
+        });
+    }
+    submitBtn.style.display = 'none';
+    const sent = document.getElementById('oc-sent');
+    sent.style.display = 'block';
+    requestAnimationFrame(() => requestAnimationFrame(() => sent.classList.add('revealed')));
 });
 
 // ================================================================
@@ -2012,20 +2112,31 @@ async function loadAdminTab(tab) {
                 <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteVote('${v.id}')">✕</button></td>
               </tr>`).join('');
     } else if (tab === 'network') {
+        // Call requests (oracle connect)
+        const { data: calls } = await admin.from('call_requests').select('*').order('created_at', { ascending: false });
+        const callsTbody = document.getElementById('admin-calls-tbody');
+        callsTbody.innerHTML = (!calls?.length)
+            ? '<tr><td colspan="5" style="color:#2a5a2a;font-style:italic;">No calls yet.</td></tr>'
+            : calls.map(r => `<tr>
+                <td style="color:#4ADE80;font-weight:bold;">${escHtml(r.name||'—')}</td>
+                <td style="color:#d0f0d0;">${escHtml(r.contact||'—')}</td>
+                <td style="color:#4a7a4a;font-size:.7rem;max-width:180px;word-break:break-word;">${escHtml(r.trigger_question||'—')}</td>
+                <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
+                <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteCall('${r.id}')">✕</button></td>
+            </tr>`).join('');
+        // Help requests
         const { data: reqs } = await admin.from('network_requests').select('*').order('created_at', { ascending: false });
         const tbody = document.getElementById('admin-network-tbody');
-        if (!reqs?.length) {
-            tbody.innerHTML = '<tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">No requests yet.</td></tr>';
-            return;
-        }
-        tbody.innerHTML = reqs.map(r => `<tr>
-            <td>${escHtml(r.name||'—')}</td>
-            <td style="font-size:.72rem;">${escHtml(r.email||'—')}</td>
-            <td style="max-width:200px;word-break:break-word;">${escHtml(r.need||'—')}</td>
-            <td style="max-width:160px;word-break:break-word;color:#4a7a4a;">${escHtml(r.offer||'—')}</td>
-            <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
-            <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteRequest('${r.id}')">✕</button></td>
-        </tr>`).join('');
+        tbody.innerHTML = (!reqs?.length)
+            ? '<tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">No requests yet.</td></tr>'
+            : reqs.map(r => `<tr>
+                <td>${escHtml(r.name||'—')}</td>
+                <td style="font-size:.72rem;">${escHtml(r.email||'—')}</td>
+                <td style="max-width:200px;word-break:break-word;">${escHtml(r.need||'—')}</td>
+                <td style="max-width:160px;word-break:break-word;color:#4a7a4a;">${escHtml(r.offer||'—')}</td>
+                <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
+                <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteRequest('${r.id}')">✕</button></td>
+            </tr>`).join('');
     }
 }
 
@@ -2033,6 +2144,12 @@ async function deleteRequest(id) {
     const admin = getSbAdmin(); if (!admin) return;
     if (!confirm('Delete this request?')) return;
     await admin.from('network_requests').delete().eq('id', id);
+    await loadAdminTab('network');
+}
+async function deleteCall(id) {
+    const admin = getSbAdmin(); if (!admin) return;
+    if (!confirm('Delete this call request?')) return;
+    await admin.from('call_requests').delete().eq('id', id);
     await loadAdminTab('network');
 }
 
