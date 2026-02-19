@@ -942,6 +942,7 @@
                 <button class="admin-tab active" data-tab="question">Question</button>
                 <button class="admin-tab" data-tab="pins">PINs</button>
                 <button class="admin-tab" data-tab="results">Results</button>
+                <button class="admin-tab" data-tab="subscribers">Subscribers</button>
                 <button class="admin-tab" data-tab="network">Network</button>
             </div>
 
@@ -978,8 +979,13 @@
                             <div style="font-size:.62rem;color:#2a5a2a;margin-bottom:.3rem;letter-spacing:1px;">PIN CODE (blank = auto)</div>
                             <input type="text" class="admin-input" id="admin-pin-code" placeholder="auto" maxlength="8" style="margin:0;">
                         </div>
+                        <div style="flex:1;min-width:140px;">
+                            <div style="font-size:.62rem;color:#2a5a2a;margin-bottom:.3rem;letter-spacing:1px;">PHONE FOR SMS (optional)</div>
+                            <input type="text" class="admin-input" id="admin-pin-phone" placeholder="+1 647… or +49 176…" style="margin:0;">
+                        </div>
                         <button class="admin-btn primary" id="admin-create-pin">Create ↗</button>
                     </div>
+                    <div style="font-size:.62rem;color:#1a4a1a;margin-top:.4rem;font-family:monospace;">Adding a phone number auto-subscribes them to SMS broadcasts.</div>
                 </div>
                 <div class="admin-section">
                     <div class="admin-label">All PINs</div>
@@ -1010,17 +1016,41 @@
             </div>
 
             <!-- Network tab -->
-            <div class="admin-panel" id="admin-tab-network">
-                <!-- ── SMS Broadcast ── -->
-                <div class="admin-section" id="broadcast-section">
+            <!-- Subscribers tab -->
+            <div class="admin-panel" id="admin-tab-subscribers">
+                <!-- SMS Broadcast -->
+                <div class="admin-section">
                     <div class="admin-label" style="color:#FFD700;letter-spacing:2px;">📡 SMS Broadcast</div>
-                    <div style="color:#4a7a4a;font-size:.72rem;margin-bottom:.75rem;font-family:monospace;line-height:1.6;">Sends to all call-request contacts who left a phone number.</div>
-                    <textarea id="broadcast-msg" style="width:100%;background:#040d04;border:1px solid #1a3a1a;color:#c8ffc8;font-family:monospace;font-size:.82rem;padding:.65rem;border-radius:4px;resize:vertical;min-height:90px;box-sizing:border-box;outline:none;" placeholder="Type your message..."></textarea>
+                    <div style="color:#4a7a4a;font-size:.72rem;margin-bottom:.75rem;font-family:monospace;line-height:1.6;">Sends to all active subscribers. Flexible — raw text or include a link.</div>
+                    <textarea id="broadcast-msg" style="width:100%;background:#040d04;border:1px solid #1a3a1a;color:#c8ffc8;font-family:monospace;font-size:.82rem;padding:.65rem;border-radius:4px;resize:vertical;min-height:90px;box-sizing:border-box;outline:none;" placeholder="Type your drop... or include a link for richer posts."></textarea>
                     <div style="display:flex;align-items:center;gap:.75rem;margin-top:.55rem;flex-wrap:wrap;">
                         <button class="admin-btn" id="broadcast-btn" onclick="broadcastSMS()" style="border-color:#FFD700;color:#FFD700;">↗ Send SMS</button>
                         <span id="broadcast-status" style="font-family:monospace;font-size:.72rem;color:#4a7a4a;"></span>
                     </div>
                 </div>
+                <!-- Subscriber list -->
+                <div class="admin-section">
+                    <div class="admin-label" style="color:#4ADE80;letter-spacing:2px;">📋 Subscribers <span id="sub-count" style="color:#2a5a2a;font-size:.72rem;"></span></div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead><tr><th>Name</th><th>Phone</th><th>Notes</th><th>Status</th><th>Added</th><th></th></tr></thead>
+                            <tbody id="admin-subs-tbody"><tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Inbound replies -->
+                <div class="admin-section">
+                    <div class="admin-label" style="color:#60A5FA;letter-spacing:2px;">💬 Replies</div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead><tr><th>From</th><th>Message</th><th>When</th><th></th></tr></thead>
+                            <tbody id="admin-replies-tbody"><tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-panel" id="admin-tab-network">
                 <div class="admin-section">
                     <div class="admin-label" style="color:#4ADE80;letter-spacing:2px;">📞 Call Requests</div>
                     <div style="overflow-x:auto;">
@@ -1097,6 +1127,18 @@ function getSbAdmin() {
     if (!k || SUPABASE_URL.includes('REPLACE')) return null;
     _sbAdmin = supabase.createClient(SUPABASE_URL, k);
     return _sbAdmin;
+}
+
+// ── Client-side phone normaliser (mirrors Edge Function logic) ─
+function normalisePhoneClient(raw) {
+    if (!raw) return null;
+    const stripped = raw.trim().replace(/[\s\-\.\(\)]/g, '');
+    const digits = stripped.replace(/^\+/, '');
+    if (!/^\d{7,15}$/.test(digits)) return null;
+    if (stripped.startsWith('+')) return stripped;
+    if (digits.length === 10) return `+1${digits}`;
+    if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+    return `+${digits}`;
 }
 
 // ================================================================
@@ -2054,7 +2096,55 @@ async function loadAdminTab(tab) {
                 <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
                 <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteRequest('${r.id}')">✕</button></td>
             </tr>`).join('');
+    } else if (tab === 'subscribers') {
+        // Subscribers list
+        const { data: subs } = await admin.from('subscribers').select('*').order('created_at', { ascending: false });
+        const subsTbody = document.getElementById('admin-subs-tbody');
+        const countEl   = document.getElementById('sub-count');
+        const active    = (subs ?? []).filter(s => s.active).length;
+        if (countEl) countEl.textContent = `(${active} active / ${(subs??[]).length} total)`;
+        subsTbody.innerHTML = (!subs?.length)
+            ? '<tr><td colspan="6" style="color:#2a5a2a;font-style:italic;">No subscribers yet. Add a phone when creating a PIN.</td></tr>'
+            : subs.map(r => `<tr>
+                <td style="color:#4ADE80;font-weight:bold;">${escHtml(r.name||'—')}</td>
+                <td style="color:#d0f0d0;font-family:monospace;font-size:.78rem;">${escHtml(r.phone||'—')}</td>
+                <td style="color:#4a7a4a;font-size:.72rem;max-width:160px;word-break:break-word;">${escHtml(r.notes||'—')}</td>
+                <td><span style="color:${r.active?'#4ADE80':'#ff8888'};font-size:.72rem;font-family:monospace;">${r.active?'ACTIVE':'PAUSED'}</span></td>
+                <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.created_at).toLocaleDateString()}</td>
+                <td style="display:flex;gap:.3rem;flex-wrap:wrap;">
+                    <button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;" onclick="toggleSub('${r.id}',${r.active})">${r.active?'⏸':'▶'}</button>
+                    <button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteSub('${r.id}')">✕</button>
+                </td>
+            </tr>`).join('');
+        // Inbound replies
+        const { data: replies } = await admin.from('inbound_sms').select('*').order('received_at', { ascending: false }).limit(50);
+        const repliesTbody = document.getElementById('admin-replies-tbody');
+        repliesTbody.innerHTML = (!replies?.length)
+            ? '<tr><td colspan="4" style="color:#2a5a2a;font-style:italic;">No replies yet.</td></tr>'
+            : replies.map(r => `<tr>
+                <td style="font-family:monospace;font-size:.75rem;color:#4ADE80;">${escHtml(r.from_number||'—')}</td>
+                <td style="max-width:240px;word-break:break-word;">${escHtml(r.body||'—')}</td>
+                <td style="white-space:nowrap;font-size:.68rem;color:#2a5a2a;">${new Date(r.received_at).toLocaleString()}</td>
+                <td><button class="admin-btn" style="font-size:.6rem;padding:.15rem .45rem;border-color:#ff4444;color:#ff8888;" onclick="deleteReply('${r.id}')">✕</button></td>
+            </tr>`).join('');
     }
+}
+
+async function toggleSub(id, currentActive) {
+    const admin = getSbAdmin(); if (!admin) return;
+    await admin.from('subscribers').update({ active: !currentActive }).eq('id', id);
+    await loadAdminTab('subscribers');
+}
+async function deleteSub(id) {
+    const admin = getSbAdmin(); if (!admin) return;
+    if (!confirm('Remove this subscriber?')) return;
+    await admin.from('subscribers').delete().eq('id', id);
+    await loadAdminTab('subscribers');
+}
+async function deleteReply(id) {
+    const admin = getSbAdmin(); if (!admin) return;
+    await admin.from('inbound_sms').delete().eq('id', id);
+    await loadAdminTab('subscribers');
 }
 
 async function deleteRequest(id) {
@@ -2272,11 +2362,29 @@ function initAdminOptionsList() {
         const admin = getSbAdmin(); if (!admin) return;
         const label = document.getElementById('admin-pin-label').value.trim();
         let   code  = document.getElementById('admin-pin-code').value.trim().toUpperCase();
+        const phone = document.getElementById('admin-pin-phone').value.trim();
         if (!code) code = Math.random().toString(36).slice(2,8).toUpperCase();
         this.textContent = 'Creating...'; this.disabled = true;
         const { error } = await admin.from('pins').insert({ code, label: label || null });
-        if (error) alert(error.code==='23505' ? 'PIN already exists — try another.' : error.message);
-        else { document.getElementById('admin-pin-label').value=''; document.getElementById('admin-pin-code').value=''; await loadAdminTab('pins'); }
+        if (error) {
+            alert(error.code==='23505' ? 'PIN already exists — try another.' : error.message);
+        } else {
+            // If phone provided, add them as a subscriber
+            if (phone) {
+                const e164 = normalisePhoneClient(phone);
+                if (e164) {
+                    const { error: subErr } = await admin.from('subscribers').upsert(
+                        { name: label || code, phone: e164, active: true },
+                        { onConflict: 'phone' }
+                    );
+                    if (subErr) console.warn('Subscriber insert:', subErr.message);
+                }
+            }
+            document.getElementById('admin-pin-label').value='';
+            document.getElementById('admin-pin-code').value='';
+            document.getElementById('admin-pin-phone').value='';
+            await loadAdminTab('pins');
+        }
         this.textContent = 'Create ↗'; this.disabled = false;
     });
 }
