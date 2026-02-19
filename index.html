@@ -172,8 +172,7 @@
         .party-mode.active .easter-section { animation: fadeUp .8s .22s cubic-bezier(.16,1,.3,1) both; }
         .party-mode.active .poem-section   { animation: fadeUp .8s .35s cubic-bezier(.16,1,.3,1) both; }
         .party-mode.active .oracle-section  { animation: fadeUp .8s .46s cubic-bezier(.16,1,.3,1) both; }
-        .party-mode.active .network-section { animation: fadeUp .8s .58s cubic-bezier(.16,1,.3,1) both; }
-        .party-mode.active .vault-hint      { animation: fadeUp .8s .70s cubic-bezier(.16,1,.3,1) both; }
+        .party-mode.active .vault-hint      { animation: fadeUp .8s .58s cubic-bezier(.16,1,.3,1) both; }
 
         .party-header {
             padding: 2rem 2.5rem; text-align: center;
@@ -443,7 +442,7 @@
             .board-section  { padding-bottom: 1.2rem; margin-bottom: .6rem; }
             .easter-section { padding: 1.2rem 0 1.4rem; }
             .poem-section   { padding: 1.4rem 0; }
-            .oracle-section, .network-section { padding: 1.1rem 1rem; }
+            .oracle-section { padding: 1.1rem 1rem; }
             .vault-hint     { padding: .9rem 0; }
 
             /* ── Board headings ── */
@@ -575,55 +574,6 @@
             display: none;
         }
 
-        /* ─── NETWORK ─────────────────────────────── */
-        .network-section {
-            border: 1px solid #1a3a1a; border-radius: 4px;
-            padding: 1.5rem 1.8rem; margin: 0 0 .8rem;
-            background: rgba(74,222,128,.015);
-        }
-        .network-label {
-            font-family: monospace; font-size: .62rem; color: #4ADE80;
-            letter-spacing: 3px; text-transform: uppercase; margin-bottom: .35rem;
-        }
-        .network-heading {
-            font-size: .95rem; color: #c0f0c0; margin-bottom: .5rem; font-family: monospace;
-        }
-        .network-desc {
-            font-size: .78rem; color: #4a7a4a; margin-bottom: 1.1rem;
-            font-family: monospace; letter-spacing: .3px; line-height: 1.65;
-        }
-        .network-form-row { display: flex; gap: .6rem; margin-bottom: .6rem; flex-wrap: wrap; }
-        .network-input {
-            flex: 1; min-width: 140px; background: transparent;
-            border: 1px solid #1a3a1a; border-radius: 3px;
-            color: #a0d0a0; padding: .6rem .85rem; font-family: monospace; font-size: .78rem;
-            outline: none; transition: border-color .3s cubic-bezier(.16,1,.3,1);
-        }
-        .network-input:focus { border-color: #4ADE80; }
-        .network-input::placeholder { color: #2a4a2a; font-style: italic; }
-        .network-textarea {
-            width: 100%; background: transparent; border: 1px solid #1a3a1a; border-radius: 3px;
-            color: #a0d0a0; padding: .6rem .85rem; font-family: monospace; font-size: .78rem;
-            resize: none; height: 64px; outline: none; line-height: 1.5;
-            transition: border-color .3s cubic-bezier(.16,1,.3,1);
-        }
-        .network-textarea:focus { border-color: #4ADE80; }
-        .network-textarea::placeholder { color: #2a4a2a; font-style: italic; }
-        .network-submit-btn {
-            width: 100%; background: transparent; border: 1px solid #4ADE80; color: #4ADE80;
-            padding: .7rem 1.4rem; font-family: monospace; font-size: .75rem;
-            letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 3px;
-            margin-top: .5rem;
-            transition: background .25s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
-        }
-        .network-submit-btn:hover { background: rgba(74,222,128,.1); }
-        .network-submitted {
-            text-align: center; padding: 1.2rem 0; font-family: monospace;
-            font-size: .82rem; color: #4ADE80; letter-spacing: 1px; display: none;
-            opacity: 0; transform: translateY(8px);
-            transition: opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
-        }
-        .network-submitted.revealed { opacity: 1; transform: translateY(0); }
 
         /* ─── ADMIN OVERLAY ─────────────────────── */
         .admin-overlay {
@@ -951,22 +901,6 @@
                 </div>
             </div>
 
-            <!-- Network requests -->
-            <div class="network-section">
-                <div class="network-label">⚡ need something?</div>
-                <div class="network-heading">Anthony's network, open for business.</div>
-                <div class="network-desc">An intro, a resource, a second opinion — put it here. No guarantees. No timeline. But it lands directly with him.</div>
-                <div id="network-form-wrap">
-                    <div class="network-form-row">
-                        <input type="text" class="network-input" id="net-name" placeholder="Your name">
-                        <input type="email" class="network-input" id="net-email" placeholder="Email (optional)">
-                    </div>
-                    <textarea class="network-textarea" id="net-need" placeholder="What do you need?"></textarea>
-                    <textarea class="network-textarea" id="net-offer" placeholder="What could you offer in return? (optional)" style="margin-top:.5rem;height:52px;"></textarea>
-                    <button class="network-submit-btn" id="network-submit">Send it ↗</button>
-                </div>
-                <div class="network-submitted" id="network-submitted">✦ &nbsp; Received. Anthony will see this. &nbsp; ✦</div>
-            </div>
 
             <!-- Classified vault — for the initiated -->
             <div class="vault-hint">
@@ -1767,44 +1701,6 @@ document.getElementById('oc-submit').addEventListener('click', async () => {
     const sent = document.getElementById('oc-sent');
     sent.style.display = 'block';
     requestAnimationFrame(() => requestAnimationFrame(() => sent.classList.add('revealed')));
-});
-
-// ================================================================
-// NETWORK REQUESTS
-// NOTE: Create this table in Supabase:
-//   CREATE TABLE network_requests (
-//     id uuid default gen_random_uuid() primary key,
-//     name text, email text, need text not null, offer text,
-//     created_at timestamptz default now()
-//   );
-//   ALTER TABLE network_requests ENABLE ROW LEVEL SECURITY;
-//   CREATE POLICY "anyone can insert" ON network_requests FOR INSERT WITH CHECK (true);
-//   CREATE POLICY "service role reads" ON network_requests FOR SELECT USING (auth.role() = 'service_role');
-//   CREATE POLICY "service role deletes" ON network_requests FOR DELETE USING (auth.role() = 'service_role');
-// ================================================================
-document.getElementById('network-submit').addEventListener('click', async () => {
-    const need  = document.getElementById('net-need').value.trim();
-    if (!need) { document.getElementById('net-need').focus(); return; }
-    const btn   = document.getElementById('network-submit');
-    const name  = document.getElementById('net-name').value.trim();
-    const email = document.getElementById('net-email').value.trim();
-    const offer = document.getElementById('net-offer').value.trim();
-    btn.disabled = true; btn.textContent = 'Sending...';
-    const sb = getSb();
-    if (sb) {
-        const { error } = await sb.from('network_requests').insert({
-            name: name || null, email: email || null, need, offer: offer || null
-        });
-        if (error) {
-            btn.disabled = false; btn.textContent = 'Send it ↗';
-            alert('Something went sideways. Try again?');
-            return;
-        }
-    }
-    document.getElementById('network-form-wrap').style.display = 'none';
-    const submitted = document.getElementById('network-submitted');
-    submitted.style.display = 'block';
-    requestAnimationFrame(() => requestAnimationFrame(() => submitted.classList.add('revealed')));
 });
 
 // ================================================================
