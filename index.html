@@ -964,6 +964,16 @@
                     <div class="admin-label">Question History</div>
                     <div id="admin-q-history"><div style="color:#2a5a2a;font-size:.72rem;font-style:italic;">Loading...</div></div>
                 </div>
+                <!-- ── Notify subscribers ── -->
+                <div class="admin-section">
+                    <div class="admin-label" style="color:#FFD700;letter-spacing:2px;">📣 Notify Subscribers</div>
+                    <div style="color:#4a7a4a;font-size:.72rem;margin-bottom:.75rem;font-family:monospace;line-height:1.6;">Each person gets this message with their PIN auto-inserted where you put <span style="color:#c8ffc8;">{pin}</span>. No PIN on file? They still get the message without it.</div>
+                    <textarea id="notify-msg" style="width:100%;background:#040d04;border:1px solid #1a3a1a;color:#c8ffc8;font-family:monospace;font-size:.82rem;padding:.65rem;border-radius:4px;resize:vertical;min-height:90px;box-sizing:border-box;outline:none;"></textarea>
+                    <div style="display:flex;align-items:center;gap:.75rem;margin-top:.55rem;flex-wrap:wrap;">
+                        <button class="admin-btn" id="notify-btn" onclick="notifyDecision()" style="border-color:#FFD700;color:#FFD700;">📣 Send to All</button>
+                        <span id="notify-status" style="font-family:monospace;font-size:.72rem;color:#4a7a4a;"></span>
+                    </div>
+                </div>
             </div>
 
             <!-- Pins tab -->
@@ -1970,6 +1980,14 @@ async function loadAdminTab(tab) {
         el.innerHTML = active
             ? `<strong>${escHtml(active.question)}</strong><br><span style="color:#2a5a2a;font-size:.75rem;">${active.options.map(o=>`${(o.label||o.id.toUpperCase())}: ${o.text}`).join(' &nbsp;·&nbsp; ')}</span>`
             : '<span style="color:#2a5a2a;font-style:italic;">No active question set yet.</span>';
+        // Pre-fill notify message with current question context
+        const notifyEl = document.getElementById('notify-msg');
+        if (notifyEl && active) {
+            const opts = active.options.map((o,i) => `${i+1} — ${o.text}`).join(', ');
+            notifyEl.value = `I've got a new decision I actually want your take on.\n\n"${active.question}"\n\nYour options: ${opts}\n\nVote at machu.la — your PIN is {pin}`;
+        } else if (notifyEl && !active) {
+            notifyEl.value = `I've got a new decision I actually want your take on. Head to machu.la to weigh in — your PIN is {pin}`;
+        }
         // Question history with vote counts
         const { data: allQs } = await admin.from('board_questions')
             .select('id, question, active, options, created_at, votes(count)')
@@ -2158,6 +2176,38 @@ async function deleteCall(id) {
     if (!confirm('Delete this call request?')) return;
     await admin.from('call_requests').delete().eq('id', id);
     await loadAdminTab('network');
+}
+
+// ── Decision Notify (personalized — includes each person's PIN) ─
+async function notifyDecision() {
+    const template = document.getElementById('notify-msg').value.trim();
+    if (!template) { document.getElementById('notify-status').textContent = 'Write a message first.'; return; }
+    const statusEl = document.getElementById('notify-status');
+    const btn = document.getElementById('notify-btn');
+    const secret = localStorage.getItem(SB_ADMIN_LSKEY);
+    if (!secret) { statusEl.style.color = '#ff8888'; statusEl.textContent = '✗ No admin key. Re-enter PIN.'; return; }
+    if (!confirm(`Send personalized decision notification to all active subscribers?\n\nTemplate:\n"${template.slice(0,120)}${template.length>120?'…':''}"`)) return;
+    btn.disabled = true; btn.textContent = '...';
+    statusEl.style.color = '#4a7a4a'; statusEl.textContent = 'Sending...';
+    try {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/broadcast-sms`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${secret}` },
+            body: JSON.stringify({ mode: 'decision', template })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            statusEl.style.color = '#4ADE80';
+            statusEl.textContent = `✓ Sent to ${data.sent} subscriber${data.sent!==1?'s':''}${data.skipped?`, ${data.skipped} no phone`:''}`;
+        } else {
+            statusEl.style.color = '#ff8888';
+            statusEl.textContent = `✗ ${data.error || 'Unknown error'}`;
+        }
+    } catch (err) {
+        statusEl.style.color = '#ff8888';
+        statusEl.textContent = `✗ ${err.message}`;
+    }
+    btn.disabled = false; btn.textContent = '📣 Send to All';
 }
 
 // ── SMS Broadcast via Supabase Edge Function ──────────────────
@@ -2374,7 +2424,7 @@ function initAdminOptionsList() {
                 const e164 = normalisePhoneClient(phone);
                 if (e164) {
                     const { error: subErr } = await admin.from('subscribers').upsert(
-                        { name: label || code, phone: e164, active: true },
+                        { name: label || code, phone: e164, pin_code: code, active: true },
                         { onConflict: 'phone' }
                     );
                     if (subErr) console.warn('Subscriber insert:', subErr.message);
