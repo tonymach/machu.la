@@ -1173,6 +1173,7 @@ async function initiatePartyMode() {
 }
 
 function activatePartyMode() {
+    haptic([30, 200, 60, 200, 100, 200, 150]); // slow awakening wave
     body.classList.add('party-active');
     container.classList.add('party-active');
     boringMode.style.display = 'none';
@@ -1325,6 +1326,7 @@ async function buildBoard() {
                 selected = opt.id;
                 optsEl.querySelectorAll('.board-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
+                haptic([30]); // ghost tap
                 if (metaEl && metaEl.style.display === 'none') {
                     metaEl.style.display = 'block';
                     requestAnimationFrame(() => requestAnimationFrame(() => metaEl.classList.add('revealed')));
@@ -1384,6 +1386,7 @@ async function buildBoard() {
 
             document.getElementById('board-vote-area').classList.add('hidden');
             document.getElementById('board-voted').classList.remove('hidden');
+            haptic([60, 120, 60, 120, 80]); // warm double beat
         });
     }
 }
@@ -1593,6 +1596,10 @@ const ORACLE_RESPONSES = [
     "You've been the bottleneck. You're also the only fix.",
     "The version of this that fails is more useful than the version that waits.",
 ];
+// ── Haptics ───────────────────────────────────────────────────
+// Gentle, organic — not notifications. iOS ignores this gracefully.
+function haptic(pattern) { if (navigator.vibrate) navigator.vibrate(pattern); }
+
 const ORACLE_SCANS = [
     'CALIBRATING RESONANCE...','CROSS-REFERENCING REGRETS...',
     'CONSULTING THE ANCESTORS...','RUNNING ENTROPY MODELS...',
@@ -1648,6 +1655,7 @@ document.getElementById('oracle-ask').addEventListener('click', async () => {
     const scans = triggerConnect
         ? ['CROSS-REFERENCING SIGNAL...','IDENTIFYING SOURCE...','BYPASSING ORACLE LAYER...','ROUTING TO HUMAN...']
         : ORACLE_SCANS;
+    haptic([80, 400, 80, 400, 80]); // three deep slow pulses while thinking
     let si = 0;
     const scanTick = setInterval(() => {
         scanEl.innerHTML = scans[si % scans.length] + '<span class="oracle-scan-bar"></span>';
@@ -1660,6 +1668,7 @@ document.getElementById('oracle-ask').addEventListener('click', async () => {
 
     if (triggerConnect) {
         _oracleConnectTriggered = true;
+        haptic([100, 200, 150, 200, 300]); // unmistakably different — something opened
         const resp = _oracleConsults >= 4 && !CONNECT_KEYWORDS.some(k => question.toLowerCase().includes(k))
             ? CONNECT_RESPONSES[3]
             : CONNECT_RESPONSES[Math.floor(Math.random() * 3)];
@@ -1670,6 +1679,7 @@ document.getElementById('oracle-ask').addEventListener('click', async () => {
         }));
         btn.style.display = 'none';
     } else {
+        haptic([40, 150, 80]); // soft landing
         answerEl.textContent = getOracleResponse();
         requestAnimationFrame(() => requestAnimationFrame(() => answerEl.classList.add('revealed')));
     }
@@ -1698,6 +1708,7 @@ document.getElementById('oc-submit').addEventListener('click', async () => {
         });
     }
     submitBtn.style.display = 'none';
+    haptic([100, 150, 250]); // intentional, ascending — something real just happened
     const sent = document.getElementById('oc-sent');
     sent.style.display = 'block';
     requestAnimationFrame(() => requestAnimationFrame(() => sent.classList.add('revealed')));
