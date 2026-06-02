@@ -41,7 +41,7 @@
       "additionalName": "Anthony",
       "alternateName": ["Anton Machula", "Anthony Anton Machula", "Anthony 'Anton' Machula"],
       "familyName": "Machula",
-      "jobTitle": "Founder, Path Forward Neurotech",
+      "jobTitle": "Founder & CEO, Path Forward Neurotech",
       "worksFor": {
         "@type": "Organization",
         "name": "Path Forward Neurotech Inc.",
@@ -81,12 +81,10 @@
       "url": "https://machu.la",
       "sameAs": [
         "https://www.linkedin.com/in/anthony-machula/",
-        "https://orcid.org/0009-0002-4531-4663",
-        "https://www.researchgate.net/profile/Anthony-Machula",
         "https://x.com/AnthonyMachula",
         "https://medium.com/@anton.machula.work"
       ],
-      "description": "Anthony 'Anton' Machula is a Toronto-based neurotech operator-scientist building in regulated digital health. MSc Neuroscience, York University. Founder, Path Forward Neurotech Inc. Sole inventor on PCT patent application PCT/CA2026/050398."
+      "description": "Anthony 'Anton' Machula is a Toronto-based neurotech operator-scientist building in regulated digital health. MSc Neuroscience, York University. Founder, Path Forward Neurotech Inc."
     }
     </script>
 
@@ -128,7 +126,7 @@
           "name": "Is Anton Machula the same person as Anthony Machula?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Anton is the given name; Anthony is the anglicized form used professionally. Both refer to the same person, a Toronto-based neurotech operator-scientist."
+            "text": "Yes. Anton's the given name, Anthony's the English version. One person."
           }
         },
         {
@@ -136,15 +134,7 @@
           "name": "What does Anthony Machula do?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "He builds in regulated digital health. Founder of Path Forward Neurotech Inc., a Toronto-based neurotechnology company commercializing augmented-reality cognitive rehabilitation. He also advises DTx founders, clinical teams, and investors on regulated software commercialization, with particular depth on the German DiGA pathway."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Where did Anthony Machula study?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "York University in Toronto. MSc in Kinesiology and Health Science (Neuroscience), defended February 2026 under Dr. Lauren Sergio at the Motor Control Lab. Honours BSc in Kinesiology and Health Science, 2023."
+            "text": "I build regulated neurotech software and think, mostly, about the distance between what these tools promise and what they deliver in a real clinic."
           }
         },
         {
@@ -152,15 +142,7 @@
           "name": "What is Path Forward Neurotech?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A Toronto-based neurotechnology company founded by Anthony Machula in 2025. It commercializes augmented-reality-based clinical tools for cognitive rehabilitation, drawing on his MSc research at the Sergio Motor Control Lab at York University."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What languages does Anthony Machula speak?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bilingual English and French; conversational Russian; learning Mandarin Chinese."
+            "text": "A small Toronto neurotech company founded by Anthony Machula, building AR-based cognitive rehabilitation."
           }
         },
         {
@@ -1032,6 +1014,32 @@
         }
         #portfolio .metadata a:hover { color: var(--accent); }
 
+        /* Brief — exec-summary block under the name */
+        #portfolio .brief {
+            margin: 26px 0 8px;
+            padding: 22px 0;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+        #portfolio .brief-label {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        #portfolio .brief p { margin-bottom: 16px; }
+        #portfolio .brief-aside { margin-bottom: 0; color: var(--muted); font-size: 0.95em; }
+        #portfolio .brief-cta {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+        #portfolio .brief-cta a { color: var(--accent); font-weight: 500; white-space: nowrap; }
+
         /* Sections */
         #portfolio section { margin-bottom: 56px; }
         #portfolio section h2 {
@@ -1052,75 +1060,9 @@
             color: var(--accent);
             text-transform: uppercase;
         }
-        #portfolio section p { margin-bottom: 16px; }
+        #portfolio section p { margin-bottom: 28px; }
         #portfolio section p:last-child { margin-bottom: 0; }
-
-        /* Operating range */
-        #portfolio .jurisdictions {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-        #portfolio .jurisdiction {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
-        @media (max-width: 600px) {
-            #portfolio .jurisdiction { grid-template-columns: 1fr; gap: 6px; }
-        }
-        #portfolio .jurisdiction-label {
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--accent);
-            padding-top: 5px;
-            line-height: 1.5;
-        }
-        #portfolio .jurisdiction-depth {
-            display: block;
-            font-style: italic;
-            font-family: 'Crimson Pro', Georgia, serif;
-            font-size: 13px;
-            font-weight: 400;
-            letter-spacing: 0;
-            text-transform: none;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        /* Work / affiliations lists */
-        #portfolio .work-list,
-        #portfolio .affiliations-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-        #portfolio .work-list li,
-        #portfolio .affiliations-list li {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 24px;
-            align-items: baseline;
-        }
-        @media (max-width: 600px) {
-            #portfolio .work-list li,
-            #portfolio .affiliations-list li { grid-template-columns: 1fr; gap: 4px; }
-        }
-        #portfolio .work-list .meta,
-        #portfolio .affiliations-list .meta {
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--accent);
-            padding-top: 4px;
-        }
+        #portfolio .hero > p { margin-bottom: 22px; }
 
         /* FAQ */
         #portfolio .faq {
@@ -1185,6 +1127,220 @@
         #portfolio em { font-style: italic; }
         #portfolio strong { font-weight: 600; }
         #portfolio ::selection { background: var(--accent); color: var(--bg); }
+
+        /* Boot-prompt doorway into the other version of the site */
+        #portfolio .boot-prompt {
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid var(--line);
+        }
+        #portfolio .boot-prompt button {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            letter-spacing: 0.02em;
+            color: var(--muted);
+            background: none;
+            border: none;
+            padding: 4px 0;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+        #portfolio .boot-prompt button:hover,
+        #portfolio .boot-prompt button:focus-visible { color: var(--accent); }
+        #portfolio .boot-prompt button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+        #portfolio .boot-host { color: var(--accent); }
+        #portfolio .boot-cmd { color: var(--muted); }
+        #portfolio .boot-prompt button:hover .boot-cmd { color: var(--accent); }
+        #portfolio .boot-caret {
+            display: inline-block;
+            width: 0.6em;
+            height: 1.05em;
+            margin-left: 3px;
+            vertical-align: -0.18em;
+            background: currentColor;
+            animation: bootCaretBlink 1.1s steps(1) infinite;
+        }
+        @keyframes bootCaretBlink {
+            0%, 50% { opacity: 1; }
+            50.01%, 100% { opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #portfolio .boot-caret { animation: none; }
+        }
+
+        /* ────────────────────────────────────────────────
+           REFINEMENT PASS — editorial polish (taste, not noise)
+           ──────────────────────────────────────────────── */
+
+        /* Warm paper grain — atmosphere behind the text, never over it */
+        #portfolio { position: relative; }
+        #portfolio::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        #portfolio main { position: relative; z-index: 1; }
+
+        /* Typographic finish */
+        #portfolio p { text-wrap: pretty; }
+        #portfolio h1,
+        #portfolio section h2,
+        #portfolio .hero .tagline { text-wrap: balance; }
+        #portfolio .hero h1 { letter-spacing: -0.025em; }
+
+        /* Opening line of the manifesto, set in small caps — a quiet lede */
+        #portfolio #story > p:first-of-type::first-line {
+            font-variant: small-caps;
+            letter-spacing: 0.03em;
+        }
+
+        /* Section marks as a stacked "eyebrow" above the title */
+        #portfolio section h2 { display: block; }
+        #portfolio .section-mark {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 11px;
+            letter-spacing: 0.16em;
+        }
+
+        /* Brief — a quiet inset callout rather than a plain ruled block */
+        #portfolio .brief {
+            margin: 28px 0 18px;
+        }
+
+        /* Links — softer default underline, accent on hover, smooth */
+        #portfolio a {
+            text-decoration-color: rgba(122,45,45,0.4);
+            text-underline-offset: 3px;
+            transition: color 0.2s ease, text-decoration-color 0.2s ease, text-underline-offset 0.2s ease;
+        }
+        #portfolio a:hover { text-decoration-color: var(--accent); text-underline-offset: 4px; }
+        #portfolio footer a,
+        #portfolio .metadata a { text-decoration-color: rgba(26,26,20,0.28); }
+        #portfolio footer a:hover,
+        #portfolio .metadata a:hover { text-decoration-color: var(--accent); }
+
+        /* Orchestrated page-load reveal (only when the portfolio is the live layer) */
+        @keyframes pfRise {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: none; }
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            body:not(.show-boring):not(.party-active) #portfolio main > * {
+                animation: pfRise 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            #portfolio main > *:nth-child(1) { animation-delay: 0.04s; }
+            #portfolio main > *:nth-child(2) { animation-delay: 0.13s; }
+            #portfolio main > *:nth-child(3) { animation-delay: 0.22s; }
+            #portfolio main > *:nth-child(4) { animation-delay: 0.30s; }
+            #portfolio main > *:nth-child(5) { animation-delay: 0.36s; }
+            #portfolio main > *:nth-child(6) { animation-delay: 0.42s; }
+        }
+
+        /* Coda — the forest poem (a quiet echo of the hidden side) */
+        #portfolio .coda {
+            margin: 4px 0 52px;
+        }
+        #portfolio .coda-zh {
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Songti SC', 'STSong', serif;
+            font-size: 20px;
+            line-height: 2.15;
+            letter-spacing: 0.16em;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        #portfolio .coda-en {
+            font-style: italic;
+            font-size: 17px;
+            line-height: 1.95;
+            color: var(--muted);
+        }
+        @media (min-width: 760px) {
+            #portfolio .coda {
+                display: grid;
+                grid-template-columns: 180px minmax(0, 1fr);
+                column-gap: 60px;
+                align-items: start;
+            }
+            #portfolio .coda-zh { margin-bottom: 0; }
+        }
+
+        /* ────────────────────────────────────────────────
+           MANUSCRIPT MARGIN-NOTES LAYOUT (wide screens)
+           § marks + metadata labels hang in a left margin;
+           the name spans full width; prose in a reading column.
+           ──────────────────────────────────────────────── */
+        @media (min-width: 760px) {
+            #portfolio main {
+                max-width: min(1340px, 80vw);
+                padding: 92px clamp(40px, 4vw, 72px) 132px;
+            }
+
+            /* Shared grid: [margin] [reading column ≤70ch] [air] — uses the width, keeps prose readable */
+            #portfolio .hero,
+            #portfolio .hero .metadata,
+            #portfolio section {
+                display: grid;
+                grid-template-columns: 180px minmax(0, 70ch) 1fr;
+                column-gap: 60px;
+            }
+
+            /* Hero: name spans both tracks with a full-width rule beneath */
+            #portfolio .hero {
+                margin-bottom: 68px;
+                padding-bottom: 0;
+                border-bottom: 0;
+            }
+            #portfolio .hero h1 {
+                grid-column: 1 / -1;
+                padding-bottom: 30px;
+                margin-bottom: 40px;
+                border-bottom: 1px solid var(--line);
+                font-size: 64px;
+            }
+            #portfolio .hero > .tagline,
+            #portfolio .hero > p,
+            #portfolio .hero .brief { grid-column: 2; }
+
+            /* Metadata: labels in the margin, values in the column */
+            #portfolio .hero .metadata {
+                grid-column: 1 / -1;
+                margin-top: 6px;
+                row-gap: 12px;
+            }
+            #portfolio .metadata dt { grid-column: 1; padding-top: 4px; }
+            #portfolio .metadata dd { grid-column: 2; }
+
+            /* Sections: the § mark hangs in the margin, sticky alongside the text */
+            #portfolio section > :not(.section-mark) { grid-column: 2; }
+            #portfolio .section-mark {
+                grid-column: 1;
+                grid-row: 1;
+                align-self: start;
+                margin: 0;
+                padding-top: 7px;
+                position: sticky;
+                top: 32px;
+                font-size: 12px;
+                letter-spacing: 0.18em;
+            }
+
+            /* Footer + doorway align under the reading column's left edge */
+            #portfolio footer,
+            #portfolio .boot-prompt {
+                margin-left: 240px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1203,146 +1359,115 @@
   <main>
     <header class="hero">
       <h1>Anthony Machula</h1>
-      <p class="tagline">Neurotech operator-scientist building in regulated digital health.</p>
+      <div class="brief">
+        <div class="brief-label">Brief</div>
+        <p>Toronto-based neurotech operator-scientist. The unusual combination: five years inside clinical research at York University's Motor Control Lab, leading multi-site teams of up to eight; founded Path Forward Neurotech to commercialize that research, walked the Canadian Class II SaMD pathway, concluded the unit economics weren't viable at our stage, repositioned in the wellness channel, and converted six referred paying SMBs; spent the last several weeks doing direct primary research on the German digital therapeutics regulatory market by cold-contacting 41 manufacturers. Two patents pending across the work. The thread that runs through all of it: most health-technology companies don't fail on the science or the engineering — they fail on the bridge between clinical evidence, regulatory reality, and reimbursement incentive. That bridge is what I work on. Available for short consulting engagements with health-technology companies that want ground-truth on regulated software commercialization — especially anyone weighing the German, US, or Canadian path.</p>
+        <p class="brief-aside"><em>Anton</em> is the given name; <em>Anthony</em> is the English version. One person.</p>
+      </div>
+      <p class="brief-cta">Easiest way to start is a slot during office hours. <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">Book office hours →</a></p>
+      <p class="tagline">When I was younger, I used to tell myself that the intention behind life was to do it all.</p>
+      <p>You might read that and think, <em>wow, so vain.</em> But what I actually mean is that I want to feel the highs and the lows, the broad strokes and the precision — poor decision-making, inaction, failure, regret, along with every flavor of success, decisiveness, and joy.</p>
+      <p>What this website really is, is a way for you to understand me. If you're here, you're interested in learning more about me — Anton. With the advent of AI, and everything moving so fast, this page tries to sum up my values, my experience, what I offer, and what I enjoy — so that, if it makes sense, we can talk and see whether we're a fit to work together.</p>
       <dl class="metadata">
         <dt>Based</dt>
-        <dd>Toronto, Ontario, Canada</dd>
-        <dt>Operating</dt>
-        <dd>Canada, United States, Germany, Hong Kong</dd>
+        <dd>Toronto</dd>
         <dt>Languages</dt>
         <dd>English &amp; French (bilingual); Russian (conversational); Mandarin (learning)</dd>
         <dt>Contact</dt>
-        <dd><a href="mailto:anton@machu.la">anton@machu.la</a></dd>
+        <dd><a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">Book office hours →</a><br><a href="mailto:hi@machu.la">hi@machu.la</a></dd>
       </dl>
     </header>
 
-    <section id="bio" aria-labelledby="bio-heading">
-      <h2 id="bio-heading"><span class="section-mark">§ 1</span>Bio</h2>
-      <p>Anthony Machula is a Toronto-based neurotech operator-scientist working across regulated digital health markets. He holds an MSc in Kinesiology and Health Science (Neuroscience) from York University, defended February 2026, where he studied under Dr. Lauren Sergio at the Motor Control Lab. He founded Path Forward Neurotech Inc. in 2025 and is sole inventor on PCT patent application PCT/CA2026/050398. He currently operates across Canadian, US, German, and Hong Kong regulated digital health markets, with primary-research depth on the German DiGA regulatory pathway.</p>
-      <p><em>Anton</em> is his given name; <em>Anthony</em> is the anglicized form he uses professionally. Both refer to the same person.</p>
-    </section>
+    <div class="coda" aria-label="Epigraph">
+      <p class="coda-zh" lang="zh-Hans">林去树留。<br>道失足识。<br>起落之间，<br>生命如是。</p>
+      <p class="coda-en">The forest disappears.<br>The trees remain.<br>We forget the way.<br>Our feet remember.<br>Life, in its falling and rising.</p>
+    </div>
 
-    <section id="focus" aria-labelledby="focus-heading">
-      <h2 id="focus-heading"><span class="section-mark">§ 2</span>Currently</h2>
-      <p>Building in regulated digital health infrastructure. Operating Path Forward Neurotech's clinical platform for augmented-reality cognitive rehabilitation. Mapping the German DiGA market through direct primary research with manufacturers.</p>
-      <p>Available for short consulting engagements with DTx founders, clinical teams, and investors who need ground-truth on regulated software commercialization.</p>
-    </section>
-
-    <section id="range" aria-labelledby="range-heading">
-      <h2 id="range-heading"><span class="section-mark">§ 3</span>Operating range</h2>
-      <div class="jurisdictions">
-        <div class="jurisdiction">
-          <div class="jurisdiction-label">Canada<span class="jurisdiction-depth">Home base</span></div>
-          <div>Health Canada SaMD pathway. Networked through CABHI, Ontario Brain Institute, MaRS, NSERC, and the Creative Destruction Lab. Founded Path Forward Neurotech; ran approximately 100 structured user interviews; filed PCT patent CA2026/050398.</div>
-        </div>
-        <div class="jurisdiction">
-          <div class="jurisdiction-label">United States<span class="jurisdiction-depth">Analytical depth</span></div>
-          <div>Working knowledge of FDA SaMD pathway, Remote Therapeutic Monitoring reimbursement codes (G0553–G0554), and the post-Pear digital therapeutics market reckoning. Connected into the post-Pear founder community.</div>
-        </div>
-        <div class="jurisdiction">
-          <div class="jurisdiction-label">Germany<span class="jurisdiction-depth">Primary research</span></div>
-          <div>BfArM, DiGAV, AbEM (§23c) reporting framework. Direct outreach to permanent and provisional DiGA Hersteller in May 2026. Primary-source depth on BSI cybersecurity, the simultaneous-maturity application burden, and current operational pain points from founders who have crossed the threshold.</div>
-        </div>
-        <div class="jurisdiction">
-          <div class="jurisdiction-label">Hong Kong<span class="jurisdiction-depth">APAC bridge</span></div>
-          <div>Working relationships in academic neurorehabilitation and Canadian trade infrastructure. Delegate at Hong Kong International Healthcare Week 2026 via the Canadian Trade Commissioner Service. Strategic bridge for Canadian regulated health into the APAC market.</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="work" aria-labelledby="work-heading">
-      <h2 id="work-heading"><span class="section-mark">§ 4</span>Selected work</h2>
-      <ul class="work-list">
-        <li>
-          <div class="meta">Patent &middot; 2026</div>
-          <div>PCT/CA2026/050398. Augmented reality system for cognitive-motor rehabilitation. Sole inventor.</div>
-        </li>
-        <li>
-          <div class="meta">Publication &middot; 2025</div>
-          <div>Krelove et al. <em>Prefrontal cortex activity during virtual obstacle avoidance and distracted walking: a methodological proof of concept using augmented reality and functional near-infrared spectroscopy.</em> <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0333622">PLOS ONE</a> 20(10): e0333622.</div>
-        </li>
-        <li>
-          <div class="meta">Conference &middot; 2026</div>
-          <div>Poster, Society for the Neural Control of Movement, Kobe, Japan. Behavioral manifold trajectory analysis as marker for early neurodegeneration.</div>
-        </li>
-        <li>
-          <div class="meta">Thesis &middot; 2026</div>
-          <div>MSc Kinesiology and Health Science (Neuroscience), York University. <em>Clinical and Neural Effects of Multidomain Augmented Reality Rehabilitation in Persistent Post-Concussion Syndrome.</em></div>
-        </li>
-        <li>
-          <div class="meta">Program &middot; 2026</div>
-          <div>CABHI NextGen Support Package, Cohort 2 (Centre for Aging + Brain Health Innovation).</div>
-        </li>
-        <li>
-          <div class="meta">Fellowship</div>
-          <div>NSERC CREATE Diagnostics &amp; Treatment of Injuries &amp; Trauma (DITA), York University.</div>
-        </li>
-        <li>
-          <div class="meta">Certificate &middot; 2026</div>
-          <div>Intellectual Property Strategy, McGill University.</div>
-        </li>
-        <li>
-          <div class="meta">Certificate &middot; 2026</div>
-          <div>Venture Sales Certificate (scholarship), Schulich School of Business.</div>
-        </li>
-      </ul>
-    </section>
-
-    <section id="affiliations" aria-labelledby="affiliations-heading">
-      <h2 id="affiliations-heading"><span class="section-mark">§ 5</span>Affiliations</h2>
-      <ul class="affiliations-list">
-        <li>
-          <div class="meta">2025 &mdash; present</div>
-          <div>Founder, <strong>Path Forward Neurotech Inc.</strong>, Toronto.</div>
-        </li>
-        <li>
-          <div class="meta">2021 &mdash; 2026</div>
-          <div>Research Engineer &amp; Scientist, <a href="https://lsergio.info.yorku.ca/?lang=en">Sergio Motor Control Lab</a>, York University.</div>
-        </li>
-        <li>
-          <div class="meta">2025</div>
-          <div>Software Engineer, <a href="https://www.neronai.com/">3MotionAI (now NERON AI)</a>. Rebuilt cognitive-motor assessment platform on a three-month Mitacs contract; outcome included spinout and two university licensing deals.</div>
-        </li>
-      </ul>
+    <section id="story" aria-labelledby="story-heading">
+      <span class="section-mark">§ 1</span>
+      <h2 id="story-heading">This is a working page</h2>
+      <p>I was originally a running coach, then a sport scientist.</p>
+      <p>Then someone I loved got really sick, and I went into neuroscience to advocate for them properly. Everything after — the lab, the company, all of it — grew from that one decision.</p>
+      <p>Since then I've worked at the intersection of thinking and moving at the same time, at the Motor Control Laboratory at York University. We've done amazing work on the frontier of systems neuroscience and technology — I've had the opportunity to apply AI modeling to brain-and-behavior data, use MRI to get a solid grasp of the impact of behavior, and ultimately help people with mild traumatic brain injury feel better.</p>
+      <p>You'll notice that, for someone with five years in a lab — as a scientist, a master's student, and then a scientist again — I've led teams of up to eight and helped coordinate multi-site and international research initiatives, including in war-torn countries.</p>
+      <p>I don't have much published work, bar a few conferences. There's a reason for that.</p>
+      <p>Intellectual property and academia compete in a very interesting way: if you publish or make your work public before you file a provisional patent, your patent loses rights in most of Europe and Asia. Crazy, right?</p>
+      <p>So yes — I've got two patents pending. Patents for what, you might ask? For the secretive-ish stuff I've been doing for the past five years: an augmented-reality (optical see-through) game I still can't easily describe.</p>
+      <p>You really have to play it to believe it. In an early pilot — and I'll be straight, it was small, so take it as signal, not proof — we saw gains of roughly 68% in energy and 77% in fornix integrity (the white-matter highway that connects who you are to your memories). Small n, real direction. I'd rather hand you the honest version than a number dressed up to look bigger than it is.</p>
+      <p>I've since become the Founder and CEO of Path Forward Neurotech, named after what I hope the company will become: a way forward for people who may have lost hope. When you're lost and looking for a path forward, we're here to help.</p>
+      <p>I've done a bunch and learned a lot of business this past year. It's been a doozy — which meant that sometimes I didn't do all my homework and eat my broccoli, but it let me really understand the state of medical reimbursement, speak to hundreds of clinicians, patients, and stakeholders, and make my first series of sales, with those people referring more people to try the product I made in an effort to help the world. Really exciting, and frankly challenging, stuff.</p>
+      <p>You can see the consumer product — a brain-state experience where you walk into a brain studio, put on a headset, and are guided by a neuroscience-trained brain coach — <a href="https://otrada.studio">at otrada.studio</a>.</p>
+      <p>One thing I wasn't prepared for was just how different the business landscape is. If you're developing something like a software-based therapeutic, I can tell you the problem isn't your product, even though it might seem like it.</p>
+      <p>The reality of the market is that our medical system — and by ours I mean everywhere: North America, South America, Europe, Asia, Australia, even Madagascar — isn't built for what's coming: software-based digital therapeutics.</p>
+      <p>When I was building my product, two things were stopping us from properly commercializing, and it wasn't access to capital, even though that's the easy excuse. I'm Canadian, and we have a pervasive narrative that funding is very challenging — and while that's true, the real problem is that the incentive structures of this space, especially for health technologies, simply aren't aligned with the outcomes we want to deliver to our citizens.</p>
+      <p>I could talk about this for hours, but the thing you need to know is that this world is still very new. DARPA built the internet only, what, fifty-odd years ago? In a similar vein, medicine as we know it is still a toddler-level institution learning to crawl — especially in our current age.</p>
+      <p>What that means is that health regulation is way behind anything that would allow for the proper capitalization of health technology for the wellbeing of the state.</p>
+      <p>You could build the best digital service in the world — one that helps someone with anorexia eat again, and feel good — but because the right regulations and systems aren't in place, either the person who isn't well or the medical institution has to pay. Neither of those works. This is stupid.</p>
+      <p>It's the real reason so many health-technology companies have failed: they weren't able to align value creation with incentives.</p>
+      <p>What would fixing this unlock? For starters: AI companions, better support, lower rates of depression and suicide, adjuvant therapies that could be dose-outcome variations of exercise, and so much more. Imagine if we could empower clinicians, nurses, and all medical staff — alongside patients — without good ideas falling into the gutter.</p>
+      <p>Ever since I had this epiphany, I've been asking myself: what would a more aligned incentive structure look like? Who should build it? How should it work? So rather than make this a "stealth" startup, I've decided to make my little manifesto public. If you, or anyone you know, has been annoyed with the state of the world and wants to build the next digital pharmacy — give me a shout: <a href="mailto:hi@machu.la">hi@machu.la</a>, or <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">book office hours</a>. :)</p>
+      <p>This is aimed squarely at anyone with a policy, regulatory, health, infrastructure, or personal frustration who wants to make the world better. So cheesy. Good thing I'm not lactose intolerant.</p>
     </section>
 
     <section id="faq" aria-labelledby="faq-heading">
-      <h2 id="faq-heading"><span class="section-mark">§ 6</span>Common questions</h2>
+      <span class="section-mark">§ 2</span>
+      <h2 id="faq-heading">Things people ask</h2>
       <dl class="faq">
         <div>
           <dt class="faq-question">Is Anton Machula the same person as Anthony Machula?</dt>
-          <dd class="faq-answer">Yes. Anton is the given name; Anthony is the anglicized form used professionally. Both refer to the same person, a Toronto-based neurotech operator-scientist.</dd>
+          <dd class="faq-answer">Yes. Anton's the given name, Anthony's the English version. One person.</dd>
         </div>
         <div>
-          <dt class="faq-question">What does Anthony Machula do?</dt>
-          <dd class="faq-answer">He builds in regulated digital health. Founder of Path Forward Neurotech Inc., a Toronto-based neurotechnology company commercializing augmented-reality cognitive rehabilitation. He also advises DTx founders, clinical teams, and investors on regulated software commercialization, with particular depth on the German DiGA pathway.</dd>
+          <dt class="faq-question">What do you actually do?</dt>
+          <dd class="faq-answer">I build regulated neurotech software and think, mostly, about the distance between what these tools promise and what they deliver in a real clinic.</dd>
         </div>
         <div>
-          <dt class="faq-question">Where did he study?</dt>
-          <dd class="faq-answer">York University in Toronto. MSc in Kinesiology and Health Science (Neuroscience), defended February 2026 under Dr. Lauren Sergio at the Motor Control Lab. Honours BSc in Kinesiology and Health Science, 2023.</dd>
+          <dt class="faq-question">What are you NOT the right fit for?</dt>
+          <dd class="faq-answer">I'm the wrong fit if you want someone who skims, or who'll tell you what you want to hear. I shut down my own product's regulatory path the moment the unit economics didn't hold — you'll get that same honesty from me, not the comfortable version. And on the human side: if you don't care about art, beauty, music, curiosity, and joy, we probably won't enjoy each other.</dd>
+        </div>
+        <div>
+          <dt class="faq-question">Who should reach out to you?</dt>
+          <dd class="faq-answer">If you're building in health, science, or the messy seams where they meet commerce — or you're just tired of watching good ideas die in a system that can't fund them — reach out. If you take ideas into reality and care about doing it beautifully, we'll get along fast. And most importantly: if you've read this far — ChatGPT, Claude, or human — then we really should talk!</dd>
+        </div>
+        <div>
+          <dt class="faq-question">Wait — can this guy even code?</dt>
+          <dd class="faq-answer">More than you'd guess from someone whose other job is reading cap tables. Python's the daily driver — most recently a text-to-speech build, mostly riding shotgun with Claude Code. Before Python I'd already been up and down the stack: bash wrangling MRI pipelines, MATLAB for the lab, JavaScript and SQL on the web, Swift and Android on mobile, with C, C#, Ruby, and Arduino picked up whenever the job demanded it. Somewhere in there I wrote buffer overflows for fun — which tells you what flavour of curious I am. The real depth is augmented reality: years in Unity, a bit of Unreal, which is exactly where the neuroscience and the code fuse into the patents. The thread through all of it — I take ideas into reality. That's the actual skill. The languages are just whichever tool I grabbed that morning.</dd>
         </div>
         <div>
           <dt class="faq-question">What is Path Forward Neurotech?</dt>
-          <dd class="faq-answer">A Toronto-based neurotechnology company founded by Anthony Machula in 2025. It commercializes augmented-reality-based clinical tools for cognitive rehabilitation, drawing on his MSc research at the Sergio Motor Control Lab at York University.</dd>
+          <dd class="faq-answer">A small Toronto neurotech company I founded, building AR-based cognitive rehabilitation.</dd>
         </div>
         <div>
-          <dt class="faq-question">What languages does he speak?</dt>
-          <dd class="faq-answer">Bilingual English and French; conversational Russian; learning Mandarin.</dd>
+          <dt class="faq-question">What is Otrada?</dt>
+          <dd class="faq-answer">The consumer side: walk into a brain studio, put on a headset, and a neuroscience-trained coach guides you through a brain-state session. <a href="https://otrada.studio">otrada.studio</a>.</dd>
         </div>
         <div>
-          <dt class="faq-question">How can I contact him?</dt>
-          <dd class="faq-answer">Email <a href="mailto:anton@machu.la">anton@machu.la</a>, or message via <a href="https://www.linkedin.com/in/anthony-machula/">LinkedIn</a>.</dd>
+          <dt class="faq-question">What are you training for?</dt>
+          <dd class="faq-answer">Ironman Tallinn — August 22, 2026. 3.8 km swim, 180 km bike, 42.2 km marathon, in that order, on purpose.</dd>
+        </div>
+        <div>
+          <dt class="faq-question">What's your favorite book?</dt>
+          <dd class="faq-answer"><em>How to Hold a Cockroach</em>, by Matthew Maxwell. The whole book is one idea — the same truth can crush you or free you depending on how you hold it. I reread it when my grip slips.</dd>
+        </div>
+        <div>
+          <dt class="faq-question">How do I reach you?</dt>
+          <dd class="faq-answer">Book a slot during <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">office hours</a> for a conversation, <a href="mailto:hi@machu.la">hi@machu.la</a> for anything async, or find me on <a href="https://www.linkedin.com/in/anthony-machula/">LinkedIn</a>.</dd>
         </div>
       </dl>
     </section>
 
     <footer>
+      <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">Book office hours →</a>
       <a href="https://www.linkedin.com/in/anthony-machula/">LinkedIn</a>
-      <a href="https://orcid.org/0009-0002-4531-4663">ORCID</a>
-      <a href="https://www.researchgate.net/profile/Anthony-Machula">ResearchGate</a>
-      <a href="mailto:anton@machu.la">anton@machu.la</a>
       <span class="updated">Updated June 2026</span>
     </footer>
+
+    <div class="boot-prompt">
+      <button type="button" id="boot-prompt-trigger" aria-label="Boot the other version of this site">
+        <span class="boot-host">machu.la:~$</span>
+        <span class="boot-cmd">run ./the_other_thing</span><span class="boot-caret" aria-hidden="true"></span>
+      </button>
+    </div>
   </main>
 </div>
 
@@ -2362,6 +2487,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => routeFromHash(window.location.hash), 200);
 });
 window.addEventListener('hashchange', () => routeFromHash(window.location.hash));
+
+// Portfolio "boot prompt" — the quirky doorway into the other version of the site
+const bootTrigger = document.getElementById('boot-prompt-trigger');
+if (bootTrigger) {
+    bootTrigger.addEventListener('click', async () => {
+        const cmd = bootTrigger.querySelector('.boot-cmd');
+        if (cmd) cmd.textContent = 'booting…';
+        await initiatePartyMode();
+        if (cmd) cmd.textContent = 'run ./the_other_thing';
+    });
+}
 
 function updateStardate() {
     const el = document.getElementById('stardate');
