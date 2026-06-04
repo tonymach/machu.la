@@ -343,6 +343,15 @@
             background: #050505; border: 1px solid #1a3a1a; height: 2px; overflow: hidden;
         }
         .boot-bar { height: 100%; width: 0%; background: #0f0; box-shadow: 0 0 6px #0f0; }
+
+        /* ── 3D WORLD VIEWER OVERLAY (lazy iframe to /viewer.html) ── */
+        #world-overlay {
+            position: fixed; inset: 0; z-index: 99999;
+            background: #FAF7F0; opacity: 0; visibility: hidden;
+            transition: opacity 0.45s ease, visibility 0.45s ease;
+        }
+        #world-overlay.open { opacity: 1; visibility: visible; }
+        #world-overlay iframe { width: 100%; height: 100%; border: 0; display: block; }
         .boot-pct { margin-top: .5rem; font-size: .65rem; color: #2a6e2a; letter-spacing: 2px; min-height: 1rem; }
 
         /* ─── ANIMATIONS ─────────────────────────── */
@@ -1401,6 +1410,11 @@
     <div class="boot-pct" id="boot-pct"></div>
 </div>
 
+<!-- ── 3D WORLD VIEWER ── viewer.html carries its own CSP; opened lazily on click -->
+<div id="world-overlay" aria-hidden="true">
+  <iframe id="world-frame" title="Step inside a 3D world" allow="fullscreen; accelerometer; gyroscope; xr-spatial-tracking"></iframe>
+</div>
+
 <!-- ══════════════════════════════════════
      PUBLIC PORTFOLIO (default / indexable layer)
      ══════════════════════════════════════ -->
@@ -1515,6 +1529,13 @@
       <button type="button" id="boot-prompt-trigger" aria-label="Boot the other version of this site">
         <span class="boot-host">machu.la:~$</span>
         <span class="boot-cmd">run ./the_other_thing</span><span class="boot-caret" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="boot-prompt">
+      <button type="button" id="world-trigger" aria-label="Step inside a 3D world built from a single image">
+        <span class="boot-host">machu.la:~$</span>
+        <span class="boot-cmd">run ./step_inside</span><span class="boot-caret" aria-hidden="true"></span>
       </button>
     </div>
   </main>
@@ -2738,6 +2759,32 @@ document.getElementById('admin-close').addEventListener('click', () => closeOver
     sr.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)finalText+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript;}textarea.value=finalText+(interim?` [${interim}]`:'');};
     sr.onend=()=>{isRec=false;micBtn.textContent='🎤 DICTATE';micBtn.classList.remove('recording');textarea.value=textarea.value.replace(/\s*\[.*?\]/g,'').trim();};
     micBtn.addEventListener('click',()=>{if(isRec){sr.stop();}else{finalText=textarea.value;sr.start();isRec=true;micBtn.textContent='⏹ STOP';micBtn.classList.add('recording');}});
+})();
+</script>
+<script>
+/* 3D world viewer launcher — opens /viewer.html in a lazy iframe overlay.
+   viewer.html carries its own CSP (worker/wasm), so index.html's CSP is unchanged. */
+(function(){
+  const trigger = document.getElementById('world-trigger');
+  const overlay = document.getElementById('world-overlay');
+  const frame   = document.getElementById('world-frame');
+  if (!trigger || !overlay || !frame) return;
+  function openWorld(){
+    if (!frame.getAttribute('src')) frame.setAttribute('src', '/viewer.html'); // lazy: splat downloads only on demand
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+  }
+  function closeWorld(){
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    // Unload the viewer after the fade so it stops using the GPU / frees memory.
+    setTimeout(function(){ if (!overlay.classList.contains('open')) frame.removeAttribute('src'); }, 500);
+  }
+  trigger.addEventListener('click', openWorld);
+  window.addEventListener('message', function(e){ if (e.data && e.data.type === 'viewer-close') closeWorld(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && overlay.classList.contains('open')) closeWorld(); });
 })();
 </script>
 </body>

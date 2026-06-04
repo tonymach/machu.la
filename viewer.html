@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Self-contained CSP for the splat viewer. Independent of index.html.
+     Spark loads Three + itself from jsdelivr (ESM), spins up blob web-workers
+     and instantiates inline WASM for splat sorting, and fetches the .spz same-origin. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net; worker-src 'self' blob:; connect-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+<title>machu.la — step inside</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --ink: #1A1A14;
+    --accent: #7A2D2D;
+    --muted: #5C5C50;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); }
+  body { font-family: var(--mono); color: var(--ink); -webkit-tap-highlight-color: transparent; }
+  #canvas-wrap { position: fixed; inset: 0; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+
+  /* Loading + error overlay */
+  #loader {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px;
+    background: var(--bg); color: var(--muted); z-index: 30;
+    transition: opacity .6s ease; font-size: 13px; letter-spacing: .02em;
+  }
+  #loader.hidden { opacity: 0; pointer-events: none; }
+  .bar-wrap { width: min(240px, 60vw); height: 3px; background: rgba(26,26,20,.12); border-radius: 2px; overflow: hidden; }
+  .bar { height: 100%; width: 0%; background: var(--accent); transition: width .25s ease; }
+  #loader .title { color: var(--ink); font-weight: 500; }
+  #loader.error .title { color: var(--accent); }
+
+  /* Caption + hint + close, over the canvas */
+  .chrome { position: fixed; z-index: 20; color: var(--ink); pointer-events: none; }
+  #caption {
+    left: max(16px, env(safe-area-inset-left)); top: max(16px, env(safe-area-inset-top));
+    font-size: 12px; line-height: 1.5; max-width: 70vw;
+    text-shadow: 0 1px 8px rgba(250,247,240,.7);
+  }
+  #caption b { font-weight: 500; }
+  #caption span { color: var(--muted); }
+  #hint {
+    left: 50%; transform: translateX(-50%);
+    bottom: max(16px, env(safe-area-inset-bottom));
+    font-size: 11px; color: var(--muted); opacity: .85;
+    background: rgba(250,247,240,.55); padding: 5px 12px; border-radius: 999px;
+    transition: opacity .8s ease; white-space: nowrap;
+  }
+  #hint.gone { opacity: 0; }
+  #close {
+    pointer-events: auto; position: fixed; z-index: 21;
+    right: max(14px, env(safe-area-inset-right)); top: max(14px, env(safe-area-inset-top));
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid rgba(26,26,20,.18); background: rgba(250,247,240,.7);
+    color: var(--ink); font-family: var(--mono); font-size: 15px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+  }
+  #close:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+  <div id="canvas-wrap"></div>
+
+  <div class="chrome" id="caption"><b>Pastel Villa</b><br><span>built from a single image · World Labs</span></div>
+  <div class="chrome" id="hint">drag to look&nbsp;·&nbsp;pinch / scroll to zoom</div>
+  <button id="close" title="Close" aria-label="Close viewer">✕</button>
+
+  <div id="loader">
+    <div class="title">entering the world…</div>
+    <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+    <div id="loader-sub">loading splats</div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+      "@sparkjsdev/spark": "https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@2.1.0/dist/spark.module.js"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+    import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark'
+
+    // ── Swap-point for future worlds ─────────────────────────────────────────
+    // To show a different world: drop its *-150k.spz / *-100k.spz into
+    // /worlds/<slug>/ and update these values (scale + ground from that world's
+    // 0-world.json `semantics_metadata`).
+    const WORLD = {
+      spz:       '/worlds/pastel-villa/world-150k.spz',  // desktop
+      spzMobile: '/worlds/pastel-villa/world-100k.spz',  // narrow screens
+      metricScaleFactor: 3.806513,
+      groundPlaneOffset: 2.761552,
+      flipY: true,
+    }
+    const CAMERA = {
+      position: [0, 3, 9],
+      target:   [0, 2.4, 0],
+      minDistance: 1,
+      maxDistance: 45,
+      autoRotate: true,
+      autoRotateSpeed: 0.45,
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches
+    const splatUrl = isMobile ? WORLD.spzMobile : WORLD.spz
+
+    const wrap = document.getElementById('canvas-wrap')
+    const loader = document.getElementById('loader')
+    const loaderTitle = loader.querySelector('.title')
+    const loaderSub = document.getElementById('loader-sub')
+    const bar = document.getElementById('bar')
+    const hint = document.getElementById('hint')
+
+    const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    wrap.appendChild(renderer.domElement)
+
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color('#FAF7F0')
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    camera.position.set(...CAMERA.position)
+
+    // Spark renderer: worker-based splat sorting + LOD. Lives in the scene and
+    // self-updates each frame via its onBeforeRender hook.
+    const spark = new SparkRenderer({ renderer, enableLod: true })
+    scene.add(spark)
+
+    // Orientation group — mirrors image-blaster's SplatRenderer transform.
+    const group = new THREE.Group()
+    group.position.y = WORLD.groundPlaneOffset
+    group.rotation.x = WORLD.flipY ? Math.PI : 0
+    group.scale.setScalar(WORLD.metricScaleFactor)
+    scene.add(group)
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.08
+    controls.minDistance = CAMERA.minDistance
+    controls.maxDistance = CAMERA.maxDistance
+    controls.target.set(...CAMERA.target)
+    controls.autoRotate = CAMERA.autoRotate
+    controls.autoRotateSpeed = CAMERA.autoRotateSpeed
+    // Stop the idle spin once the user takes over.
+    controls.addEventListener('start', () => { controls.autoRotate = false; dismissHint() })
+
+    let hintTimer = setTimeout(dismissHint, 6000)
+    function dismissHint() { hint.classList.add('gone'); clearTimeout(hintTimer) }
+
+    function setProgress(p) { bar.style.width = Math.max(0, Math.min(100, p)) + '%' }
+
+    const splat = new SplatMesh({
+      url: splatUrl,
+      onProgress: (e) => {
+        if (e && e.lengthComputable && e.total) setProgress((e.loaded / e.total) * 100)
+        else setProgress(Math.min(95, (bar.offsetWidth ? parseFloat(bar.style.width) || 0 : 0) + 6))
+      },
+    })
+    group.add(splat)
+
+    splat.initialized
+      .then(() => { setProgress(100); loader.classList.add('hidden') })
+      .catch((err) => {
+        console.error('[viewer] splat load failed:', err)
+        loader.classList.remove('hidden')
+        loader.classList.add('error')
+        loaderTitle.textContent = 'could not load the world'
+        loaderSub.textContent = 'check your connection and refresh'
+      })
+
+    renderer.setAnimationLoop(() => {
+      controls.update()
+      renderer.render(scene, camera)
+    })
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+    })
+
+    // Close: tell the host page (index.html overlay) to dismiss; harmless standalone.
+    document.getElementById('close').addEventListener('click', () => {
+      try { window.parent.postMessage({ type: 'viewer-close' }, '*') } catch (_) {}
+      if (window.parent === window) history.length > 1 ? history.back() : (location.href = '/')
+    })
+  </script>
+</body>
+</html>
