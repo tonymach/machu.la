@@ -1193,6 +1193,8 @@
             border-top: 1px solid var(--line);
         }
         #portfolio .boot-prompt button {
+            display: block;
+            text-align: left;
             font-family: 'JetBrains Mono', ui-monospace, monospace;
             font-size: 12px;
             line-height: 1.4;
@@ -1200,7 +1202,7 @@
             color: var(--muted);
             background: none;
             border: none;
-            padding: 4px 0;
+            padding: 3px 0;
             cursor: pointer;
             transition: color 0.15s ease;
         }
@@ -1528,11 +1530,8 @@
     <div class="boot-prompt">
       <button type="button" id="boot-prompt-trigger" aria-label="Boot the other version of this site">
         <span class="boot-host">machu.la:~$</span>
-        <span class="boot-cmd">run ./the_other_thing</span><span class="boot-caret" aria-hidden="true"></span>
+        <span class="boot-cmd">run ./the_other_thing</span>
       </button>
-    </div>
-
-    <div class="boot-prompt">
       <button type="button" id="world-trigger" aria-label="Step inside a 3D world built from a single image">
         <span class="boot-host">machu.la:~$</span>
         <span class="boot-cmd">run ./step_inside</span><span class="boot-caret" aria-hidden="true"></span>
@@ -2770,7 +2769,7 @@ document.getElementById('admin-close').addEventListener('click', () => closeOver
   const frame   = document.getElementById('world-frame');
   if (!trigger || !overlay || !frame) return;
   function openWorld(){
-    if (!frame.getAttribute('src')) frame.setAttribute('src', '/viewer.html'); // lazy: splat downloads only on demand
+    if (!frame.getAttribute('src')) frame.setAttribute('src', '/viewer.html?v=3'); // lazy load; bump ?v= to bust cache after viewer changes
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
