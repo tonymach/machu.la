@@ -1041,15 +1041,22 @@
         @media (max-width: 759px) {
             #portfolio .hero h1 { font-size: 40px; }
         }
-        #portfolio .hero .tagline {
-            font-size: 22px;
-            font-style: italic;
-            color: var(--muted);
-            margin-bottom: 40px;
-            line-height: 1.4;
+
+        /* Bust — small author portrait beside the name, seated into the paper */
+        #portfolio .hero-head {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            margin-bottom: 16px;
         }
-        @media (max-width: 759px) {
-            #portfolio .hero .tagline { font-size: 19px; margin-bottom: 32px; }
+        #portfolio .hero-head h1 { margin-bottom: 0; }
+        #portfolio .hero-bust {
+            display: block;
+            width: 72px;
+            height: auto;
+            mix-blend-mode: multiply;
+            filter: sepia(0.1) contrast(1.05);
         }
 
         /* Brief — exec-summary block under the name */
@@ -1064,7 +1071,6 @@
             font-size: 11px;
             font-weight: 500;
             letter-spacing: 0.1em;
-            text-transform: uppercase;
             color: var(--accent);
             margin-bottom: 12px;
         }
@@ -1248,8 +1254,7 @@
         /* Typographic finish */
         #portfolio p { text-wrap: pretty; }
         #portfolio h1,
-        #portfolio section h2,
-        #portfolio .hero .tagline { text-wrap: balance; }
+        #portfolio section h2 { text-wrap: balance; }
         #portfolio .hero h1 { letter-spacing: -0.025em; }
 
         /* Section marks as a stacked "eyebrow" above the title */
@@ -1348,14 +1353,14 @@
                 padding-bottom: 0;
                 border-bottom: 0;
             }
-            #portfolio .hero h1 {
+            #portfolio .hero-head {
                 grid-column: 1 / -1;
                 padding-bottom: 30px;
                 margin-bottom: 40px;
                 border-bottom: 1px solid var(--line);
-                font-size: 64px;
             }
-            #portfolio .hero > .tagline,
+            #portfolio .hero h1 { font-size: 64px; }
+            #portfolio .hero-bust { width: 88px; }
             #portfolio .hero > p,
             #portfolio .hero .brief { grid-column: 2; }
 
@@ -1402,8 +1407,10 @@
 <div id="portfolio" class="portfolio-root">
   <main>
     <header class="hero">
-      <h1>Anton Machula</h1>
-      <p class="tagline">When I was younger, I used to tell myself that the intention behind life was to do it all.</p>
+      <div class="hero-head">
+        <h1>Anton Machula</h1>
+        <img class="hero-bust" src="bust.png" alt="Sculptural bust of Anton Machula" width="360" height="472">
+      </div>
       <div class="brief">
         <div class="brief-label">// brief</div>
         <p>Canadian neuroscientist consulting entrepreneur. In love with motor control neuroscience, endurance, and deep-tech. Ask me how to use neuroscience to: increase your company's product stickiness, have better conversations, and make incredibly memorable, joyful experiences. Part of Dr. Lauren Sergio's Motor control lab, where we look at how movement performance is affected by brain injury, disease, age, skill, sex, and everything in between.</p>
