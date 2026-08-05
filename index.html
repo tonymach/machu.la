@@ -1358,9 +1358,17 @@
                 padding-bottom: 30px;
                 margin-bottom: 40px;
                 border-bottom: 1px solid var(--line);
+                position: relative;
             }
             #portfolio .hero h1 { font-size: 64px; }
-            #portfolio .hero-bust { width: 88px; }
+            /* Bust pulled to the right edge; name stays centered */
+            #portfolio .hero-bust {
+                width: 88px;
+                position: absolute;
+                right: 0;
+                top: calc(50% - 15px);
+                transform: translateY(-50%);
+            }
             #portfolio .hero > p,
             #portfolio .hero .brief { grid-column: 2; }
 
