@@ -1046,7 +1046,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 22px;
+            gap: 24px;
             margin-bottom: 16px;
         }
         #portfolio .hero-head h1 { margin-bottom: 0; }
@@ -1264,7 +1264,7 @@
 
         /* Brief — a quiet inset callout rather than a plain ruled block */
         #portfolio .brief {
-            margin: 28px 0 18px;
+            margin: 8px 0 18px;
         }
 
         /* Links — softer default underline, accent on hover, smooth */
@@ -1330,7 +1330,7 @@
            ──────────────────────────────────────────────── */
         @media (min-width: 760px) {
             #portfolio main {
-                max-width: 1080px;
+                max-width: 1160px;
                 padding: 92px clamp(40px, 4vw, 72px) 132px;
             }
 
@@ -1338,7 +1338,7 @@
             #portfolio .hero,
             #portfolio section {
                 display: grid;
-                grid-template-columns: 180px minmax(0, 70ch) 1fr;
+                grid-template-columns: 180px minmax(0, 80ch) 1fr;
                 column-gap: 60px;
             }
 
@@ -1350,17 +1350,16 @@
             }
             #portfolio .hero-head {
                 grid-column: 1 / -1;
-                padding-bottom: 30px;
-                margin-bottom: 40px;
+                margin-bottom: 8px;
                 position: relative;
             }
             #portfolio .hero h1 { font-size: 64px; }
-            /* Bust stands on the header rule like a statue on a shelf */
+            /* Bust floats just right of the name */
             #portfolio .hero-bust {
                 width: 88px;
                 position: absolute;
-                right: 0;
-                bottom: 0;
+                right: 140px;
+                bottom: -30px;
             }
             #portfolio .hero > p,
             #portfolio .hero .brief { grid-column: 2; }
@@ -1383,7 +1382,7 @@
             #portfolio footer,
             #portfolio .boot-prompt {
                 margin-left: 240px;
-                max-width: 70ch;
+                max-width: 80ch;
             }
         }
     </style>
