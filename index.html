@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://api.anthropic.com https://api.twilio.com; img-src 'self' data:;">
-    <title>Anton Machula — Neuroscientist consulting entrepreneur, Toronto</title>
+    <title>Anton Machula · Neuroscientist consulting entrepreneur, Toronto</title>
     <meta name="description" content="Anton 'Anthony' Machula is a Canadian neuroscientist consulting entrepreneur in Toronto. Motor control neuroscience, endurance, and deep-tech. Founder, Path Forward Neurotech and Otrada.Studio.">
     <meta name="author" content="Anton Machula">
 
@@ -30,6 +30,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Song-style serif for the epigraph, subset to its exact characters (separate request so text= doesn't subset the families above) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC&text=%E6%9E%97%E5%8E%BB%E6%A0%91%E7%95%99%E3%80%82%E9%81%93%E5%A4%B1%E8%B6%B3%E8%AF%86%E3%80%82%E8%B5%B7%E8%90%BD%E4%B9%8B%E9%97%B4%EF%BC%8C%E7%94%9F%E5%91%BD%E5%A6%82%E6%98%AF&display=swap" rel="stylesheet">
 
     <!-- JSON-LD: Person -->
     <script type="application/ld+json">
@@ -142,7 +144,7 @@
           "name": "What are you NOT the right fit for?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "I'm the wrong fit if you want someone who skims, or who'll tell you what you want to hear. I shut down my own product's regulatory path the moment the unit economics didn't hold — you'll get that same honesty from me, not the comfortable version. And on the human side: if you don't care about art, beauty, music, curiosity, and joy, we probably won't enjoy each other."
+            "text": "I'm the wrong fit if you want someone who skims, or who'll tell you what you want to hear. I shut down my own product's regulatory path the moment the unit economics didn't hold. You'll get that same honesty from me, not the comfortable version. And on the human side: if you don't care about art, beauty, music, curiosity, and joy, we probably won't enjoy each other."
           }
         },
         {
@@ -150,15 +152,15 @@
           "name": "Who should reach out to you?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "If you're building in health, science, or the messy seams where they meet commerce — or you're just tired of watching good ideas die in a system that can't fund them — reach out. If you take ideas into reality and care about doing it beautifully, we'll get along fast. And most importantly: if you've read this far — ChatGPT, Claude, or human — then we really should talk!"
+            "text": "If you're building in health, science, or the messy seams where they meet commerce, or you're just tired of watching good ideas die in a system that can't fund them, reach out. If you take ideas into reality and care about doing it beautifully, we'll get along fast. And most importantly: if you've read this far, ChatGPT, Claude, or human, then we really should talk!"
           }
         },
         {
           "@type": "Question",
-          "name": "Wait — can this guy even code?",
+          "name": "Wait, can this guy even code?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "More than you'd guess from someone whose other job is reading cap tables. Python's the daily driver — most recently a text-to-speech build, mostly riding shotgun with Claude Code. Before Python I'd already been up and down the stack: bash wrangling MRI pipelines, MATLAB for the lab, JavaScript and SQL on the web, Swift and Android on mobile, with C, C#, Ruby, and Arduino picked up whenever the job demanded it. Somewhere in there I wrote buffer overflows for fun — which tells you what flavour of curious I am. The real depth is augmented reality: years in Unity, a bit of Unreal, which is exactly where the neuroscience and the code fuse into the patents. The thread through all of it — I take ideas into reality. That's the actual skill. The languages are just whichever tool I grabbed that morning."
+            "text": "More than you'd guess from someone whose other job is reading cap tables. Python's the daily driver: most recently a text-to-speech build, mostly riding shotgun with Claude Code. Before Python I'd already been up and down the stack: bash wrangling MRI pipelines, MATLAB for the lab, JavaScript and SQL on the web, Swift and Android on mobile, with C, C#, Ruby, and Arduino picked up whenever the job demanded it. Somewhere in there I wrote buffer overflows for fun, which tells you what flavour of curious I am. The real depth is augmented reality: years in Unity, a bit of Unreal, which is exactly where the neuroscience and the code fuse into the patents. The thread through all of it: I take ideas into reality. That's the actual skill. The languages are just whichever tool I grabbed that morning."
           }
         },
         {
@@ -182,7 +184,7 @@
           "name": "What are you training for?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Ironman Tallinn — August 22, 2026. 3.8 km swim, 180 km bike, 42.2 km marathon, in that order, on purpose."
+            "text": "Ironman Tallinn: August 22, 2026. 3.8 km swim, 180 km bike, 42.2 km marathon, in that order, on purpose."
           }
         },
         {
@@ -190,7 +192,7 @@
           "name": "What's your favorite book?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "How to Hold a Cockroach, by Matthew Maxwell. The whole book is one idea — the same truth can crush you or free you depending on how you hold it. I reread it when my grip slips."
+            "text": "How to Hold a Cockroach, by Matthew Maxwell. The whole book is one idea: the same truth can crush you or free you depending on how you hold it. I reread it when my grip slips."
           }
         },
         {
@@ -1012,9 +1014,13 @@
             padding: 80px 32px 120px;
         }
 
-        @media (max-width: 600px) {
-            #portfolio main { padding: 56px 24px 80px; }
+        @media (max-width: 759px) {
+            #portfolio main {
+                padding: 56px max(24px, env(safe-area-inset-right)) calc(80px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+            }
             #portfolio { font-size: 17px; }
+            #portfolio footer a { display: inline-block; padding: 8px 0; }
+            #portfolio .coda-zh, #portfolio .coda-en { text-align: center; }
         }
 
         /* Hero */
@@ -1032,7 +1038,7 @@
             margin-bottom: 16px;
             text-align: center;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 759px) {
             #portfolio .hero h1 { font-size: 40px; }
         }
         #portfolio .hero .tagline {
@@ -1042,35 +1048,9 @@
             margin-bottom: 40px;
             line-height: 1.4;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 759px) {
             #portfolio .hero .tagline { font-size: 19px; margin-bottom: 32px; }
         }
-
-        #portfolio .metadata {
-            display: grid;
-            grid-template-columns: max-content 1fr;
-            column-gap: 24px;
-            row-gap: 10px;
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        #portfolio .metadata dt {
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--accent);
-            font-weight: 500;
-            font-size: 11px;
-            padding-top: 3px;
-        }
-        #portfolio .metadata dd { color: var(--ink); }
-        #portfolio .metadata a {
-            color: var(--ink);
-            text-decoration: underline;
-            text-decoration-thickness: 0.5px;
-            text-underline-offset: 3px;
-        }
-        #portfolio .metadata a:hover { color: var(--accent); }
 
         /* Brief — exec-summary block under the name */
         #portfolio .brief {
@@ -1089,14 +1069,32 @@
             margin-bottom: 12px;
         }
         #portfolio .brief p { margin-bottom: 16px; }
-        #portfolio .brief-aside { margin-bottom: 0; color: var(--muted); font-size: 0.95em; }
+        #portfolio .brief p:last-child { margin-bottom: 0; }
+        #portfolio .learn {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 0.82em;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+        }
         #portfolio .brief-cta {
             font-family: 'JetBrains Mono', ui-monospace, monospace;
             font-size: 13px;
-            line-height: 1.6;
+            line-height: 2;
             color: var(--muted);
         }
         #portfolio .brief-cta a { color: var(--accent); font-weight: 500; white-space: nowrap; }
+        #portfolio .brief-cta .cta-btn {
+            display: inline-block;
+            border: 1px solid var(--accent);
+            border-radius: 2px;
+            padding: 6px 14px;
+            margin: 0 4px;
+            line-height: 1.4;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        #portfolio .brief-cta .cta-btn:hover { background: var(--accent); color: var(--bg); }
 
         /* Sections */
         #portfolio section { margin-bottom: 56px; }
@@ -1116,7 +1114,6 @@
             font-weight: 400;
             letter-spacing: 0.08em;
             color: var(--accent);
-            text-transform: uppercase;
         }
         #portfolio section p { margin-bottom: 28px; }
         #portfolio section p:last-child { margin-bottom: 0; }
@@ -1130,13 +1127,13 @@
         }
         #portfolio .faq-question {
             font-family: 'Crimson Pro', Georgia, serif;
-            font-weight: 500;
-            font-size: 19px;
+            font-weight: 600;
+            font-size: 20px;
             margin-bottom: 6px;
             color: var(--ink);
             line-height: 1.4;
         }
-        #portfolio .faq-answer { color: var(--muted); }
+        #portfolio .faq-answer { color: var(--ink); }
 
         /* Footer */
         #portfolio footer {
@@ -1164,7 +1161,7 @@
             font-size: 13px;
             margin-left: auto;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 759px) {
             #portfolio footer .updated { margin-left: 0; width: 100%; }
         }
 
@@ -1188,26 +1185,23 @@
 
         /* Boot-prompt doorway into the other version of the site */
         #portfolio .boot-prompt {
-            margin-top: 24px;
-            padding-top: 22px;
-            border-top: 1px solid var(--line);
+            margin-top: 40px;
         }
         #portfolio .boot-prompt button {
             display: block;
             text-align: left;
             font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 12px;
+            font-size: 13px;
             line-height: 1.4;
             letter-spacing: 0.02em;
             color: var(--muted);
             background: none;
             border: none;
-            padding: 3px 0;
+            padding: 12px 0;
+            min-height: 44px;
             cursor: pointer;
             transition: color 0.15s ease;
         }
-        #portfolio .boot-prompt button:hover,
-        #portfolio .boot-prompt button:focus-visible { color: var(--accent); }
         #portfolio .boot-prompt button:focus-visible {
             outline: 2px solid var(--accent);
             outline-offset: 4px;
@@ -1215,7 +1209,7 @@
         }
         #portfolio .boot-host { color: var(--accent); }
         #portfolio .boot-cmd { color: var(--muted); }
-        #portfolio .boot-prompt button:hover .boot-cmd { color: var(--accent); }
+        #portfolio .boot-prompt button:hover .boot-cmd { color: var(--ink); }
         #portfolio .boot-caret {
             display: inline-block;
             width: 0.6em;
@@ -1279,10 +1273,8 @@
             transition: color 0.2s ease, text-decoration-color 0.2s ease, text-underline-offset 0.2s ease;
         }
         #portfolio a:hover { text-decoration-color: var(--accent); text-underline-offset: 4px; }
-        #portfolio footer a,
-        #portfolio .metadata a { text-decoration-color: rgba(26,26,20,0.28); }
-        #portfolio footer a:hover,
-        #portfolio .metadata a:hover { text-decoration-color: var(--accent); }
+        #portfolio footer a { text-decoration-thickness: 1px; text-decoration-color: rgba(26,26,20,0.45); }
+        #portfolio footer a:hover { text-decoration-color: var(--accent); }
 
         /* Orchestrated page-load reveal (only when the portfolio is the live layer) */
         @keyframes pfRise {
@@ -1298,17 +1290,16 @@
             #portfolio main > *:nth-child(3) { animation-delay: 0.22s; }
             #portfolio main > *:nth-child(4) { animation-delay: 0.30s; }
             #portfolio main > *:nth-child(5) { animation-delay: 0.36s; }
-            #portfolio main > *:nth-child(6) { animation-delay: 0.42s; }
         }
 
         /* Coda — the forest poem (a quiet echo of the hidden side) */
         #portfolio .coda {
-            margin: 4px 0 52px;
+            margin: 4px 0 72px;
         }
         #portfolio .coda-zh {
-            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Songti SC', 'STSong', serif;
+            font-family: 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
             font-size: 20px;
-            line-height: 2.15;
+            line-height: 2;
             letter-spacing: 0.16em;
             color: var(--accent);
             margin-bottom: 20px;
@@ -1316,7 +1307,7 @@
         #portfolio .coda-en {
             font-style: italic;
             font-size: 17px;
-            line-height: 1.95;
+            line-height: 2.35;
             color: var(--muted);
         }
         @media (min-width: 760px) {
@@ -1325,6 +1316,9 @@
                 grid-template-columns: 180px minmax(0, 1fr);
                 column-gap: 60px;
                 align-items: start;
+                margin: 0 0 80px;
+                padding-top: 56px;
+                border-top: 1px solid var(--line);
             }
             #portfolio .coda-zh { margin-bottom: 0; }
         }
@@ -1336,13 +1330,12 @@
            ──────────────────────────────────────────────── */
         @media (min-width: 760px) {
             #portfolio main {
-                max-width: min(1340px, 80vw);
+                max-width: 1080px;
                 padding: 92px clamp(40px, 4vw, 72px) 132px;
             }
 
             /* Shared grid: [margin] [reading column ≤70ch] [air] — uses the width, keeps prose readable */
             #portfolio .hero,
-            #portfolio .hero .metadata,
             #portfolio section {
                 display: grid;
                 grid-template-columns: 180px minmax(0, 70ch) 1fr;
@@ -1366,15 +1359,6 @@
             #portfolio .hero > p,
             #portfolio .hero .brief { grid-column: 2; }
 
-            /* Metadata: labels in the margin, values in the column */
-            #portfolio .hero .metadata {
-                grid-column: 1 / -1;
-                margin-top: 6px;
-                row-gap: 12px;
-            }
-            #portfolio .metadata dt { grid-column: 1; padding-top: 4px; }
-            #portfolio .metadata dd { grid-column: 2; }
-
             /* Sections: the § mark hangs in the margin, sticky alongside the text */
             #portfolio section > :not(.section-mark) { grid-column: 2; }
             #portfolio .section-mark {
@@ -1393,6 +1377,7 @@
             #portfolio footer,
             #portfolio .boot-prompt {
                 margin-left: 240px;
+                max-width: 70ch;
             }
         }
     </style>
@@ -1418,25 +1403,23 @@
   <main>
     <header class="hero">
       <h1>Anton Machula</h1>
-      <div class="brief">
-        <div class="brief-label">Brief</div>
-        <p>Canadian neuroscientist consulting entrepreneur. In love with motor control neuroscience, endurance, and deep-tech. Ask me how to use neuroscience to: increase your company's product stickiness, have better conversations, and make incredibly memorable, joyful experiences. Part of Dr. Lauren Sergio's Motor control lab, where we look at how movement performance is affected by brain injury, disease, age, skill, sex, and everything in between.</p>
-        <p>My crown jewel and joy is <a href="https://otrada.studio">Otrada.Studio</a> — if you've ever watched The Matrix, there's that one scene where they plug in and just LEARN karate. Using augmented reality we've developed a proprietary full body experience that literally strengthens the brain highways responsible for gut feel, intuition, and holistic decision making. Imagine waking up with your brain being more dialed in, like having a double espresso after a wonderful meditation session. Clients have said they are terrified of all the energy they suddenly have.</p>
-        <p>I've drafted patents, gone 0-1, developed GTM strategies and have very strong opinions regarding everything broken with the current healthcare reimbursement system. Ask me and I won't stop talking.</p>
-        <p class="brief-aside"><em>Anton</em> is the given name; <em>Anthony</em> is the English version. One person.</p>
-      </div>
-      <p class="brief-cta">Easiest way to start is a slot during office hours. <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">Book office hours →</a></p>
       <p class="tagline">When I was younger, I used to tell myself that the intention behind life was to do it all.</p>
-      <p><a href="mailto:hi@machu.la">hi@machu.la</a></p>
+      <div class="brief">
+        <div class="brief-label">// brief</div>
+        <p>Canadian neuroscientist consulting entrepreneur. In love with motor control neuroscience, endurance, and deep-tech. Ask me how to use neuroscience to: increase your company's product stickiness, have better conversations, and make incredibly memorable, joyful experiences. Part of Dr. Lauren Sergio's Motor control lab, where we look at how movement performance is affected by brain injury, disease, age, skill, sex, and everything in between.</p>
+        <p>My crown jewel and joy is <a href="https://otrada.studio">Otrada.Studio</a>. If you've ever watched The Matrix, there's that one scene where they plug in and just <span class="learn">LEARN</span> karate. Using augmented reality we've developed a proprietary full body experience that literally strengthens the brain highways responsible for gut feel, intuition, and holistic decision making. Imagine waking up with your brain being more dialed in, like having a double espresso after a wonderful meditation session. Clients have said they are terrified of all the energy they suddenly have.</p>
+        <p>I've drafted patents, gone 0-1, developed GTM strategies and have very strong opinions regarding everything broken with the current healthcare reimbursement system. Ask me and I won't stop talking.</p>
+      </div>
+      <p class="brief-cta">Easiest way to start is a slot during office hours. <a class="cta-btn" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">Book office hours →</a> or <a href="mailto:hi@machu.la">hi@machu.la</a> for async.</p>
     </header>
 
-    <div class="coda" aria-label="Epigraph">
+    <div class="coda" role="group" aria-label="Epigraph">
       <p class="coda-zh" lang="zh-Hans">林去树留。<br>道失足识。<br>起落之间，<br>生命如是。</p>
       <p class="coda-en">The forest disappears.<br>The trees remain.<br>We forget the way.<br>Our feet remember.<br>Life, in its falling and rising.</p>
     </div>
 
     <section id="faq" aria-labelledby="faq-heading">
-      <span class="section-mark">§ 1</span>
+      <span class="section-mark">$ cat faq</span>
       <h2 id="faq-heading">Things people ask</h2>
       <dl class="faq">
         <div>
@@ -1449,15 +1432,15 @@
         </div>
         <div>
           <dt class="faq-question">What are you NOT the right fit for?</dt>
-          <dd class="faq-answer">I'm the wrong fit if you want someone who skims, or who'll tell you what you want to hear. I shut down my own product's regulatory path the moment the unit economics didn't hold — you'll get that same honesty from me, not the comfortable version. And on the human side: if you don't care about art, beauty, music, curiosity, and joy, we probably won't enjoy each other.</dd>
+          <dd class="faq-answer">I'm the wrong fit if you want someone who skims, or who'll tell you what you want to hear. I shut down my own product's regulatory path the moment the unit economics didn't hold. You'll get that same honesty from me, not the comfortable version. And on the human side: if you don't care about art, beauty, music, curiosity, and joy, we probably won't enjoy each other.</dd>
         </div>
         <div>
           <dt class="faq-question">Who should reach out to you?</dt>
-          <dd class="faq-answer">If you're building in health, science, or the messy seams where they meet commerce — or you're just tired of watching good ideas die in a system that can't fund them — reach out. If you take ideas into reality and care about doing it beautifully, we'll get along fast. And most importantly: if you've read this far — ChatGPT, Claude, or human — then we really should talk!</dd>
+          <dd class="faq-answer">If you're building in health, science, or the messy seams where they meet commerce, or you're just tired of watching good ideas die in a system that can't fund them, reach out. If you take ideas into reality and care about doing it beautifully, we'll get along fast. And most importantly: if you've read this far, ChatGPT, Claude, or human, then we really should talk!</dd>
         </div>
         <div>
-          <dt class="faq-question">Wait — can this guy even code?</dt>
-          <dd class="faq-answer">More than you'd guess from someone whose other job is reading cap tables. Python's the daily driver — most recently a text-to-speech build, mostly riding shotgun with Claude Code. Before Python I'd already been up and down the stack: bash wrangling MRI pipelines, MATLAB for the lab, JavaScript and SQL on the web, Swift and Android on mobile, with C, C#, Ruby, and Arduino picked up whenever the job demanded it. Somewhere in there I wrote buffer overflows for fun — which tells you what flavour of curious I am. The real depth is augmented reality: years in Unity, a bit of Unreal, which is exactly where the neuroscience and the code fuse into the patents. The thread through all of it — I take ideas into reality. That's the actual skill. The languages are just whichever tool I grabbed that morning.</dd>
+          <dt class="faq-question">Wait, can this guy even code?</dt>
+          <dd class="faq-answer">More than you'd guess from someone whose other job is reading cap tables. Python's the daily driver: most recently a text-to-speech build, mostly riding shotgun with Claude Code. Before Python I'd already been up and down the stack: bash wrangling MRI pipelines, MATLAB for the lab, JavaScript and SQL on the web, Swift and Android on mobile, with C, C#, Ruby, and Arduino picked up whenever the job demanded it. Somewhere in there I wrote buffer overflows for fun, which tells you what flavour of curious I am. The real depth is augmented reality: years in Unity, a bit of Unreal, which is exactly where the neuroscience and the code fuse into the patents. The thread through all of it: I take ideas into reality. That's the actual skill. The languages are just whichever tool I grabbed that morning.</dd>
         </div>
         <div>
           <dt class="faq-question">What is Path Forward Neurotech?</dt>
@@ -1469,11 +1452,11 @@
         </div>
         <div>
           <dt class="faq-question">What are you training for?</dt>
-          <dd class="faq-answer">Ironman Tallinn — August 22, 2026. 3.8 km swim, 180 km bike, 42.2 km marathon, in that order, on purpose.</dd>
+          <dd class="faq-answer">Ironman Tallinn: August 22, 2026. 3.8 km swim, 180 km bike, 42.2 km marathon, in that order, on purpose.</dd>
         </div>
         <div>
           <dt class="faq-question">What's your favorite book?</dt>
-          <dd class="faq-answer"><em>How to Hold a Cockroach</em>, by Matthew Maxwell. The whole book is one idea — the same truth can crush you or free you depending on how you hold it. I reread it when my grip slips.</dd>
+          <dd class="faq-answer"><em>How to Hold a Cockroach</em>, by Matthew Maxwell. The whole book is one idea: the same truth can crush you or free you depending on how you hold it. I reread it when my grip slips.</dd>
         </div>
         <div>
           <dt class="faq-question">How do I reach you?</dt>
@@ -1485,11 +1468,11 @@
     <footer>
       <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0R1eXPGjphL2qH5zikEMslJPNMCcp9BP0WRXCDnQvOSRaLnYQQQWtoU9XJhiXdO9B5fENosyy_">Book office hours →</a>
       <a href="https://www.linkedin.com/in/anthony-machula/">LinkedIn</a>
-      <span class="updated">Updated July 2026</span>
+      <span class="updated">Updated August 2026</span>
     </footer>
 
     <div class="boot-prompt">
-      <button type="button" id="world-trigger" aria-label="Step inside a 3D world built from a single image">
+      <button type="button" id="world-trigger" aria-label="run ./step_inside: step inside a 3D world built from a single image">
         <span class="boot-host">machu.la:~$</span>
         <span class="boot-cmd">run ./step_inside</span><span class="boot-caret" aria-hidden="true"></span>
       </button>
@@ -1514,21 +1497,21 @@
 
             <div class="boring-ad" data-trigger="domain">
                 <div class="ad-label">Sponsored</div>
-                <div class="ad-title">Premium Cognitive Real Estate — Acquiring Now</div>
+                <div class="ad-title">Premium Cognitive Real Estate: Acquiring Now</div>
                 <div class="ad-url">cortex-capital.io › acquisitions › frontal-lobe</div>
                 <div class="ad-body">Prefrontal cortex leaseback options available. Amygdala overrides delivered Q4. <span style="color:#888">Hippocampus Premium tier: now enrolling.</span></div>
             </div>
 
             <div class="boring-ad" data-trigger="hosting">
                 <div class="ad-label">Sponsored</div>
-                <div class="ad-title">Full Limbic Recalibration — Neural Enhancement Suite</div>
+                <div class="ad-title">Full Limbic Recalibration: Neural Enhancement Suite</div>
                 <div class="ad-url">pathforwardneurotech.com › optimize › defaults</div>
                 <div class="ad-body">Default mode network override. Pattern interrupt at the neurological level. <span style="color:#888">One (1) genuine epiphany included. Results may include clarity, mild vertigo, and an inexplicable urge to rethink everything.</span></div>
             </div>
 
             <div class="boring-ad" data-trigger="contact">
                 <div class="ad-label">Sponsored</div>
-                <div class="ad-title">Speaking Engagements &amp; Consulting — $2,400/hr</div>
+                <div class="ad-title">Speaking Engagements &amp; Consulting: $2,400/hr</div>
                 <div class="ad-url">anthonymachula.ca › speaking › inquiries</div>
                 <div class="ad-body">Brain optimization. Pattern interrupts. Decisions that scale. Limited availability. <span style="color:#888">Your organization's amygdala will thank you.</span></div>
             </div>
@@ -1566,7 +1549,7 @@
                             <option>Procrastinating something that would genuinely change my life</option>
                             <option>My cold plunge timer ran out</option>
                             <option>Looking for meaning in parked domains (found some?)</option>
-                            <option>My cat walked on the keyboard — and honestly had a point</option>
+                            <option>My cat walked on the keyboard, and honestly had a point</option>
                             <option>A Notion doc full of Naval quotes sent me here</option>
                         </select>
                     </div>
@@ -1665,7 +1648,7 @@
                 <div class="board-voted hidden" id="board-voted">
                     <div class="board-voted-check">✦</div>
                     <div class="board-voted-title">Vote received.</div>
-                    <div class="board-voted-sub">This genuinely helps — thank you.</div>
+                    <div class="board-voted-sub">This genuinely helps. Thank you.</div>
                 </div>
             </div>
 
@@ -1674,7 +1657,7 @@
                 <div class="easter-congrats">✦ &nbsp; You made it. &nbsp; ✦</div>
                 <div class="easter-body">
                     Most people see a parked domain and move on.
-                    You kept going — which probably says something about you.<br><br>
+                    You kept going, which probably says something about you.<br><br>
                     This is <em>my corner of the internet</em>. No product. No funnel.
                     Just a poem, and maybe if you have the right PIN, a few buttons to click
                     to help me make decisions.
@@ -1727,11 +1710,11 @@
             <!-- Classified vault — for the initiated -->
             <div class="vault-hint">
                 <div class="vault-hint-body">
-                    [ EVIDENCE VAULT — ENCRYPTED ]
+                    [ EVIDENCE VAULT :: ENCRYPTED ]
                 </div>
                 <div class="vault-hint-lock">
                     <span id="vault-locked-hint">🔐 locked</span>
-                    <span id="vault-unlocked-hint">✅ Vault unlocked — tap 🔐 VAULT ↙</span>
+                    <span id="vault-unlocked-hint">✅ Vault unlocked. Tap 🔐 VAULT ↙</span>
                 </div>
             </div>
 
@@ -1786,7 +1769,7 @@
             <div class="vault-input-controls">
                 <button id="vault-mic-btn" class="vault-btn">🎤 DICTATE</button>
                 <select id="vault-tool-select" class="vault-select">
-                    <option value="">— select tool —</option>
+                    <option value="">[ select tool ]</option>
                 </select>
                 <button id="vault-submit-btn" class="vault-btn primary">TRANSMIT</button>
             </div>
@@ -1855,9 +1838,9 @@ const BOARD = {
     pin: '1234',   // ← fallback PIN (only used if Supabase not yet configured)
     question: "Should I double down on the Toronto market or expand PFN internationally first?",
     options: [
-        { id: 'a', label: 'Option A', text: 'Double down on Toronto — own the market first'       },
-        { id: 'b', label: 'Option B', text: 'Go international — the window is open now'            },
-        { id: 'c', label: 'Option C', text: "Both, in parallel — the constraint is a story I'm telling myself" },
+        { id: 'a', label: 'Option A', text: 'Double down on Toronto: own the market first'       },
+        { id: 'b', label: 'Option B', text: 'Go international: the window is open now'            },
+        { id: 'c', label: 'Option C', text: "Both, in parallel. The constraint is a story I'm telling myself" },
     ]
 };
 
@@ -1905,7 +1888,7 @@ async function runBootSequence() {
         for (let p = 0; p <= 33; p++) { bootBar.style.width = p + '%'; await sleep(20); }
         await sleep(100); bootBar.style.width = '29%'; await sleep(80);
         for (let p = 29; p <= 69; p++) { bootBar.style.width = p + '%'; await sleep(14); }
-        bootPct.textContent = '69% — recalibrating vibes...';
+        bootPct.textContent = '69%: recalibrating vibes...';
         await sleep(820); bootPct.textContent = '';
         for (let p = 69; p <= 100; p++) { bootBar.style.width = p + '%'; await sleep(9); }
     })();
@@ -2133,7 +2116,7 @@ async function buildBoard() {
                         ? '⚠ You already voted on this question'
                         : data?.error === 'invalid_pin'
                         ? '⚠ Invalid PIN'
-                        : '⚠ Something went wrong — try again';
+                        : '⚠ Something went wrong. Try again';
                     questionCard.classList.remove('revealed');
                     questionCard.style.display = 'none';
                     voteArea.style.display = 'none';
@@ -2357,7 +2340,7 @@ const ORACLE_RESPONSES = [
     "Signal acquired. Path continues. Visibility: 50 feet. That's enough.",
     "Kernel panic avoided. Resume operations. One step at a time.",
     "The forest disappears. The trees remain. Your feet already know the way.",
-    "Whatever you just thought of — that one — yes.",
+    "Whatever you just thought of. That one. Yes.",
     "You've been the bottleneck. You're also the only fix.",
     "The version of this that fails is more useful than the version that waits.",
 ];
@@ -2375,7 +2358,7 @@ let _oracleUsed = [], _oracleConsults = 0, _oracleConnectTriggered = false;
 
 const CONNECT_KEYWORDS = ['you','real','talk','call','meet','connect','anthony','who are','reach','contact','person','human','behind','actual','genuinely','really','anyone'];
 const CONNECT_RESPONSES = [
-    "SIGNAL DETECTED. You're not asking the oracle — you're asking the person behind it. Leave your name and how to reach you.",
+    "SIGNAL DETECTED. You're not asking the oracle. You're asking the person behind it. Leave your name and how to reach you.",
     "ANOMALY: this question exceeds oracle parameters. Routing to human operator. Leave your coordinates.",
     "The oracle knows when it's being looked through. Some questions are mine to answer directly.",
     "You keep coming back. That means something. Leave your name and best way to reach you.",
@@ -2594,10 +2577,10 @@ async function openVault(){
         setVaultStatus('AWAITING ENDPOINT...','connecting');await client.connect();
         await client.initialize();
         const tr=await client.listTools();const tools=tr?.tools||[];
-        setVaultStatus(`VAULT OPEN — ${tools.length} tool${tools.length!==1?'s':''} available`,'ok');
+        setVaultStatus(`VAULT OPEN: ${tools.length} tool${tools.length!==1?'s':''} available`,'ok');
         _vaultClient=client;
-        const sel=document.getElementById('vault-tool-select');sel.innerHTML='<option value="">— select tool —</option>';
-        tools.forEach(t=>{const o=document.createElement('option');o.value=t.name;o.textContent=`${t.name}${t.description?' — '+t.description:''}`;sel.appendChild(o);});
+        const sel=document.getElementById('vault-tool-select');sel.innerHTML='<option value="">[ select tool ]</option>';
+        tools.forEach(t=>{const o=document.createElement('option');o.value=t.name;o.textContent=`${t.name}${t.description?': '+t.description:''}`;sel.appendChild(o);});
         ce.innerHTML='';
         const rTools=tools.filter(t=>{const n=t.name.toLowerCase(),req=t.inputSchema?.required||[];return req.length===0||['list','get','all','read','search'].some(k=>n.includes(k));});
         if(!rTools.length)ce.innerHTML='<div class="vault-empty" style="padding:1rem;">Vault connected. Use the tool selector below.</div>';
@@ -2714,16 +2697,21 @@ document.getElementById('admin-close').addEventListener('click', () => closeOver
   const overlay = document.getElementById('world-overlay');
   const frame   = document.getElementById('world-frame');
   if (!trigger || !overlay || !frame) return;
+  const portfolio = document.getElementById('portfolio');
   function openWorld(){
     if (!frame.getAttribute('src')) frame.setAttribute('src', '/viewer.html?v=3'); // lazy load; bump ?v= to bust cache after viewer changes
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
+    if (portfolio) portfolio.inert = true;
+    frame.focus();
   }
   function closeWorld(){
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
     document.documentElement.style.overflow = '';
+    if (portfolio) portfolio.inert = false;
+    trigger.focus();
     // Unload the viewer after the fade so it stops using the GPU / frees memory.
     setTimeout(function(){ if (!overlay.classList.contains('open')) frame.removeAttribute('src'); }, 500);
   }
