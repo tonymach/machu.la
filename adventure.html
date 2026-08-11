@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:;">
+    <title>field log</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #f0ede8;
+            color: #1f1d1a;
+            line-height: 1.7;
+            font-size: .85rem;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wrap {
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: 3.5rem 1.25rem 5rem;
+        }
+        a { color: inherit; }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: none; }
+        }
+        @keyframes shake {
+            25% { transform: translateX(-4px); }
+            50% { transform: translateX(4px); }
+            75% { transform: translateX(-2px); }
+        }
+
+        /* gate */
+        #gate {
+            text-align: center; padding-top: 22vh;
+            animation: rise .5s cubic-bezier(.16,1,.3,1) both;
+            transition: opacity .35s ease, transform .35s ease;
+        }
+        #gate.out { opacity: 0; transform: translateY(-8px); }
+        #gate input.busy { opacity: .45; }
+        #gate input.shake { animation: shake .3s; }
+        #gate input { transition: opacity .25s ease; }
+        #gate label {
+            display: block;
+            font-size: .62rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8a847a;
+            margin-bottom: 1.1rem;
+        }
+        #gate input {
+            font: inherit;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #1f1d1a;
+            padding: .3rem .2rem;
+            width: 14rem;
+            text-align: center;
+            color: inherit;
+            outline: none;
+            border-radius: 0;
+        }
+        #gate .err {
+            margin-top: 1rem;
+            font-size: .72rem;
+            color: #a63a24;
+            min-height: 1.2em;
+        }
+
+        /* log */
+        #log { display: none; }
+        header {
+            font-size: .62rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8a847a;
+            margin-bottom: 2.75rem;
+        }
+        header a { text-decoration: none; }
+        header a:hover { color: #1f1d1a; }
+
+        .globe-box { text-align: center; margin-bottom: .9rem; }
+        #globe { display: inline-block; width: min(320px, 100%); aspect-ratio: 1; }
+
+        /* reveal cascade, reading order; entries stagger themselves */
+        #log.reveal > *:not(#entries) { animation: rise .6s cubic-bezier(.16,1,.3,1) both; }
+        #log.reveal > *:nth-child(1) { animation-delay: 0s; }
+        #log.reveal > *:nth-child(2) { animation-delay: .08s; }
+        #log.reveal > *:nth-child(3) { animation-delay: .16s; }
+        #log.reveal > *:nth-child(4) { animation-delay: .26s; }
+        #log.reveal > *:nth-child(5) { animation-delay: .38s; }
+        #log.reveal > *:nth-child(7) { animation-delay: .6s; }
+        .entry { animation: rise .4s cubic-bezier(.16,1,.3,1) both; }
+
+        /* botanical plate; multiply folds its white ground into the paper */
+        @keyframes settle { from { opacity: 0; } }
+        .botanical {
+            position: fixed;
+            left: -4vw;
+            top: -7vh;
+            /* sized to stay inside the margin beside the 40rem text column */
+            width: min(62vh, calc(50vw - 21.5rem));
+            transform: scaleY(-1); /* hangs from the top of the page */
+            mix-blend-mode: multiply;
+            opacity: .5;
+            z-index: -1;
+            pointer-events: none;
+            user-select: none;
+            animation: settle 1.8s ease-out both;
+        }
+        .plate-plane {
+            left: auto; right: -6vw;
+            top: auto; bottom: 0; /* keeps the sea on the page floor */
+            width: min(60vh, calc(50vw - 21.5rem));
+            /* unflipped: nose points left, flying into the page from the right */
+            transform: none;
+            opacity: .38;
+            animation-delay: .4s;
+        }
+        @media (max-width: 1100px) {
+            .plate-plane { display: none; }
+        }
+        @media (max-width: 900px) {
+            .botanical {
+                opacity: .15;
+                left: 50%;
+                top: auto; bottom: -6vh;
+                width: 115vw;
+                transform: translateX(-50%); /* upright, blooming from the page floor */
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+        .position {
+            text-align: center;
+            font-size: .68rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #8a847a;
+            margin-bottom: 3rem;
+        }
+        .position b { color: #1f1d1a; font-weight: 500; }
+
+        .now {
+            margin-bottom: 3rem;
+        }
+        .now .k, .entries-label {
+            font-size: .62rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #a63a24;
+            margin-bottom: .5rem;
+        }
+        .entries-label { color: #8a847a; margin-bottom: .9rem; }
+
+        #filter {
+            font: inherit;
+            font-size: .7rem;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #d8d2c6;
+            padding: .2rem .1rem;
+            width: 11rem;
+            color: inherit;
+            outline: none;
+            border-radius: 0;
+            margin-top: .9rem;
+            text-align: inherit;
+            transition: border-color .35s ease;
+        }
+        #filter:focus { border-bottom-color: #1f1d1a; }
+        #filter::placeholder { color: #b9b2a4; }
+
+        .contact {
+            font-size: .7rem;
+            line-height: 2;
+            margin: 3rem 0 0;
+        }
+        .contact .k {
+            font-size: .62rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8a847a;
+            margin-bottom: .5rem;
+        }
+        .contact a { text-decoration: none; }
+        .contact a:hover { text-decoration: underline; }
+        @media (min-width: 1100px) {
+            .contact {
+                position: fixed;
+                top: 3.5rem;
+                right: 2.5rem;
+                margin: 0;
+                text-align: right;
+            }
+        }
+
+        .entry { margin-bottom: 1.6rem; }
+        .entry .d { font-weight: 500; transition: color .3s ease, border-color .3s ease; }
+        .entry.geo { cursor: pointer; }
+        .entry.geo .d { border-bottom: 1px dotted #c9c3b8; }
+        .entry.geo:hover .d { color: #a63a24; border-bottom-color: #a63a24; }
+        .entry img {
+            display: block;
+            max-width: 100%;
+            margin: .9rem 0 .3rem;
+            border: 1px solid #d8d2c6;
+        }
+        .entry .cap { font-size: .7rem; color: #8a847a; }
+    </style>
+</head>
+<body>
+<img class="botanical" src="bouquet.jpg" alt="" aria-hidden="true">
+<img class="botanical plate-plane" src="seaplane.jpg" alt="" aria-hidden="true">
+<div class="wrap">
+
+    <div id="gate">
+        <label for="pw">field log</label>
+        <input id="pw" type="password" autocomplete="off" autofocus>
+        <div class="err" id="err"></div>
+    </div>
+
+    <div id="log">
+        <header><a href="/">machu.la</a> — field log</header>
+        <div class="globe-box"><canvas id="globe"></canvas></div>
+        <div class="position" id="position"></div>
+        <div class="now">
+            <div class="k">currently listening to:</div>
+            <div id="status"></div>
+        </div>
+        <div class="entries-label">log</div>
+        <div id="entries"></div>
+        <div class="contact">
+            <div id="contact"></div>
+            <input id="filter" type="search" placeholder="filter log" autocomplete="off">
+        </div>
+    </div>
+
+</div>
+<script>
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+let DATA = null, WORLD = null;
+
+async function decrypt(pw, blob) {
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: b64(blob.salt), iterations: 600000, hash: 'SHA-256' },
+        km, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(blob.iv) }, key, b64(blob.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+}
+
+function coordStr(lat, lon) {
+    return Math.abs(lat).toFixed(1) + '°' + (lat >= 0 ? 'N' : 'S') + ' ' +
+           Math.abs(lon).toFixed(1) + '°' + (lon >= 0 ? 'E' : 'W');
+}
+
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let GLOBE_PLOTTED = false;
+let VIEW = null; // the position the globe currently shows
+let FOCUS_ANIM = 0;
+
+function setCaption(p) {
+    const name = [p.place, p.country].filter(Boolean).join(', ');
+    document.getElementById('position').innerHTML =
+        (name ? '<b>' + name + '</b> · ' : '') + coordStr(p.lat, p.lon);
+}
+
+// swing the globe to a position along the great circle
+function focusGlobe(p) {
+    if (!GLOBE_PLOTTED || !WORLD) return;
+    cancelAnimationFrame(FOCUS_ANIM);
+    setCaption(p);
+    if (REDUCED) { VIEW = p; plotGlobe(1); return; }
+    const interp = d3.geoInterpolate([VIEW.lon, VIEW.lat], [p.lon, p.lat]);
+    const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    const DUR = 900;
+    let t0 = null;
+    FOCUS_ANIM = requestAnimationFrame(function tick(now) {
+        if (t0 === null) t0 = now;
+        const t = Math.min(1, (now - t0) / DUR);
+        const [lon, lat] = interp(ease(t));
+        VIEW = { ...p, lon, lat };
+        plotGlobe(1);
+        if (t < 1) FOCUS_ANIM = requestAnimationFrame(tick);
+    });
+}
+
+function drawGlobe() {
+    if (!WORLD || !DATA || typeof d3 === 'undefined') return;
+    if (!document.getElementById('globe').clientWidth) return; // hidden; revealed later re-calls
+    if (REDUCED || GLOBE_PLOTTED) { plotGlobe(1); GLOBE_PLOTTED = true; return; }
+    const DUR = 1800;
+    let t0 = null;
+    requestAnimationFrame(function tick(now) {
+        if (t0 === null) t0 = now;
+        const t = Math.min(1, (now - t0) / DUR);
+        plotGlobe(t);
+        if (t < 1) requestAnimationFrame(tick); else GLOBE_PLOTTED = true;
+    });
+}
+
+// draws the globe at plot progress t: sphere sweeps, then graticule, land,
+// country ink, position ring stamps down last
+function plotGlobe(t) {
+    const ease = x => 1 - Math.pow(1 - x, 3);
+    const seg = (a, b) => ease(Math.max(0, Math.min(1, (t - a) / (b - a))));
+    const pos = VIEW;
+    const countries = topojson.feature(WORLD, WORLD.objects.countries);
+    const canvas = document.getElementById('globe');
+    const size = Math.min(320, canvas.parentElement.clientWidth);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr; canvas.height = size * dpr;
+    canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const proj = d3.geoOrthographic()
+        .rotate([-pos.lon, -pos.lat])
+        .fitExtent([[6, 6], [size - 6, size - 6]], { type: 'Sphere' });
+    const path = d3.geoPath(proj, ctx);
+    ctx.clearRect(0, 0, size, size);
+
+    const sweep = seg(0, .4);
+    ctx.globalAlpha = sweep;
+    ctx.beginPath(); path({ type: 'Sphere' });
+    ctx.fillStyle = '#faf8f4'; ctx.fill();
+
+    ctx.globalAlpha = seg(.15, .5);
+    ctx.beginPath(); path(d3.geoGraticule10());
+    ctx.lineWidth = .4; ctx.strokeStyle = '#ddd7cb'; ctx.stroke();
+
+    ctx.globalAlpha = seg(.3, .7);
+    ctx.beginPath(); path(countries);
+    ctx.fillStyle = '#dcd6ca'; ctx.fill();
+    ctx.lineWidth = .5; ctx.strokeStyle = '#b9b2a4'; ctx.stroke();
+
+    const hit = countries.features.find(f => f.properties.name === pos.country);
+    if (hit) {
+        ctx.globalAlpha = seg(.55, .85);
+        ctx.beginPath(); path(hit);
+        ctx.fillStyle = '#a63a24'; ctx.fill();
+    }
+
+    // sphere outline sweeps in like a compass stroke, from 12 o'clock
+    const [cx, cy] = proj.translate();
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, proj.scale(), -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * sweep);
+    ctx.lineWidth = 1; ctx.strokeStyle = '#1f1d1a'; ctx.stroke();
+
+    // position marker stamps down: ring closes onto the point
+    const m = seg(.8, 1);
+    if (m > 0) {
+        ctx.globalAlpha = m;
+        ctx.beginPath(); path.pointRadius(4.5 + (1 - m) * 8);
+        path({ type: 'Point', coordinates: [pos.lon, pos.lat] });
+        ctx.lineWidth = 1.2; ctx.strokeStyle = '#1f1d1a'; ctx.stroke();
+        ctx.beginPath(); path.pointRadius(1.4);
+        path({ type: 'Point', coordinates: [pos.lon, pos.lat] });
+        ctx.fillStyle = '#1f1d1a'; ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+}
+
+function render() {
+    VIEW = DATA.position;
+    setCaption(DATA.position);
+    document.getElementById('status').textContent = DATA.status;
+    const c = DATA.contact;
+    if (c) {
+        const box = document.getElementById('contact');
+        box.innerHTML = '<div class="k">contact</div>';
+        const line = (label, node) => {
+            const div = document.createElement('div');
+            div.append(label + ' — ', node);
+            box.appendChild(div);
+        };
+        const a = (href, text) => Object.assign(document.createElement('a'), { href, textContent: text });
+        if (c.phone) line('tel', a('tel:' + c.phone.replace(/[^+\d]/g, ''), c.phone));
+        if (c.wechat) line('wechat', document.createTextNode(c.wechat));
+        if (c.email) line('email', a('mailto:' + c.email, c.email));
+    }
+    renderEntries(DATA.log, .5);
+    const gate = document.getElementById('gate');
+    const log = document.getElementById('log');
+    gate.classList.add('out');
+    setTimeout(() => {
+        gate.style.display = 'none';
+        log.style.display = 'block';
+        log.classList.add('reveal');
+        drawGlobe();
+    }, REDUCED ? 0 : 360);
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+        .then(r => r.json())
+        .then(w => { WORLD = w; drawGlobe(); });
+}
+
+function renderEntries(list, baseDelay = 0) {
+    const box = document.getElementById('entries');
+    box.innerHTML = '';
+    list.forEach((e, i) => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.style.animationDelay = (baseDelay + Math.min(i * .05, .45)) + 's';
+        if (e.lat != null && e.lon != null) {
+            div.classList.add('geo');
+            div.addEventListener('mouseenter', () => focusGlobe(e));
+            div.addEventListener('mouseleave', () => focusGlobe(DATA.position));
+            div.addEventListener('click', () => focusGlobe(e));
+        }
+        const d = document.createElement('span');
+        d.className = 'd';
+        d.textContent = e.d + ' — ';
+        div.appendChild(d);
+        div.appendChild(document.createTextNode(e.t));
+        if (e.img) {
+            const img = document.createElement('img');
+            img.src = e.img; img.alt = e.cap || '';
+            div.appendChild(img);
+            if (e.cap) {
+                const cap = document.createElement('div');
+                cap.className = 'cap';
+                cap.textContent = e.cap;
+                div.appendChild(cap);
+            }
+        }
+        box.appendChild(div);
+    });
+}
+
+async function tryPassword(pw, silent) {
+    const input = document.getElementById('pw');
+    input.classList.add('busy');
+    const blob = await (await fetch('adventure.data.json', { cache: 'no-store' })).json();
+    try {
+        DATA = await decrypt(pw, blob);
+        localStorage.setItem('fieldlog-pw', pw);
+        render();
+    } catch {
+        localStorage.removeItem('fieldlog-pw');
+        if (!silent) {
+            document.getElementById('err').textContent = 'incorrect.';
+            input.classList.remove('shake');
+            void input.offsetWidth;
+            input.classList.add('shake');
+        }
+    } finally {
+        input.classList.remove('busy');
+    }
+}
+
+document.getElementById('filter').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    renderEntries(DATA.log.filter(en =>
+        (en.d + ' ' + en.t + ' ' + (en.cap || '')).toLowerCase().includes(q)));
+});
+document.getElementById('pw').addEventListener('keydown', e => {
+    if (e.key === 'Enter') tryPassword(e.target.value, false);
+});
+window.addEventListener('resize', drawGlobe);
+const saved = localStorage.getItem('fieldlog-pw');
+if (saved) tryPassword(saved, true);
+</script>
+</body>
+</html>
