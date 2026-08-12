@@ -217,6 +217,12 @@
             border: 1px solid #d8d2c6;
         }
         .entry .cap { font-size: .7rem; color: #8a847a; }
+
+        /* iOS Safari zooms the page when focusing an input under 16px and
+           stays zoomed after unlock; 16px inputs keep the viewport at 1:1 */
+        @media (pointer: coarse) {
+            #gate input, #filter { font-size: 16px; }
+        }
     </style>
 </head>
 <body>
