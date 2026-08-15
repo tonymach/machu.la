@@ -91,13 +91,14 @@
         #globe { display: inline-block; width: min(320px, 100%); aspect-ratio: 1; }
 
         /* reveal cascade, reading order; entries stagger themselves */
-        #log.reveal > *:not(#entries) { animation: rise .6s cubic-bezier(.16,1,.3,1) both; }
+        #log.reveal > *:not(#entries):not(#events) { animation: rise .6s cubic-bezier(.16,1,.3,1) both; }
         #log.reveal > *:nth-child(1) { animation-delay: 0s; }
         #log.reveal > *:nth-child(2) { animation-delay: .08s; }
         #log.reveal > *:nth-child(3) { animation-delay: .16s; }
         #log.reveal > *:nth-child(4) { animation-delay: .26s; }
         #log.reveal > *:nth-child(5) { animation-delay: .38s; }
-        #log.reveal > *:nth-child(7) { animation-delay: .6s; }
+        #log.reveal > *:nth-child(7) { animation-delay: .5s; }
+        #log.reveal > *:nth-child(9) { animation-delay: .6s; }
         .entry { animation: rise .4s cubic-bezier(.16,1,.3,1) both; }
 
         /* botanical plate; multiply folds its white ground into the paper */
@@ -154,7 +155,7 @@
         .now {
             margin-bottom: 3rem;
         }
-        .now .k, .entries-label {
+        .now .k, .entries-label, .events-label {
             font-size: .62rem;
             letter-spacing: 3px;
             text-transform: uppercase;
@@ -162,6 +163,8 @@
             margin-bottom: .5rem;
         }
         .entries-label { color: #8a847a; margin-bottom: .9rem; }
+        .events-label { margin-bottom: .9rem; }
+        #events { margin-bottom: 3rem; }
 
         #filter {
             font: inherit;
@@ -223,6 +226,42 @@
         @media (pointer: coarse) {
             #gate input, #filter { font-size: 16px; }
         }
+
+        /* event modal */
+        #event-modal {
+            margin: auto; /* the global reset kills the UA centering; restore it */
+            font-family: inherit;
+            background: #f0ede8;
+            color: #1f1d1a;
+            border: 1px solid #1f1d1a;
+            padding: 1.6rem 1.8rem;
+            max-width: 26rem;
+            width: calc(100vw - 2.5rem);
+            line-height: 1.7;
+            font-size: .85rem;
+        }
+        #event-modal[open] { animation: rise .3s cubic-bezier(.16,1,.3,1) both; }
+        #event-modal::backdrop { background: rgba(31, 29, 26, .35); }
+        #event-modal .ev-title { font-weight: 500; }
+        #event-modal .ev-when { font-size: .7rem; color: #8a847a; margin: .2rem 0 1rem; }
+        #event-modal .ev-body { margin-bottom: 1rem; }
+        #event-modal .ev-track { font-size: .7rem; color: #a63a24; margin-bottom: .3rem; }
+        #event-modal .ev-links { font-size: .7rem; line-height: 2; }
+        #event-modal .ev-cal {
+            margin-top: 1.1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #d8d2c6;
+            font-size: .7rem;
+        }
+        #ev-close {
+            position: absolute;
+            top: .45rem; right: .7rem;
+            background: none; border: none;
+            font: inherit; font-size: 1rem;
+            color: #8a847a; cursor: pointer;
+        }
+        #ev-close:hover { color: #1f1d1a; }
+        #ev-close:focus-visible { outline: 1px dotted #8a847a; outline-offset: 2px; }
     </style>
 </head>
 <body>
@@ -244,6 +283,8 @@
             <div class="k">currently listening to:</div>
             <div id="status"></div>
         </div>
+        <div class="events-label">major events</div>
+        <div id="events"></div>
         <div class="entries-label">log</div>
         <div id="entries"></div>
         <div class="contact">
@@ -253,6 +294,19 @@
     </div>
 
 </div>
+
+<dialog id="event-modal">
+    <button id="ev-close" aria-label="close">×</button>
+    <div class="ev-title" id="ev-title"></div>
+    <div class="ev-when" id="ev-when"></div>
+    <div class="ev-body" id="ev-body"></div>
+    <div class="ev-track" id="ev-track"></div>
+    <div class="ev-links" id="ev-links"></div>
+    <div class="ev-cal">
+        <a href="#" id="ev-ics">add to calendar (.ics)</a> · <a id="ev-gcal" target="_blank" rel="noopener">google calendar</a>
+    </div>
+</dialog>
+
 <script>
 const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 let DATA = null, WORLD = null;
@@ -396,6 +450,7 @@ function render() {
         if (c.wechat) line('wechat', document.createTextNode(c.wechat));
         if (c.email) line('email', a('mailto:' + c.email, c.email));
     }
+    renderEvents(DATA.events);
     renderEntries(DATA.log, .5);
     const gate = document.getElementById('gate');
     const log = document.getElementById('log');
@@ -409,6 +464,96 @@ function render() {
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
         .then(r => r.json())
         .then(w => { WORLD = w; drawGlobe(); });
+}
+
+// --- major events ---
+const icsDate = iso => new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+const icsEsc = s => String(s).replace(/[,;\\]/g, m => '\\' + m);
+const evLocation = ev => [ev.place, ev.country].filter(Boolean).join(', ');
+const evDetails = ev => (ev.t ? ev.t + ' ' : '') +
+    (ev.bib ? 'Bib ' + ev.bib + '. ' : '') +
+    (ev.links?.length ? 'Track live: ' + ev.links[0].url : '');
+
+function icsFor(ev) {
+    return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//machu.la//field log//EN', 'BEGIN:VEVENT',
+        'UID:' + ev.title.toLowerCase().replace(/\W+/g, '-') + '@machu.la',
+        'DTSTAMP:' + icsDate(ev.start),
+        'DTSTART:' + icsDate(ev.start),   // UTC instants: timezone-correct in every client
+        'DTEND:' + icsDate(ev.end || ev.start),
+        'SUMMARY:' + icsEsc(ev.title),
+        'LOCATION:' + icsEsc(evLocation(ev)),
+        'DESCRIPTION:' + icsEsc(evDetails(ev)),
+        'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+}
+
+function downloadIcs(ev) {
+    const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(new Blob([icsFor(ev)], { type: 'text/calendar' })),
+        download: ev.title.toLowerCase().replace(/\W+/g, '-') + '.ics'
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+const gcalUrl = ev => 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+    '&text=' + encodeURIComponent(ev.title) +
+    '&dates=' + icsDate(ev.start) + '/' + icsDate(ev.end || ev.start) +
+    '&location=' + encodeURIComponent(evLocation(ev)) +
+    '&details=' + encodeURIComponent(evDetails(ev));
+
+function fmtWhen(ev) {
+    const opts = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' };
+    const start = new Date(ev.start);
+    const race = start.toLocaleString('en-US', { ...opts, timeZone: ev.tz });
+    const local = start.toLocaleString('en-US', opts);
+    return race === local ? race : race + '  ·  ' + local + ' your time';
+}
+
+function openEvent(ev) {
+    const $ = id => document.getElementById(id);
+    $('ev-title').textContent = ev.title;
+    $('ev-when').textContent = fmtWhen(ev);
+    $('ev-body').textContent = ev.t || '';
+    $('ev-track').textContent = ev.bib
+        ? 'bib ' + ev.bib + ' — punch it into any tracker below'
+        : 'tracking goes live once the bib is assigned — links below work on race day';
+    const links = $('ev-links');
+    links.innerHTML = '';
+    (ev.links || []).forEach(l => {
+        const div = document.createElement('div');
+        div.appendChild(Object.assign(document.createElement('a'),
+            { href: l.url, textContent: l.label, target: '_blank', rel: 'noopener' }));
+        links.appendChild(div);
+    });
+    $('ev-ics').onclick = e => { e.preventDefault(); downloadIcs(ev); };
+    $('ev-gcal').href = gcalUrl(ev);
+    $('event-modal').showModal();
+}
+
+function renderEvents(events) {
+    const label = document.querySelector('.events-label');
+    const box = document.getElementById('events');
+    const upcoming = (events || []).filter(ev => new Date(ev.end || ev.start) > new Date());
+    label.style.display = box.style.display = upcoming.length ? '' : 'none';
+    box.innerHTML = '';
+    upcoming.forEach(ev => {
+        const div = document.createElement('div');
+        div.className = 'entry geo';
+        div.style.animationDelay = '.42s';
+        const days = Math.ceil((new Date(ev.start) - Date.now()) / 864e5);
+        const when = days > 1 ? 'in ' + days + ' days' : days === 1 ? 'tomorrow' : days === 0 ? 'today' : 'underway';
+        const d = Object.assign(document.createElement('span'), {
+            className: 'd',
+            textContent: new Date(ev.start).toLocaleString('en-US', { timeZone: ev.tz, month: 'short', day: 'numeric' }) + ' — '
+        });
+        div.append(d, ev.title + ', ' + ev.country + ' · ' + when + ' ↗');
+        if (ev.lat != null && ev.lon != null) {
+            div.addEventListener('mouseenter', () => focusGlobe(ev));
+            div.addEventListener('mouseleave', () => focusGlobe(DATA.position));
+        }
+        div.addEventListener('click', () => openEvent(ev));
+        box.appendChild(div);
+    });
 }
 
 function renderEntries(list, baseDelay = 0) {
@@ -473,6 +618,9 @@ document.getElementById('filter').addEventListener('input', e => {
 document.getElementById('pw').addEventListener('keydown', e => {
     if (e.key === 'Enter') tryPassword(e.target.value, false);
 });
+const modal = document.getElementById('event-modal');
+document.getElementById('ev-close').addEventListener('click', () => modal.close());
+modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
 window.addEventListener('resize', drawGlobe);
 const saved = localStorage.getItem('fieldlog-pw');
 if (saved) tryPassword(saved, true);
