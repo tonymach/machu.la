@@ -277,14 +277,14 @@
 
     <div id="log">
         <header><a href="/">machu.la</a> — field log</header>
+        <div class="events-label">major events</div>
+        <div id="events"></div>
         <div class="globe-box"><canvas id="globe"></canvas></div>
         <div class="position" id="position"></div>
         <div class="now">
             <div class="k">currently listening to:</div>
             <div id="status"></div>
         </div>
-        <div class="events-label">major events</div>
-        <div id="events"></div>
         <div class="entries-label">log</div>
         <div id="entries"></div>
         <div class="contact">
@@ -539,7 +539,7 @@ function renderEvents(events) {
     upcoming.forEach(ev => {
         const div = document.createElement('div');
         div.className = 'entry geo';
-        div.style.animationDelay = '.42s';
+        div.style.animationDelay = '.16s';
         const days = Math.ceil((new Date(ev.start) - Date.now()) / 864e5);
         const when = days > 1 ? 'in ' + days + ' days' : days === 1 ? 'tomorrow' : days === 0 ? 'today' : 'underway';
         const d = Object.assign(document.createElement('span'), {
