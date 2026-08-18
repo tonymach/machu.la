@@ -227,8 +227,8 @@
             #gate input, #filter { font-size: 16px; }
         }
 
-        /* event modal */
-        #event-modal {
+        /* modals */
+        dialog {
             margin: auto; /* the global reset kills the UA centering; restore it */
             font-family: inherit;
             background: #f0ede8;
@@ -240,9 +240,9 @@
             line-height: 1.7;
             font-size: .85rem;
         }
-        #event-modal[open] { animation: rise .3s cubic-bezier(.16,1,.3,1) both; }
-        #event-modal::backdrop { background: rgba(31, 29, 26, .35); }
-        #event-modal .ev-title { font-weight: 500; }
+        dialog[open] { animation: rise .3s cubic-bezier(.16,1,.3,1) both; }
+        dialog::backdrop { background: rgba(31, 29, 26, .35); }
+        .ev-title { font-weight: 500; }
         #event-modal .ev-when { font-size: .7rem; color: #8a847a; margin: .2rem 0 1rem; }
         #event-modal .ev-body { margin-bottom: 1rem; }
         #event-modal .ev-track { font-size: .7rem; color: #a63a24; margin-bottom: .3rem; }
@@ -253,15 +253,29 @@
             border-top: 1px solid #d8d2c6;
             font-size: .7rem;
         }
-        #ev-close {
+        .dlg-close {
             position: absolute;
             top: .45rem; right: .7rem;
             background: none; border: none;
             font: inherit; font-size: 1rem;
             color: #8a847a; cursor: pointer;
         }
-        #ev-close:hover { color: #1f1d1a; }
-        #ev-close:focus-visible { outline: 1px dotted #8a847a; outline-offset: 2px; }
+        .dlg-close:hover { color: #1f1d1a; }
+        .dlg-close:focus-visible { outline: 1px dotted #8a847a; outline-offset: 2px; }
+
+        /* recipes */
+        .recipes { margin-top: 1.6rem; }
+        .recipes a { text-decoration: none; border-bottom: 1px dotted #c9c3b8; cursor: pointer; }
+        .recipes a:hover { color: #a63a24; border-bottom-color: #a63a24; }
+        #recipe-modal { max-width: 30rem; }
+        #recipe-modal .rc-body {
+            white-space: pre-wrap;
+            font-size: .75rem;
+            line-height: 1.8;
+            max-height: 62vh;
+            overflow-y: auto;
+            margin-top: .8rem;
+        }
     </style>
 </head>
 <body>
@@ -289,6 +303,10 @@
                 <div id="status"></div>
             </div>
             <div id="contact"></div>
+            <div class="recipes">
+                <div class="k">recipes</div>
+                <div id="recipes"></div>
+            </div>
             <input id="filter" type="search" placeholder="filter log" autocomplete="off">
         </div>
     </div>
@@ -296,7 +314,7 @@
 </div>
 
 <dialog id="event-modal">
-    <button id="ev-close" aria-label="close">×</button>
+    <button class="dlg-close" aria-label="close">×</button>
     <div class="ev-title" id="ev-title"></div>
     <div class="ev-when" id="ev-when"></div>
     <div class="ev-body" id="ev-body"></div>
@@ -305,6 +323,12 @@
     <div class="ev-cal">
         <a href="#" id="ev-ics">add to calendar (.ics)</a> · <a id="ev-gcal" target="_blank" rel="noopener">google calendar</a>
     </div>
+</dialog>
+
+<dialog id="recipe-modal">
+    <button class="dlg-close" aria-label="close">×</button>
+    <div class="ev-title" id="rc-title"></div>
+    <div class="rc-body" id="rc-body"></div>
 </dialog>
 
 <script>
@@ -451,6 +475,7 @@ function render() {
         if (c.email) line('email', a('mailto:' + c.email, c.email));
     }
     renderEvents(DATA.events);
+    renderRecipes(DATA.recipes);
     renderEntries(DATA.log, .5);
     const gate = document.getElementById('gate');
     const log = document.getElementById('log');
@@ -556,6 +581,26 @@ function renderEvents(events) {
     });
 }
 
+function openRecipe(r) {
+    document.getElementById('rc-title').textContent = r.title;
+    document.getElementById('rc-body').textContent = r.t;
+    document.getElementById('recipe-modal').showModal();
+}
+
+function renderRecipes(recipes) {
+    const wrap = document.querySelector('.recipes');
+    wrap.style.display = recipes?.length ? '' : 'none';
+    const box = document.getElementById('recipes');
+    box.innerHTML = '';
+    (recipes || []).forEach(r => {
+        const div = document.createElement('div');
+        const a = Object.assign(document.createElement('a'), { textContent: r.title });
+        a.addEventListener('click', () => openRecipe(r));
+        div.appendChild(a);
+        box.appendChild(div);
+    });
+}
+
 function renderEntries(list, baseDelay = 0) {
     const box = document.getElementById('entries');
     box.innerHTML = '';
@@ -618,9 +663,10 @@ document.getElementById('filter').addEventListener('input', e => {
 document.getElementById('pw').addEventListener('keydown', e => {
     if (e.key === 'Enter') tryPassword(e.target.value, false);
 });
-const modal = document.getElementById('event-modal');
-document.getElementById('ev-close').addEventListener('click', () => modal.close());
-modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
+document.querySelectorAll('dialog').forEach(d => {
+    d.querySelector('.dlg-close').addEventListener('click', () => d.close());
+    d.addEventListener('click', e => { if (e.target === d) d.close(); });
+});
 window.addEventListener('resize', drawGlobe);
 const saved = localStorage.getItem('fieldlog-pw');
 if (saved) tryPassword(saved, true);
