@@ -3,6 +3,7 @@
 
 User-agent: *
 Allow: /
+Disallow: /hedonism-ch1-6.pdf
 
 User-agent: GPTBot
 Allow: /

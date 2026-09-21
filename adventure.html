@@ -619,6 +619,11 @@ function renderEntries(list, baseDelay = 0) {
         d.textContent = e.d + ' — ';
         div.appendChild(d);
         div.appendChild(document.createTextNode(e.t));
+        if (e.link) {
+            div.appendChild(document.createElement('br'));
+            div.appendChild(Object.assign(document.createElement('a'),
+                { href: e.link.url, textContent: e.link.label, target: '_blank', rel: 'noopener' }));
+        }
         if (e.img) {
             const img = document.createElement('img');
             img.src = e.img; img.alt = e.cap || '';
